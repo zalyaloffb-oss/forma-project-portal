@@ -84,7 +84,7 @@ try{
  function updateSelectionBox(){if(selectionBox){scene.remove(selectionBox);selectionBox.geometry.dispose();selectionBox.material.dispose();selectionBox=null;}}
  function select(ids){
   for(const id of selected){const item=items[id];item.materials.forEach((m,j)=>{if(m.emissive&&item.emissive[j])m.emissive.copy(item.emissive[j]);if(m.color&&item.colors[j])m.color.copy(item.colors[j]);});}
-  selected=ids;for(const id of selected){const item=items[id];item.materials.forEach((m,j)=>{if(m.color&&item.colors[j])m.color.copy(item.colors[j]).multiplyScalar(.85);if(m.emissive&&item.emissive[j])m.emissive.copy(item.emissive[j]).multiplyScalar(.85);});}
+  selected=ids;for(const id of selected){const item=items[id];item.materials.forEach((m,j)=>{if(m.color&&item.colors[j])m.color.copy(item.colors[j]).multiplyScalar(.70);if(m.emissive&&item.emissive[j])m.emissive.copy(item.emissive[j]).multiplyScalar(.70);});}
   $('#selection').hidden=!ids.length;
   if(ids.length){const first=items[ids[0]],b=new THREE.Box3();ids.forEach(id=>b.union(items[id].box));const d=b.getSize(new THREE.Vector3()).multiplyScalar(mmPerUnit);$('#selected-title').textContent=ids.length===1?first.name:`Выбрано тел: ${ids.length}`;$('#selected-path').textContent=first.path.split('+').join(' / ');$('#selected-size').textContent=`Габариты X × Y × Z: ${d.toArray().map(v=>v.toLocaleString('ru-RU',{maximumFractionDigits:1})).join(' × ')} мм`;status('F — приблизить · H — скрыть · I — изолировать · Esc — снять выделение');}
   updateSelectionBox();syncTree();
