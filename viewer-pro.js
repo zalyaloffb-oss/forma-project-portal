@@ -20,7 +20,7 @@ try{
  if(!Number.isFinite(largest)||largest<=0)throw Error('Некорректная геометрия');
  const scale=10/largest,mmPerUnit=1000/scale;
  const meshes=[];model.traverse(o=>{if(o.isMesh)meshes.push(o);});
- const edges=[],materials=new Set(),textures=new Set(),edgeMaterial=new THREE.LineBasicMaterial({color:0x354333,transparent:true,opacity:.66,depthWrite:false});
+ const edges=[],materials=new Set(),textures=new Set(),edgeMaterial=new THREE.LineBasicMaterial({color:0x000000,transparent:false,opacity:1,depthWrite:false});
  const items=meshes.map((mesh,id)=>{
   const world=mesh.matrixWorld.clone(),transform=new THREE.Matrix4().makeScale(scale,scale,scale).multiply(new THREE.Matrix4().makeTranslation(-center.x,-center.y,-center.z)).multiply(world);
   mesh.removeFromParent();mesh.matrixAutoUpdate=true;transform.decompose(mesh.position,mesh.quaternion,mesh.scale);scene.add(mesh);
@@ -34,7 +34,7 @@ try{
  scene.remove(model);
  const modelBox=new THREE.Box3();items.forEach(i=>modelBox.union(i.box));const radius=modelBox.getSize(new THREE.Vector3()).length()/2;
  controls.minDistance=.05;controls.maxDistance=radius*20;camera.near=.01;camera.far=radius*30;
- let selected=[],mode='orbit',edgesOn=true,sectionOn=false,explode=0,points=[],measureObjects=[],measurementCenter=null;
+ let selected=[],mode='orbit',sectionOn=false,explode=0,points=[],measureObjects=[],measurementCenter=null;
  const plane=new THREE.Plane(new THREE.Vector3(1,0,0),0),clipPlanes=[plane];let planeHelper=null,selectionBox=null;
  const raycaster=new THREE.Raycaster(),mouse=new THREE.Vector2();
  const chosenEdges=new Map(),edgeCandidates=[];
@@ -139,7 +139,6 @@ try{
  const componentCenters=new Map();for(const i of items){const key=i.path;if(!componentCenters.has(key))componentCenters.set(key,new THREE.Box3());componentCenters.get(key).union(i.box);}for(const [key,b] of componentCenters)componentCenters.set(key,b.getCenter(new THREE.Vector3()));
  function explodeModel(){capsDirty=true;clearFace();explode=Number($('#explode-range').value)/100;for(const i of items){const direction=componentCenters.get(i.path).clone().sub(modelBox.getCenter(new THREE.Vector3()));i.mesh.position.copy(i.base).addScaledVector(direction,explode*1.4);}scene.updateMatrixWorld(true);$('#explode-value').textContent=Math.round(explode*100)+'%';updateSelectionBox();clearMeasurement();}
  $('#explode-toggle').onclick=()=>{const open=$('#explode-panel').hidden;$('#explode-panel').hidden=!open;$('#explode-toggle').setAttribute('aria-pressed',String(open));if(!open){$('#explode-range').value='0';explodeModel();}};$('#explode-range').oninput=explodeModel;
- $('#edges').onclick=()=>{edgesOn=!edgesOn;edges.forEach(e=>e.visible=edgesOn);$('#edges').setAttribute('aria-pressed',String(edgesOn));};
  $('#hide').onclick=()=>setVisible(selected,false);$('#isolate').onclick=isolate;$('#show-all').onclick=showAll;$('#fit-selected').onclick=()=>fit(null,true);$('#home').onclick=()=>fit(dirs.iso);$('#fit').onclick=()=>fit(null,selected.length>0);
  document.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>fit(dirs[b.dataset.view]));
  $('#reset').onclick=()=>{customSection=null;$('#section-axis').value='x';$('#section-flip').checked=false;showAll();select([]);$('#explode-range').value='0';explodeModel();$('#section-toggle').setAttribute('aria-pressed','false');$('#section-panel').hidden=true;section();$('#explode-panel').hidden=true;$('#explode-toggle').setAttribute('aria-pressed','false');setMode('orbit');fit(dirs.iso);};
