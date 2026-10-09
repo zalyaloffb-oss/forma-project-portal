@@ -6,3 +6,5 @@
 html:fullscreen #tree-panel[hidden]{display:flex!important}
 html:fullscreen #tree-toggle,html:fullscreen #tree-close{display:none!important}
 html:fullscreen #tree-panel{position:relative;left:auto;top:auto;bottom:auto;z-index:auto;width:225px;box-shadow:none}
+
+#face-selection{position:absolute;top:12px;left:12px;z-index:5;max-width:280px;background:#ffffffdd;border:1px solid #abc6d7;border-radius:8px;padding:14px;backdrop-filter:blur(8px)}#face-selection p{font-size:11px;overflow-wrap:anywhere}#section-offset{width:100px;padding:5px}
