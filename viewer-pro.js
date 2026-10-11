@@ -2,37 +2,45 @@ import * as THREE from 'three';
 import {planarFace,sectionGeometry} from './geometry-tools.js';
 import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
+import {LineSegments2} from 'three/addons/lines/LineSegments2.js';
+import {LineSegmentsGeometry} from 'three/addons/lines/LineSegmentsGeometry.js';
+import {LineMaterial} from 'three/addons/lines/LineMaterial.js';
 import {RoomEnvironment} from 'three/addons/environments/RoomEnvironment.js';
 const $=s=>document.querySelector(s),escape=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let renderer,controls,resizeObserver,raf,environment;
 const stage=$('#stage'),loading=$('#loading');
 try{
- renderer=new THREE.WebGLRenderer({antialias:true,logarithmicDepthBuffer:true,preserveDrawingBuffer:true});renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));renderer.setClearColor(0xffffff);renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=.85;renderer.localClippingEnabled=true;
+ renderer=new THREE.WebGLRenderer({antialias:false,logarithmicDepthBuffer:true,preserveDrawingBuffer:true});renderer.setPixelRatio(2);renderer.setClearColor(0xffffff);renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=.85;renderer.localClippingEnabled=true;
  let darkBackground=false;
  $('#background').onclick=()=>{darkBackground=!darkBackground;renderer.setClearColor(darkBackground?0x20242a:0xffffff);$('#background').textContent=darkBackground?'◐ Белый фон':'◐ Тёмный фон';$('#background').title=darkBackground?'Сменить тёмный фон на белый':'Сменить белый фон на тёмный';};
  stage.appendChild(renderer.domElement);renderer.domElement.tabIndex=0;renderer.domElement.setAttribute('aria-label','3D-модель: выберите деталь щелчком');
  const scene=new THREE.Scene();let camera=new THREE.PerspectiveCamera(40,1,.001,1000);
  controls=new OrbitControls(camera,renderer.domElement);controls.enableDamping=false;controls.mouseButtons.MIDDLE=THREE.MOUSE.PAN;
  const pmrem=new THREE.PMREMGenerator(renderer),room=new RoomEnvironment();environment=pmrem.fromScene(room,.04);scene.environment=environment.texture;scene.environmentIntensity=.65;room.dispose();pmrem.dispose();
- scene.add(new THREE.HemisphereLight(0xffffff,0x697b59,.65));const sun=new THREE.DirectionalLight(0xffffff,1.25);sun.position.set(4,8,5);scene.add(sun);
+ const hemisphere=new THREE.HemisphereLight(0xffffff,0x697b59,.65);scene.add(hemisphere);const sun=new THREE.DirectionalLight(0xffffff,1.25);sun.position.set(12,18,10);scene.add(sun);renderer.shadowMap.type=THREE.PCFSoftShadowMap;sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);Object.assign(sun.shadow.camera,{left:-16,right:16,top:16,bottom:-16,near:.5,far:60});sun.shadow.bias=-.0001;sun.shadow.normalBias=.025;
  const asset=await new GLTFLoader().loadAsync('./models/health-territory-v23.glb'),model=asset.scene;scene.add(model);model.updateMatrixWorld(true);
  const originalBox=new THREE.Box3().setFromObject(model),center=originalBox.getCenter(new THREE.Vector3()),size=originalBox.getSize(new THREE.Vector3()),largest=Math.max(...size.toArray());
  if(!Number.isFinite(largest)||largest<=0)throw Error('Некорректная геометрия');
  const scale=10/largest,mmPerUnit=1000/scale;
  const meshes=[];model.traverse(o=>{if(o.isMesh)meshes.push(o);});
- const edges=[],materials=new Set(),textures=new Set(),edgeMaterial=new THREE.LineBasicMaterial({color:0x000000,transparent:false,opacity:1,depthWrite:false});
+ const edges=[],materials=new Set(),textures=new Set(),edgeMaterial=new LineMaterial({color:0x000000,linewidth:1.65,transparent:false,opacity:1,depthWrite:false});
  const items=meshes.map((mesh,id)=>{
   const world=mesh.matrixWorld.clone(),transform=new THREE.Matrix4().makeScale(scale,scale,scale).multiply(new THREE.Matrix4().makeTranslation(-center.x,-center.y,-center.z)).multiply(world);
   mesh.removeFromParent();mesh.matrixAutoUpdate=true;transform.decompose(mesh.position,mesh.quaternion,mesh.scale);scene.add(mesh);
   // A slope-dependent offset lets rear edges bleed through thin CAD panels.
   // Only a tiny constant depth bias is needed to keep their own edges visible.
   const src=Array.isArray(mesh.material)?mesh.material:[mesh.material];const own=src.map(m=>{const copy=m.clone();copy.polygonOffset=true;copy.polygonOffsetFactor=0;copy.polygonOffsetUnits=1;materials.add(copy);for(const k of ['map','normalMap','specularColorMap','roughnessMap','metalnessMap'])if(copy[k])textures.add(copy[k]);return copy;});mesh.material=Array.isArray(mesh.material)?own:own[0];
-  const lines=new THREE.LineSegments(new THREE.EdgesGeometry(mesh.geometry,25),edgeMaterial);lines.renderOrder=1;mesh.add(lines);edges.push(lines);mesh.userData.itemId=id;
+  mesh.castShadow=true;mesh.receiveShadow=true;const edgeGeometry=new THREE.EdgesGeometry(mesh.geometry,25),edgePositions=edgeGeometry.attributes.position.array.slice();edgeGeometry.dispose();const lines=new LineSegments2(new LineSegmentsGeometry().setPositions(edgePositions),edgeMaterial);lines.userData.positions=edgePositions;lines.renderOrder=1;mesh.add(lines);edges.push(lines);mesh.userData.itemId=id;
   mesh.updateMatrixWorld(true);const box=new THREE.Box3().setFromObject(mesh),mid=box.getCenter(new THREE.Vector3());
   return {id,mesh,box,center:mid,base:mesh.position.clone(),name:mesh.userData.bodyName||mesh.name||`Деталь ${id+1}`,path:mesh.userData.fusionPath||'Прочие детали',materials:own,emissive:own.map(m=>m.emissive?.clone()),colors:own.map(m=>m.color?.clone()),visible:true};
  });
  scene.remove(model);
  const modelBox=new THREE.Box3();items.forEach(i=>modelBox.union(i.box));const radius=modelBox.getSize(new THREE.Vector3()).length()/2;
+ const groundGeometry=new THREE.PlaneGeometry(radius*6,radius*6),groundMaterial=new THREE.ShadowMaterial({opacity:.22,depthWrite:false}),ground=new THREE.Mesh(groundGeometry,groundMaterial);ground.rotation.x=-Math.PI/2;ground.position.y=modelBox.min.y-.04;ground.receiveShadow=true;ground.visible=false;scene.add(ground);
+ let globalLight=true,shadows=false,smoothing=true;
+ $('#effect-light').onclick=()=>{globalLight=!globalLight;scene.environment=globalLight?environment.texture:null;hemisphere.intensity=globalLight?.65:.15;$('#effect-light').setAttribute('aria-pressed',String(globalLight));};
+ $('#effect-shadows').onclick=()=>{shadows=!shadows;renderer.shadowMap.enabled=shadows;renderer.shadowMap.needsUpdate=true;ground.visible=shadows;materials.forEach(m=>m.needsUpdate=true);$('#effect-shadows').setAttribute('aria-pressed',String(shadows));};
+ $('#effect-smooth').onclick=()=>{smoothing=!smoothing;renderer.setPixelRatio(smoothing?2:1);resize();$('#effect-smooth').setAttribute('aria-pressed',String(smoothing));};
  controls.minDistance=.05;controls.maxDistance=radius*20;camera.near=.01;camera.far=radius*30;
  let selected=[],mode='orbit',sectionOn=false,explode=0,points=[],measureObjects=[],measurementCenter=null;
  const plane=new THREE.Plane(new THREE.Vector3(1,0,0),0),clipPlanes=[plane];let planeHelper=null,selectionBox=null;
@@ -40,7 +48,7 @@ try{
  const chosenEdges=new Map(),edgeCandidates=[];
  // Join contiguous collinear tessellation segments into one straight edge.
  items.forEach(item=>{
-  const attr=edges[item.id].geometry.attributes.position,segments=[];
+  const attr=new THREE.BufferAttribute(edges[item.id].userData.positions,3),segments=[];
   for(let j=0;j<attr.count;j+=2)segments.push([new THREE.Vector3().fromBufferAttribute(attr,j),new THREE.Vector3().fromBufferAttribute(attr,j+1)]);
   for(let a=0;a<segments.length;a++){let changed=true;while(changed){changed=false;for(let b=a+1;b<segments.length;b++){
    const x=segments[a],y=segments[b],u=x[1].clone().sub(x[0]).normalize(),v=y[1].clone().sub(y[0]).normalize();if(Math.abs(u.dot(v))<.999999)continue;
@@ -148,7 +156,7 @@ try{
  document.addEventListener('keydown',e=>{if(e.target.matches('input,select,textarea')||e.ctrlKey||e.metaKey||e.altKey)return;if(e.key.toLowerCase()==='f'){e.preventDefault();fit(null,selected.length>0);}if(e.key.toLowerCase()==='h'&&selected.length)setVisible(selected,false);if(e.key.toLowerCase()==='i')isolate();if(e.key==='Escape'){select([]);setMode('orbit');$('#help-panel').hidden=true;}});
  document.querySelectorAll('button').forEach(b=>b.disabled=false);loading.hidden=true;$('#info').textContent=`${items.length} тел · мм`;stage.dataset.meshes=String(items.length);stage.dataset.textures=String(textures.size);stage.dataset.ready='true';setMode('orbit');
  function tick(){raf=requestAnimationFrame(tick);controls.update();if(capsDirty)rebuildCaps();if(measurementCenter){const p=measurementCenter.clone().project(camera);$('#measure-label').style.left=(p.x+1)*stage.clientWidth/2+'px';$('#measure-label').style.top=(1-p.y)*stage.clientHeight/2+'px';$('#measure-label').hidden=p.z>1||p.z< -1;}renderer.render(scene,camera);}tick();
- addEventListener('pagehide',()=>{cancelAnimationFrame(raf);resizeObserver.disconnect();controls.dispose();clearFace();sectionOn=false;rebuildCaps();hatchMaps.forEach(t=>t.dispose());clearEdges();clearMeasurement();items.forEach(i=>i.mesh.geometry.dispose());edges.forEach(e=>e.geometry.dispose());materials.forEach(m=>m.dispose());textures.forEach(t=>t.dispose());edgeMaterial.dispose();environment.dispose();renderer.dispose();},{once:true});
+ addEventListener('pagehide',()=>{cancelAnimationFrame(raf);resizeObserver.disconnect();controls.dispose();clearFace();sectionOn=false;rebuildCaps();hatchMaps.forEach(t=>t.dispose());clearEdges();clearMeasurement();items.forEach(i=>i.mesh.geometry.dispose());edges.forEach(e=>e.geometry.dispose());materials.forEach(m=>m.dispose());textures.forEach(t=>t.dispose());edgeMaterial.dispose();groundGeometry.dispose();groundMaterial.dispose();sun.shadow.dispose();environment.dispose();renderer.dispose();},{once:true});
 }catch(error){console.error(error);loading.textContent='Не удалось открыть модель: '+error.message;loading.classList.add('error');}
 $('#full').onclick=async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else await document.documentElement.requestFullscreen();}catch{$('#status').textContent='Откройте просмотрщик в отдельной вкладке для полноэкранного режима.';}};
 document.addEventListener('fullscreenchange',()=>{$('#full').textContent=document.fullscreenElement?'⛶ Свернуть':'⛶ На весь экран';});
