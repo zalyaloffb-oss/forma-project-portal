@@ -7,7 +7,7 @@ import {createViewCube} from './viewer-cube.js?v=2';
 import {createInteractionBatch} from './viewer-batching.js?v=1';
 import {createJoints} from './viewer-joints.js?v=1';
 import {createHistory} from './viewer-history.js?v=1';
-import {addPartNumbers} from './part-numbers.js?v=github-20261104';
+import {addPartNumbers} from './part-numbers.js?v=github-v183';
 import {viewerLink,copyViewerLink} from './viewer-share.js?v=short-links-1';
 import {iconButton} from './viewer-icons.js?v=part-dxf-1';
 import {planarFace,sectionGeometry} from './geometry-tools.js';
@@ -144,7 +144,7 @@ try{
  const jointController=createJoints({descriptors:jointDescriptors,items,center,scale,rootQuaternion:jointRootQuaternion});
  const joints=jointController.joints;
  stage.dataset.jointCount=String(joints.length);
- await addPartNumbers({items,projectId,mmPerUnit,materials,textures,toolbar:$('.topline > div'),invalidate,stage});
+ await addPartNumbers({items,projectId,mmPerUnit,materials,textures,toolbar:$('.topline > div'),invalidate,stage,cacheKey:shareProject.updatedAt||shareProject.fusionVersion});
  const modelBox=new THREE.Box3();items.forEach(i=>modelBox.union(i.box));const radius=modelBox.getSize(new THREE.Vector3()).length()/2;
  controls.minDistance=.05;controls.maxDistance=radius*20;camera.near=.01;camera.far=radius*30;
  let selectionAnchor=null;const selectionCenter=new THREE.Vector3();
