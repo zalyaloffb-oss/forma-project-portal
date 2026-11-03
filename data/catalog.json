@@ -10,16 +10,17 @@
       "status": "Не указан",
       "source": "",
       "model": "fusion",
-      "fusionVersion": "101",
+      "fusionVersion": "183",
       "viewerPath": "/pervyy-trest",
       "published": true,
       "attachments": [],
-      "modelUrl": "assets/pervyy-trest/model-aa0348f0c0f4.glb",
-      "coverUrl": "assets/pervyy-trest/cover-d211a3282c21.png",
-      "f3dUrl": "assets/pervyy-trest/f3d-4fd34854abe3.f3d",
+      "modelUrl": "assets/pervyy-trest/model-ec1b7fe27b2b.glb",
+      "coverUrl": "assets/pervyy-trest/cover-04f3e587967a.png",
+      "f3dUrl": "assets/pervyy-trest/f3d-21e0241529bf.f3d",
       "designUrl": "assets/pervyy-trest/design-9feeaa3180b6.pdf",
       "assemblyUrl": "assets/pervyy-trest/assembly-781d08436956.pdf",
-      "fusionDataFileId": "urn:adsk.wipprod:dm.lineage:856_OcfxRJmwHtcnLyj_Cw"
+      "fusionDataFileId": "urn:adsk.wipprod:dm.lineage:856_OcfxRJmwHtcnLyj_Cw",
+      "updatedAt": "2026-11-03T23:10:01.607575+00:00"
     },
     {
       "id": "fusion-809b7076045ef2f4710511fc90035e8b27a4116a8904dc34b782443d56f762ba",
