@@ -18,5 +18,5 @@ Do not use the one-off migrate_local.py to reset newly published records.
 Current dataset recovered from local copies: seven projects; live Beget database
 was unavailable. The latest known published First Trest is Fusion v101,1539 bodies;
 newer CAD revisions must be explicitly identified before replacing that model.
-Engels restored local v62,1C v371,Touchpanel v9; retain their labels/materials/joints.
+Engels restored local v67,1C v371,Touchpanel v9; retain their labels/materials/joints.
 No original CAD files are edited by website migration.

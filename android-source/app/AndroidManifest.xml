@@ -1,0 +1,20 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="ru.forma.catalog" android:versionCode="4" android:versionName="1.0.3">
+    <uses-sdk android:minSdkVersion="30" android:targetSdkVersion="36" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-feature android:glEsVersion="0x00030000" android:required="true" />
+    <application android:label="Форма" android:icon="@mipmap/ic_launcher" android:theme="@style/AppTheme"
+        android:hardwareAccelerated="true" android:allowBackup="false" android:networkSecurityConfig="@xml/network_security_config"
+        android:supportsRtl="true" android:enableOnBackInvokedCallback="true">
+        <activity android:name=".MainActivity" android:exported="true" android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize" android:windowSoftInputMode="adjustResize">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" /><category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" /><category android:name="android.intent.category.DEFAULT" /><category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="forma" android:host="project" />
+            </intent-filter>
+        </activity>
+    </application>
+</manifest>
+

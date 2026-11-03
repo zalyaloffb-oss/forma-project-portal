@@ -105,6 +105,7 @@ export async function addPartNumbers({items,projectId,mmPerUnit,materials,textur
  stage.dataset.numberedSupports=String(items.filter(i=>i.partScope==='support').length);stage.dataset.numberedRing=String(items.filter(i=>i.partScope==='ring').length);
  stage.dataset.numberedEngels=String(items.filter(i=>i.partScope==='engels').length);
  const button=document.createElement('button');button.id='part-numbers';button.textContent='Номера деталей';button.title='Маркировка ресепшена, стен, кольца и обшивки опор. К3/1 — короб №3, деталь №1; Н01/1 — нижний сектор кольца 01, деталь 1. Металлокаркас без маркировки.';button.setAttribute('aria-pressed','true');toolbar.prepend(button);
+ if(scopes.includes('trest'))button.title='Номера деталей «Первого треста»: подтверждённые позиции коробов и мебели, идентификаторы остальных деталей.';
  if(projectId===engelsProject)button.title='Маркировка ЭНГЕЛЬС: ДК — короб/позиция; РС — ресепшен; Т1/Т2 — тумбы; С-01 — стеллаж. СТ — детали стандартных коробов; ЗБ — закладные; СВ — профили.';
  button.onclick=()=>{enabled.value=enabled.value?0:1;button.setAttribute('aria-pressed',String(!!enabled.value));stage.dataset.partNumbers=enabled.value?'on':'off';invalidate();};
 }

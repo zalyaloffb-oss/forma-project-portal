@@ -6,3 +6,7 @@ tests/output/
 *.pem
 *.key
 config.local.json
+
+android-source/output/
+android-source/download/
+android-source/build/

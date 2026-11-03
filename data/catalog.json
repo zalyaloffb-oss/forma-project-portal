@@ -62,7 +62,7 @@
       "customer": "Не указан",
       "modelUrl": "assets/engels/model-50996abe3e97.glb",
       "sourceApp": "3ds Max",
-      "updatedAt": "2026-10-21T15:01:32+00:00",
+      "updatedAt": "2026-10-28T00:00:00Z",
       "viewerPath": "/engels",
       "attachments": [],
       "sourceFileUrl": "",
@@ -71,7 +71,7 @@
       "designUrl": "",
       "assemblyUrl": "assets/engels/assembly-984375a05d09.pdf",
       "autoAssemblyUrl": "",
-      "fusionVersion": "62",
+      "fusionVersion": "67",
       "published": true,
       "fusionDataFileId": "urn:adsk.wipprod:dm.lineage:OT0WxCN9RIaQmEEFghVJIQ"
     },
