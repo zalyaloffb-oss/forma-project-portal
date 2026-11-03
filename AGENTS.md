@@ -16,7 +16,10 @@ GitHub Pages workflow and live model after push; a Git push alone is not deploym
 Do not use the one-off migrate_local.py to reset newly published records.
 
 Current dataset recovered from local copies: seven projects; live Beget database
-was unavailable. The latest known published First Trest is Fusion v101,1539 bodies;
-newer CAD revisions must be explicitly identified before replacing that model.
+was unavailable. First Trest was re-exported from active Fusion v183 at the user's explicit correction/confirmation,1546 real bodies including6 reception plinth parts.
+Eight zero-face/zero-vertex records were skipped, not deleted from CAD. Source
+geometry was unchanged. Model/source/cover published through the GitHub adapter;
+stable project id and /pervyy-trest/ retained. 38 explicit native RS-D position
+labels added; PDF documents retained from prior records, not regenerated.
 Engels restored local v67,1C v371,Touchpanel v9; retain their labels/materials/joints.
 No original CAD files are edited by website migration.
