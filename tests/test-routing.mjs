@@ -1,0 +1,17 @@
+import fs from 'node:fs';
+import assert from 'node:assert/strict';
+const source=fs.readFileSync(new URL('../viewer-share.js',import.meta.url),'utf8').replace("import {SITE_ROOT} from './site-config.js';","const SITE_ROOT=new URL('https://zalyaloffb-oss.github.io/forma-project-portal/');");
+const {viewerLink}=await import('data:text/javascript;base64,'+Buffer.from(source).toString('base64'));
+assert.equal(viewerLink({viewerPath:'/pervyy-trest'}),'https://zalyaloffb-oss.github.io/forma-project-portal/pervyy-trest/');
+assert.equal(viewerLink({id:'fusion-123'}),'https://zalyaloffb-oss.github.io/forma-project-portal/viewer.html?project=fusion-123');
+assert.ok(viewerLink({id:'x',viewerPath:'//evil.org'}).includes('/viewer.html?project=x'));
+assert.ok(viewerLink({id:'x',viewerPath:'/../admin'}).includes('/viewer.html?project=x'));
+const config=fs.readFileSync(new URL('../site-config.js',import.meta.url),'utf8').replace("new URL('./',import.meta.url)","new URL('https://zalyaloffb-oss.github.io/forma-project-portal/')");
+const {assetUrl,permittedModel}=await import('data:text/javascript;base64,'+Buffer.from(config).toString('base64'));
+assert.equal(assetUrl('assets/a/model.glb'),'https://zalyaloffb-oss.github.io/forma-project-portal/assets/a/model.glb');
+assert.ok(permittedModel('assets/a/model.glb'));
+assert.ok(!permittedModel('https://evil.org/model.glb'));
+assert.ok(!permittedModel('https://zalyaloffb-oss.github.io/other/assets/model.glb'));
+assert.ok(!permittedModel('assets/../../private/model.glb'));
+assert.ok(!permittedModel('javascript:alert(1)'));
+console.log('PASS: 10 subdirectory, short-link and trusted-model URL checks.');

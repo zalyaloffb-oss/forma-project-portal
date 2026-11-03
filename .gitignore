@@ -1,0 +1,8 @@
+__pycache__/
+*.pyc
+*.next
+tests/output/
+*.jks
+*.pem
+*.key
+config.local.json
