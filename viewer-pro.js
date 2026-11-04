@@ -1,4 +1,4 @@
-import {loadCatalogue,permittedModel,projectModel} from './site-config.js?v=furniture-1';
+import {loadCatalogue,permittedModel,projectModel} from './site-config.js?v=furniture-2';
 import * as THREE from 'three';
 import {partDxf,dxfFilename} from './part-dxf.js?v=2';
 import {measurementMarkerRadius} from './measurement-markers.js?v=1';
@@ -8,7 +8,7 @@ import {createInteractionBatch} from './viewer-batching.js?v=1';
 import {createJoints} from './viewer-joints.js?v=1';
 import {createHistory} from './viewer-history.js?v=1';
 import {addPartNumbers} from './part-numbers.js?v=github-v183';
-import {viewerLink,copyViewerLink} from './viewer-share.js?v=furniture-1';
+import {viewerLink,copyViewerLink} from './viewer-share.js?v=furniture-2';
 import {iconButton} from './viewer-icons.js?v=part-dxf-1';
 import {planarFace,sectionGeometry} from './geometry-tools.js';
 import {edgeMeasurement,planeMeasurement,stitchEdges} from './measure-geometry.js';
@@ -90,7 +90,7 @@ try{
  let requested=params.get('model'),projectTitle='';
  if(projectId){
   if(!/^[\w-]{1,100}$/.test(projectId))throw Error('Недопустимый проект');
-  const data=await loadCatalogue(),project=projectModel(data.projects.find(p=>p.id===projectId),params.get('item'));
+  const data=await loadCatalogue(),project=projectModel(data.projects.find(p=>p.id===projectId),params.get('item')||window.FORMA_PROJECT?.itemId);
   if(!project?.modelUrl)throw Error('3D-модель проекта не найдена');
   requested=project.modelUrl;projectTitle=project.title;shareProject=project;
  }

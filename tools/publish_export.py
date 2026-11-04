@@ -48,7 +48,12 @@ def save_catalog(data):
     file=ROOT/'data/catalog.json';temporary=file.with_suffix('.json.next')
     temporary.write_text(json.dumps(data,ensure_ascii=False,indent=2)+'\n',encoding='utf-8');temporary.replace(file)
     from migrate_local import materialized_viewer
-    for p in data['projects']:materialized_viewer(p,'../')
+    for p in data['projects']:
+        materialized_viewer(p,'../')
+        for item in p.get('furniture',[]):
+            if not re.fullmatch('[a-z0-9][a-z0-9-]{0,79}',item['id']):raise ValueError('Invalid furniture route')
+            page={**item,'id':p['id'],'itemId':item['id'],'title':p['title']+' · '+item['title'],'viewerPath':p['viewerPath']+'/'+item['id']}
+            materialized_viewer(page,'../../')
 
 def git(*args):
     result=subprocess.run(['git','-C',str(ROOT),*args],capture_output=True,text=True,encoding='utf-8')
@@ -86,7 +91,7 @@ def publish(meta,files,report=lambda *args:None,push=True):
         git('add','--','data/catalog.json','assets',route['viewerPath'].strip('/'))
         if git('diff','--cached','--name-only'):
             git('commit','-m','Update catalogue model: '+project['title']);git('push','origin','main')
-    url=SITE+route['viewerPath'].strip('/')+'/'+('?item='+urllib.parse.quote(project['id']) if parent else '')
+    url=SITE+route['viewerPath'].strip('/')+'/'+(urllib.parse.quote(project['id'])+'/' if parent else '')
     return {'ok':True,'action':action,'projectId':route['id'],'version':str(meta.get('version','')),'assetId':hashlib.sha256(Path(files['model']).read_bytes()).hexdigest()[:24],
             'url':url,'viewerUrl':url,'deployment':'GitHub Pages build pending' if push else 'local'}
 

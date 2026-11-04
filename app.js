@@ -1,6 +1,6 @@
-import {loadCatalogue,SITE_ROOT,projectModel} from './site-config.js?v=furniture-1';
+import {loadCatalogue,SITE_ROOT,projectModel} from './site-config.js?v=furniture-2';
 import * as pdfjs from './vendor/pdf.min.mjs?v=beget-2';
-import {viewerLink,copyViewerLink} from './viewer-share.js?v=furniture-1';
+import {viewerLink,copyViewerLink} from './viewer-share.js?v=furniture-2';
 pdfjs.GlobalWorkerOptions.workerSrc = new URL('./vendor/pdf.worker.min.mjs', import.meta.url).href;
 // Bundle a same-module fallback for hosts that cannot start a module worker.
 import {WorkerMessageHandler} from './vendor/pdf-worker-fallback.mjs?v=beget-2';

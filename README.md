@@ -74,6 +74,6 @@ node tests/test-routing.mjs
 ## Мебель внутри проекта
 
 В карточке «Первый трест» вкладка «Мебель» содержит кашпо Fusion v17 (27 деталей).
-Прямая ссылка: https://zalyaloffb-oss.github.io/forma-project-portal/pervyy-trest/?item=kashpo.
+Прямая ссылка: https://zalyaloffb-oss.github.io/forma-project-portal/pervyy-trest/kashpo/.
 Предметы хранятся в `project.furniture` со своими моделями, обложками и исходниками.
 Повторный экспорт того же Fusion DataFile обновляет этот предмет внутри проекта; модель стенда и документы сохраняются.
