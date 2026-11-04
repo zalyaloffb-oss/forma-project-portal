@@ -7,7 +7,7 @@ assert.equal(viewerLink({id:'fusion-123'}),'https://zalyaloffb-oss.github.io/for
 assert.ok(viewerLink({id:'x',viewerPath:'//evil.org'}).includes('/viewer.html?project=x'));
 assert.ok(viewerLink({id:'x',viewerPath:'/../admin'}).includes('/viewer.html?project=x'));
 const config=fs.readFileSync(new URL('../site-config.js',import.meta.url),'utf8').replace("new URL('./',import.meta.url)","new URL('https://zalyaloffb-oss.github.io/forma-project-portal/')");
-const {assetUrl,permittedModel}=await import('data:text/javascript;base64,'+Buffer.from(config).toString('base64'));
+const {assetUrl,permittedModel,normalizeProject,projectModel}=await import('data:text/javascript;base64,'+Buffer.from(config).toString('base64'));
 assert.equal(assetUrl('assets/a/model.glb'),'https://zalyaloffb-oss.github.io/forma-project-portal/assets/a/model.glb');
 assert.ok(permittedModel('assets/a/model.glb'));
 assert.ok(!permittedModel('https://evil.org/model.glb'));
@@ -15,3 +15,11 @@ assert.ok(!permittedModel('https://zalyaloffb-oss.github.io/other/assets/model.g
 assert.ok(!permittedModel('assets/../../private/model.glb'));
 assert.ok(!permittedModel('javascript:alert(1)'));
 console.log('PASS: 10 subdirectory, short-link and trusted-model URL checks.');
+
+const parent=normalizeProject({id:'trest',title:'Трест',viewerPath:'/pervyy-trest',modelUrl:'assets/main.glb',furniture:[{id:'kashpo',title:'Кашпо',modelUrl:'assets/kashpo.glb'}]});
+const furniture=projectModel(parent,'kashpo');
+assert.equal(furniture.modelUrl,assetUrl('assets/kashpo.glb'));
+assert.equal(viewerLink(furniture),'https://zalyaloffb-oss.github.io/forma-project-portal/pervyy-trest/?item=kashpo');
+assert.equal(projectModel(parent,null).modelUrl,assetUrl('assets/main.glb'));
+assert.throws(()=>projectModel(parent,'unknown'));
+console.log('PASS: furniture selection, direct sharing, parent model preservation and missing item guard.');

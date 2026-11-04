@@ -1,10 +1,15 @@
 import {SITE_ROOT} from './site-config.js';
 export function viewerLink(project) {
- if(typeof project?.viewerPath==='string'&&/^\/[a-z0-9][a-z0-9-]{0,79}$/.test(project.viewerPath))return new URL(project.viewerPath.slice(1)+'/',SITE_ROOT).href;
+ if(typeof project?.viewerPath==='string'&&/^\/[a-z0-9][a-z0-9-]{0,79}$/.test(project.viewerPath)){
+  const url=new URL(project.viewerPath.slice(1)+'/',SITE_ROOT);
+  if(project.itemId)url.searchParams.set('item',project.itemId);
+  return url.href;
+ }
  const url=new URL('viewer.html',SITE_ROOT);
  url.search='';url.hash='';
  if(project?.id)url.searchParams.set('project',project.id);
  else if(project?.modelUrl)url.searchParams.set('model',project.modelUrl);
+ if(project?.itemId)url.searchParams.set('item',project.itemId);
  return url.href;
 }
 

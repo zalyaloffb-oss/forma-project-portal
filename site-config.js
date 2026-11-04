@@ -11,7 +11,14 @@ export function normalizeProject(project){
  const p={...project};
  for(const key of ['modelUrl','coverUrl','designUrl','assemblyUrl','autoAssemblyUrl','f3dUrl','sourceFileUrl'])p[key]=assetUrl(p[key]);
  p.attachments=(p.attachments||[]).map(a=>({...a,url:assetUrl(a.url)}));
+ p.furniture=(p.furniture||[]).map(item=>normalizeProject(item));
  return p;
+}
+export function projectModel(project,itemId){
+ if(!itemId)return project;
+ const item=project?.furniture?.find(item=>item.id===itemId);
+ if(!item)throw Error('Предмет мебели не найден');
+ return {...item,id:project.id,viewerPath:project.viewerPath,itemId:item.id,title:project.title+' · '+item.title};
 }
 export async function loadCatalogue(){
  const r=await fetch(CATALOG_URL,{cache:'no-store'});if(!r.ok)throw Error('Не удалось загрузить каталог GitHub');

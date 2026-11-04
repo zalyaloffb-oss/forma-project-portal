@@ -20,7 +20,21 @@
       "designUrl": "assets/pervyy-trest/design-9feeaa3180b6.pdf",
       "assemblyUrl": "assets/pervyy-trest/assembly-781d08436956.pdf",
       "fusionDataFileId": "urn:adsk.wipprod:dm.lineage:856_OcfxRJmwHtcnLyj_Cw",
-      "updatedAt": "2026-11-03T23:10:01.607575+00:00"
+      "updatedAt": "2026-11-03T23:10:01.607575+00:00",
+      "furniture": [
+        {
+          "id": "kashpo",
+          "title": "Кашпо",
+          "model": "fusion",
+          "fusionDataFileId": "urn:adsk.wipprod:dm.lineage:nOLejFsmRqm3Ap_jqjuYeA",
+          "fusionVersion": "17",
+          "bodyCount": 27,
+          "updatedAt": "2026-11-04T20:32:44.183750+00:00",
+          "f3dUrl": "assets/pervyy-trest/f3d-11a1882211a4.f3d",
+          "modelUrl": "assets/pervyy-trest/model-e6e9b17839a2.glb",
+          "coverUrl": "assets/pervyy-trest/cover-56cccefd3774.png"
+        }
+      ]
     },
     {
       "id": "fusion-809b7076045ef2f4710511fc90035e8b27a4116a8904dc34b782443d56f762ba",

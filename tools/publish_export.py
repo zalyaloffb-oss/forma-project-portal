@@ -57,7 +57,14 @@ def git(*args):
 
 def publish(meta,files,report=lambda *args:None,push=True):
     if push and git('status','--porcelain'):raise RuntimeError('Сначала завершите текущие изменения репозитория; публикация остановлена.')
-    data=read_catalog();project=match_project(data['projects'],meta);action='updated' if project else 'created'
+    data=read_catalog()
+    furniture=[(p,item) for p in data['projects'] for item in p.get('furniture',[]) if meta.get('dataFileId') and item.get('fusionDataFileId')==meta['dataFileId']]
+    if len(furniture)>1:raise ValueError('Ambiguous furniture source identity')
+    if furniture:
+        parent,project=furniture[0]
+        action='updated'
+    else:
+        parent=None;project=match_project(data['projects'],meta);action='updated' if project else 'created'
     if project is None:
         source=meta.get('dataFileId') or meta.get('projectKey') or meta['title']
         pid=meta.get('projectId') or ('fusion-' if meta.get('dataFileId') else 'max-')+hashlib.sha256(source.encode()).hexdigest()
@@ -66,19 +73,22 @@ def publish(meta,files,report=lambda *args:None,push=True):
         project={'id':pid,'title':meta['title'],'customer':'Не указан','event':'','manager':'','date':datetime.date.today().isoformat(),'status':'Не указан','source':'','viewerPath':'/'+slug,'attachments':[],'published':True}
         data['projects'].insert(0,project)
     report(7,'Подготовка файлов для GitHub…')
-    project['title']=meta['title'];project['model']='fusion' if meta.get('dataFileId') else project.get('model','max')
+    if parent is None:project['title']=meta['title']
+    project['model']='fusion' if meta.get('dataFileId') else project.get('model','max')
     if meta.get('dataFileId'):project['fusionDataFileId']=meta['dataFileId'];project['fusionVersion']=str(meta.get('version',''))
     for kind,source in files.items():
         if kind not in ['model','cover','f3d','source','assembly']:raise ValueError('Unexpected file type')
-        path=write_asset(project,kind,source);project[{'source':'sourceFileUrl'}.get(kind,kind+'Url')]=path
+        path=write_asset(parent or project,kind,source);project[{'source':'sourceFileUrl'}.get(kind,kind+'Url')]=path
     project['updatedAt']=datetime.datetime.now(datetime.timezone.utc).isoformat();save_catalog(data)
+    route=parent or project
     if push:
         report(11,'Публикация каталога в GitHub…')
-        git('add','--','data/catalog.json','assets',project['viewerPath'].strip('/'))
+        git('add','--','data/catalog.json','assets',route['viewerPath'].strip('/'))
         if git('diff','--cached','--name-only'):
             git('commit','-m','Update catalogue model: '+project['title']);git('push','origin','main')
-    return {'ok':True,'action':action,'projectId':project['id'],'version':str(meta.get('version','')),'assetId':hashlib.sha256(Path(files['model']).read_bytes()).hexdigest()[:24],
-            'url':SITE+project['viewerPath'].strip('/')+'/','viewerUrl':SITE+project['viewerPath'].strip('/')+'/','deployment':'GitHub Pages build pending' if push else 'local'}
+    url=SITE+route['viewerPath'].strip('/')+'/'+('?item='+urllib.parse.quote(project['id']) if parent else '')
+    return {'ok':True,'action':action,'projectId':route['id'],'version':str(meta.get('version','')),'assetId':hashlib.sha256(Path(files['model']).read_bytes()).hexdigest()[:24],
+            'url':url,'viewerUrl':url,'deployment':'GitHub Pages build pending' if push else 'local'}
 
 if __name__=='__main__':
     parser=argparse.ArgumentParser();parser.add_argument('--manifest',required=True);parser.add_argument('--local-only',action='store_true');args=parser.parse_args()

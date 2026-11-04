@@ -10,16 +10,17 @@ def main():
         assert re.fullmatch('/[a-z0-9][a-z0-9-]{0,79}',p['viewerPath'])
         assert p['viewerPath'] not in slugs;slugs.add(p['viewerPath'])
         assert (ROOT/p['viewerPath'].strip('/')/'index.html').is_file()
-        for key in ['modelUrl','coverUrl','designUrl','assemblyUrl','f3dUrl','sourceFileUrl','autoAssemblyUrl']:
-            url=p.get(key)
-            if not url:continue
-            assert url.startswith('assets/') and '..' not in url
-            file=ROOT/url;assert file.is_file(),file
-            checked+=1;assert file.stat().st_size<100*1024*1024
-        model=(ROOT/p['modelUrl']).read_bytes()
-        assert model[:4]==b'glTF' and struct.unpack_from('<I',model,8)[0]==len(model)
-        g=json.loads(model[20:20+struct.unpack_from('<I',model,12)[0]])
-        for r in g.get('buffers',[])+g.get('images',[]):assert not r.get('uri') or r['uri'].startswith('data:')
+        for entry in [p,*p.get('furniture',[])]:
+            for key in ['modelUrl','coverUrl','designUrl','assemblyUrl','f3dUrl','sourceFileUrl','autoAssemblyUrl']:
+                url=entry.get(key)
+                if not url:continue
+                assert url.startswith('assets/') and '..' not in url
+                file=ROOT/url;assert file.is_file(),file
+                checked+=1;assert file.stat().st_size<100*1024*1024
+            model=(ROOT/entry['modelUrl']).read_bytes()
+            assert model[:4]==b'glTF' and struct.unpack_from('<I',model,8)[0]==len(model)
+            g=json.loads(model[20:20+struct.unpack_from('<I',model,12)[0]])
+            for r in g.get('buffers',[])+g.get('images',[]):assert not r.get('uri') or r['uri'].startswith('data:')
     for name in ['viewer-pro.js','app.js','site-config.js','viewer-share.js']:
         text=(ROOT/name).read_text(encoding='utf-8');assert 'zalyaltn.beget.tech' not in text
         assert '/api/catalog/' not in text and '/api/fusion/' not in text

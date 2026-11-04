@@ -1,4 +1,4 @@
-import {loadCatalogue,permittedModel} from './site-config.js';
+import {loadCatalogue,permittedModel,projectModel} from './site-config.js';
 import * as THREE from 'three';
 import {partDxf,dxfFilename} from './part-dxf.js?v=2';
 import {measurementMarkerRadius} from './measurement-markers.js?v=1';
@@ -90,7 +90,7 @@ try{
  let requested=params.get('model'),projectTitle='';
  if(projectId){
   if(!/^[\w-]{1,100}$/.test(projectId))throw Error('Недопустимый проект');
-  const data=await loadCatalogue(),project=data.projects.find(p=>p.id===projectId);
+  const data=await loadCatalogue(),project=projectModel(data.projects.find(p=>p.id===projectId),params.get('item'));
   if(!project?.modelUrl)throw Error('3D-модель проекта не найдена');
   requested=project.modelUrl;projectTitle=project.title;shareProject=project;
  }
