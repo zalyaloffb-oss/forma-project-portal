@@ -11,7 +11,7 @@ def main():
         assert p['viewerPath'] not in slugs;slugs.add(p['viewerPath'])
         assert (ROOT/p['viewerPath'].strip('/')/'index.html').is_file()
         for entry in [p,*p.get('furniture',[])]:
-            for key in ['modelUrl','coverUrl','designUrl','assemblyUrl','f3dUrl','sourceFileUrl','autoAssemblyUrl']:
+            for key in ['modelUrl','coverUrl','designUrl','assemblyUrl','f3dUrl','sourceFileUrl','autoAssemblyUrl','dxfUrl']:
                 url=entry.get(key)
                 if not url:continue
                 assert url.startswith('assets/') and '..' not in url

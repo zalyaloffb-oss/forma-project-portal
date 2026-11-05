@@ -16,9 +16,12 @@ assert.ok(!permittedModel('assets/../../private/model.glb'));
 assert.ok(!permittedModel('javascript:alert(1)'));
 console.log('PASS: 10 subdirectory, short-link and trusted-model URL checks.');
 
-const parent=normalizeProject({id:'trest',title:'Трест',viewerPath:'/pervyy-trest',modelUrl:'assets/main.glb',furniture:[{id:'kashpo',title:'Кашпо',modelUrl:'assets/kashpo.glb'}]});
+const parent=normalizeProject({id:'trest',title:'Трест',viewerPath:'/pervyy-trest',modelUrl:'assets/main.glb',furniture:[{id:'kashpo',title:'Кашпо',modelUrl:'assets/kashpo.glb',dxfUrl:'assets/cut.zip',assemblyUrl:'assets/install.pdf'}]});
 const furniture=projectModel(parent,'kashpo');
 assert.equal(furniture.modelUrl,assetUrl('assets/kashpo.glb'));
+assert.equal(furniture.dxfUrl,assetUrl('assets/cut.zip'));
+assert.equal(furniture.assemblyUrl,assetUrl('assets/install.pdf'));
+assert.throws(()=>normalizeProject({dxfUrl:'https://evil.org/cut.zip'}));
 assert.equal(viewerLink(furniture),'https://zalyaloffb-oss.github.io/forma-project-portal/pervyy-trest/kashpo/');
 assert.equal(projectModel(parent,null).modelUrl,assetUrl('assets/main.glb'));
 assert.throws(()=>projectModel(parent,'unknown'));

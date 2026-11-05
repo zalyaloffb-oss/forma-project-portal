@@ -33,6 +33,21 @@
           "f3dUrl": "assets/pervyy-trest/f3d-11a1882211a4.f3d",
           "modelUrl": "assets/pervyy-trest/model-e6e9b17839a2.glb",
           "coverUrl": "assets/pervyy-trest/cover-56cccefd3774.png"
+        },
+        {
+          "id": "kashpo-2",
+          "title": "Кашпо — вариант 2",
+          "model": "fusion",
+          "fusionDataFileId": "urn:adsk.wipprod:dm.lineage:w6Rm7-2BQ9icgzo8P2SP9w",
+          "fusionVersion": "5",
+          "bodyCount": 23,
+          "updatedAt": "2026-11-05T05:57:16.827291+00:00",
+          "modelUrl": "assets/pervyy-trest/model-657b6c0ad7d8.glb",
+          "coverUrl": "assets/pervyy-trest/cover-d861288f2a4b.png",
+          "f3dUrl": "assets/pervyy-trest/f3d-ac5eee68aa18.f3d",
+          "assemblyUrl": "assets/pervyy-trest/assembly-1089d702eca4.pdf",
+          "dxfUrl": "assets/pervyy-trest/dxf-9b463ba8bf50.zip",
+          "fabricationNote": "Догбоны на уступах А-2 и А-5 добавлены в DXF; модель Fusion v5 их не содержит. Выборки А-4 показаны справочным слоем."
         }
       ]
     },
