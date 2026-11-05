@@ -30,6 +30,7 @@ function modelMetadata(object,key){for(let current=object;current;current=curren
 const params=new URLSearchParams(location.search),projectId=window.FORMA_PROJECT?.id||params.get('project');
 let shareProject=window.FORMA_PROJECT||(projectId?{id:projectId}:{modelUrl:params.get('model')});
 const shareButton=document.createElement('button');shareButton.id='share-model';shareButton.textContent='Поделиться 3D';shareButton.title='Скопировать ссылку на просмотрщик этого проекта';$('.topline > div').prepend(shareButton);
+for(const button of document.querySelectorAll('.selection-modes button'))document.querySelector('.toolbar').append(button);
 const closeButton=document.createElement('button');closeButton.id='viewer-close';closeButton.title='Выйти в каталог';closeButton.setAttribute('aria-label','Выйти в каталог');closeButton.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>';$('.topline > div').append(closeButton);closeButton.onclick=()=>{window.location.href=new URL('./',document.baseURI).href;};
 shareButton.onclick=async()=>{const url=viewerLink(shareProject);if(await copyViewerLink(url)){shareButton.textContent='Ссылка скопирована';setTimeout(()=>shareButton.textContent='Поделиться 3D',2500);}};
 try{
