@@ -83,10 +83,9 @@ $('#batch-form').onsubmit=async e=>{e.preventDefault();const files=[...$('#batch
 function openModelViewer(project=selected){
  const modal=document.createElement('dialog');modal.className='model-dialog';modal.setAttribute('aria-label','3D-модель с инструментами');
  const viewerUrl=viewerLink(project);
- modal.innerHTML='<button class="model-dialog-close" aria-label="Закрыть 3D-модель">× Закрыть</button><iframe src="'+esc(viewerUrl)+'" title="3D-модель с инструментами" allow="fullscreen" allowfullscreen></iframe>';
- document.body.append(modal);modal.querySelector('button').onclick=()=>modal.close();modal.addEventListener('close',()=>modal.remove(),{once:true});modal.showModal();
- const share=document.createElement('button');share.className='quiet';share.textContent='Скопировать ссылку на 3D';share.style.cssText='position:absolute;top:6px;left:12px;padding:8px 14px';
- share.onclick=async()=>{if(await copyViewerLink(viewerLink(project)))toast('Ссылка на 3D-просмотрщик скопирована');};modal.prepend(share);
+ modal.innerHTML='<iframe src="'+esc(viewerUrl)+'" title="3D-модель с инструментами" allow="fullscreen" allowfullscreen></iframe>';
+ const frame=modal.querySelector('iframe');const onMessage=event=>{if(event.origin===location.origin&&event.source===frame.contentWindow&&event.data?.type==='forma-close-viewer')modal.close();};
+ window.addEventListener('message',onMessage);document.body.append(modal);modal.addEventListener('close',()=>{window.removeEventListener('message',onMessage);modal.remove();},{once:true});modal.showModal();
 }
 
 $('#batch-target').onchange=()=>{const isNew=$('#batch-target').value==='new';$('#batch-name-label').hidden=!isNew;$('#batch-name').required=isNew;};

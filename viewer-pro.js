@@ -29,10 +29,16 @@ const stage=$('#stage'),loading=$('#loading');
 function modelMetadata(object,key){for(let current=object;current;current=current.parent){if(current.userData?.[key])return current.userData[key];}return null;}
 const params=new URLSearchParams(location.search),projectId=window.FORMA_PROJECT?.id||params.get('project');
 let shareProject=window.FORMA_PROJECT||(projectId?{id:projectId}:{modelUrl:params.get('model')});
-const shareButton=document.createElement('button');shareButton.id='share-model';shareButton.textContent='Поделиться 3D';shareButton.title='Скопировать ссылку на просмотрщик этого проекта';$('.topline > div').prepend(shareButton);
+const shareButton=document.createElement('button');shareButton.id='share-model';shareButton.title='Скопировать ссылку на просмотрщик этого проекта';shareButton.setAttribute('aria-label',shareButton.title);shareButton.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7 .5l3-3a5 5 0 0 0-7-7l-1.7 1.7M14 11a5 5 0 0 0-7-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg>';$('.topline > div').prepend(shareButton);
 for(const button of document.querySelectorAll('.selection-modes button'))document.querySelector('.toolbar').append(button);
-const closeButton=document.createElement('button');closeButton.id='viewer-close';closeButton.title='Выйти в каталог';closeButton.setAttribute('aria-label','Выйти в каталог');closeButton.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>';$('.topline > div').append(closeButton);closeButton.onclick=()=>{window.location.href=new URL('./',document.baseURI).href;};
-shareButton.onclick=async()=>{const url=viewerLink(shareProject);if(await copyViewerLink(url)){shareButton.textContent='Ссылка скопирована';setTimeout(()=>shareButton.textContent='Поделиться 3D',2500);}};
+const closeButton=document.createElement('button');closeButton.id='viewer-close';closeButton.title='Выйти в каталог';closeButton.setAttribute('aria-label','Выйти в каталог');closeButton.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>';$('.topline > div').append(closeButton);closeButton.onclick=()=>{if(window.parent!==window)window.parent.postMessage({type:'forma-close-viewer'},location.origin);else window.location.href=new URL('./',document.baseURI).href;};
+shareButton.onclick=async()=>{const url=viewerLink(shareProject);if(await copyViewerLink(url)){$('#status').textContent='Ссылка скопирована';}};
+const navigationMenu=document.createElement('div');navigationMenu.className='navigation-menu';navigationMenu.hidden=true;navigationMenu.setAttribute('aria-label','Управление видом');document.body.append(navigationMenu);
+const navigationButton=document.createElement('button');navigationButton.id='navigation-menu-toggle';navigationButton.setAttribute('aria-expanded','false');iconButton(navigationButton,'pan','Управление видом');const panButton=$('[data-mode="pan"]');panButton.before(navigationButton);
+for(const selector of ['[data-mode="pan"]','[data-mode="zoom"]','#fit','#home'])navigationMenu.append($(selector));
+function closeNavigation(){navigationMenu.hidden=true;navigationButton.setAttribute('aria-expanded','false');}
+navigationButton.onclick=()=>{if(!navigationMenu.hidden){closeNavigation();return;}const rect=navigationButton.getBoundingClientRect();navigationMenu.style.left=Math.max(8,Math.min(innerWidth-58,rect.left))+'px';navigationMenu.style.bottom=(innerHeight-rect.top+8)+'px';navigationMenu.hidden=false;navigationButton.setAttribute('aria-expanded','true');};
+navigationMenu.addEventListener('click',e=>{if(e.target.closest('button'))closeNavigation();});document.addEventListener('pointerdown',e=>{if(!navigationMenu.contains(e.target)&&!navigationButton.contains(e.target))closeNavigation();});document.addEventListener('keydown',e=>{if(e.key==='Escape')closeNavigation();});
 try{
  renderer=new THREE.WebGLRenderer({antialias:false,logarithmicDepthBuffer:true,preserveDrawingBuffer:true});renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.setClearColor(0xffffff);renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=.85;renderer.localClippingEnabled=true;
  let darkBackground=false;
@@ -269,6 +275,7 @@ try{
  }
  // Desktop object inspector follows the picked surface in body-local coordinates.
  const selectionCard=$('#selection'),desktopSelection=matchMedia('(min-width:769px)');
+ const dismissSelection=document.createElement('button');dismissSelection.className='selection-close';dismissSelection.setAttribute('aria-label','Закрыть карточку детали');dismissSelection.title='Закрыть карточку';dismissSelection.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>';selectionCard.prepend(dismissSelection);dismissSelection.onclick=()=>select([]);
  const actionTip=document.createElement('div');actionTip.id='selection-action-tip';actionTip.role='tooltip';actionTip.hidden=true;stage.append(actionTip);
  let tippedButton=null;
  function hideActionTip(){if(tippedButton)tippedButton.removeAttribute('aria-describedby');tippedButton=null;actionTip.hidden=true;}
