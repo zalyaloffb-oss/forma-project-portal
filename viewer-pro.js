@@ -9,7 +9,7 @@ import {createJoints} from './viewer-joints.js?v=1';
 import {createHistory} from './viewer-history.js?v=1';
 import {addPartNumbers} from './part-numbers.js?v=github-v183';
 import {viewerLink,copyViewerLink} from './viewer-share.js?v=furniture-2';
-import {iconButton} from './viewer-icons.js?v=part-dxf-1';
+import {iconButton} from './viewer-icons.js?v=lucide-20261105';
 import {planarFace,sectionGeometry} from './geometry-tools.js';
 import {edgeMeasurement,planeMeasurement,stitchEdges} from './measure-geometry.js';
 import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
@@ -30,6 +30,7 @@ function modelMetadata(object,key){for(let current=object;current;current=curren
 const params=new URLSearchParams(location.search),projectId=window.FORMA_PROJECT?.id||params.get('project');
 let shareProject=window.FORMA_PROJECT||(projectId?{id:projectId}:{modelUrl:params.get('model')});
 const shareButton=document.createElement('button');shareButton.id='share-model';shareButton.textContent='Поделиться 3D';shareButton.title='Скопировать ссылку на просмотрщик этого проекта';$('.topline > div').prepend(shareButton);
+const closeButton=document.createElement('button');closeButton.id='viewer-close';closeButton.title='Выйти в каталог';closeButton.setAttribute('aria-label','Выйти в каталог');closeButton.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>';$('.topline > div').append(closeButton);closeButton.onclick=()=>{window.location.href=new URL('./',document.baseURI).href;};
 shareButton.onclick=async()=>{const url=viewerLink(shareProject);if(await copyViewerLink(url)){shareButton.textContent='Ссылка скопирована';setTimeout(()=>shareButton.textContent='Поделиться 3D',2500);}};
 try{
  renderer=new THREE.WebGLRenderer({antialias:false,logarithmicDepthBuffer:true,preserveDrawingBuffer:true});renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.setClearColor(0xffffff);renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=.85;renderer.localClippingEnabled=true;

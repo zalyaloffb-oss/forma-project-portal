@@ -1,4 +1,5 @@
-// Crisp vector controls: Fusion-style navigation, without font-dependent glyphs.
+// Lucide provides consistent line icons; custom CAD-specific controls remain available.
+import {lucideIcons} from './viewer-lucide.js?v=1';
 const paths={
  download:'M12 3v12M7 10l5 5 5-5M4 16v5h16v-5',
  tree:'M4 5h5v4H4zM15 15h5v4h-5zM15 5h5v4h-5zM9 7h6M11 7v10h4',
@@ -24,7 +25,7 @@ const paths={
  clear:'M5 5l14 14M19 5L5 19'
 };
 export function iconButton(button,name,label){
- button.innerHTML=`<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="${paths[name]}"/></svg>`;
+ button.innerHTML=`<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">${lucideIcons[name] || `<path d="${paths[name]}"/>`}</svg>`;
  button.classList.add('icon-button');button.setAttribute('aria-label',label);button.title=label;
 }
 const controls={
