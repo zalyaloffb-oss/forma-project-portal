@@ -163,6 +163,19 @@ try{
  let selectionAnchor=null;const selectionCenter=new THREE.Vector3();
  let selected=[],mode='orbit',sectionOn=false,explode=0,points=[],measureObjects=[],measurementCenter=null;
  const dxfButton=document.createElement('button');dxfButton.id='export-part-dxf';$('.selection-actions').append(dxfButton);
+ const selectionSectionButton=document.createElement('button');
+ selectionSectionButton.id='section-from-selection';
+ $('.selection-actions').append(selectionSectionButton);
+ selectionSectionButton.onclick=()=>{
+  if(!selectionAnchor||selected.length!==1||!Number.isInteger(selectionAnchor.faceIndex))return;
+  const mesh=items[selectionAnchor.id].mesh;
+  mesh.updateWorldMatrix(true,false);
+  const surface=planarFace(mesh,selectionAnchor.faceIndex);
+  if(surface?.area>0){
+   startFaceSection(0,surface);
+   select([]);
+  }
+ };
  function exportPart(item,chosenFace=null){
   const dialog=document.createElement('dialog');dialog.className='dxf-dialog';
   const title=document.createElement('h2');title.textContent='Экспорт детали в DXF';
@@ -263,9 +276,9 @@ try{
   const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(geometry.vertices,3));faceOverlay=new THREE.Mesh(g,new THREE.MeshBasicMaterial({color:0x008dff,transparent:true,opacity:.38,side:THREE.DoubleSide,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-1,polygonOffsetUnits:-2}));scene.add(faceOverlay);syncFaceSectionPreview();status('Сдвиньте ползунок для сечения от грани.');
  }
  function rebuildCaps(){capsDirty=false;while(caps.children.length){const c=caps.children[0];caps.remove(c);c.traverse(o=>{o.geometry?.dispose();if(o.material&&o.material!==cutOutlineMaterial)o.material.dispose();});}if(!sectionOn){stage.dataset.sectionCaps='0';return;}scene.updateMatrixWorld(true);for(const item of items){if(!item.visible)continue;const g=sectionGeometry(item.mesh,plane);if(!g)continue;const cap=new THREE.Mesh(g,cutMaterial(item.id));cap.renderOrder=2;const boundary=new THREE.EdgesGeometry(g,1),outline=new LineSegments2(new LineSegmentsGeometry().fromEdgesGeometry(boundary),cutOutlineMaterial);boundary.dispose();outline.renderOrder=3;cap.add(outline);caps.add(cap);}stage.dataset.sectionCaps=String(caps.children.length);}
- function startFaceSection(offset){
-  if(!face)return;
-  customSection={normal:face.normal.clone(),point:face.point.clone()};
+ function startFaceSection(offset,surface=face){
+  if(!surface)return;
+  customSection={normal:surface.normal.clone(),point:surface.point.clone()};
   $('#section-axis').value='face';
   $('#section-flip').checked=true;
   $('#section-offset').value=String(offset);
@@ -294,12 +307,13 @@ try{
  function status(text){$('#status').textContent=text;}
  function updateSelectionBox(){if(selectionBox){scene.remove(selectionBox);selectionBox.geometry.dispose();selectionBox.material.dispose();selectionBox=null;}}
  function select(ids,hit=null){
-  if(hit){const item=items[hit.object.userData.itemId];selectionAnchor={id:item.id,point:item.mesh.worldToLocal(hit.point.clone())};}
+  if(hit){const item=items[hit.object.userData.itemId];selectionAnchor={id:item.id,faceIndex:hit.faceIndex,point:item.mesh.worldToLocal(hit.point.clone())};}
   else if(!selectionAnchor||!ids.includes(selectionAnchor.id))selectionAnchor=null;
   for(const id of selected){const item=items[id];item.materials.forEach((m,j)=>{if(m.emissive&&item.emissive[j])m.emissive.copy(item.emissive[j]);if(m.color&&item.colors[j])m.color.copy(item.colors[j]);});}
   selected=ids;for(const id of selected){const item=items[id];item.materials.forEach((m,j)=>{if(m.color&&item.colors[j])m.color.copy(item.colors[j]).multiplyScalar(.70);if(m.emissive&&item.emissive[j])m.emissive.copy(item.emissive[j]).multiplyScalar(.70);});}
   $('#selection').hidden=!ids.length;
   dxfButton.disabled=ids.length!==1;
+  selectionSectionButton.disabled=ids.length!==1||!Number.isInteger(selectionAnchor?.faceIndex);
   if(ids.length){const first=items[ids[0]],b=new THREE.Box3();ids.forEach(id=>b.union(new THREE.Box3().setFromObject(items[id].mesh)));b.getCenter(selectionCenter);const d=b.getSize(new THREE.Vector3()).multiplyScalar(mmPerUnit);$('#selected-title').textContent=ids.length===1?first.name:`Выбрано тел: ${ids.length}`;$('#selected-path').textContent=first.path.split('+').join(' / ');$('#selected-size').textContent=`Габариты X × Y × Z: ${d.toArray().map(v=>v.toLocaleString('ru-RU',{maximumFractionDigits:1})).join(' × ')} мм`;status('F — приблизить · H — скрыть · I — изолировать · Esc — снять выделение');}
   updateSelectionBox();syncTree();
  }
@@ -316,7 +330,7 @@ try{
   let y=a.bottom-r.top+8;if(y+h>r.height-8)y=a.top-r.top-h-8;
   actionTip.style.left=x+'px';actionTip.style.top=Math.max(8,y)+'px';
  }
- for(const [id,icon,label] of [['fit-selected','fit','Приблизить'],['move-selected','move','Переместить'],['hide','eye','Скрыть'],['isolate','face','Изолировать'],['export-part-dxf','download','Скачать выбранную деталь в DXF']]){
+ for(const [id,icon,label] of [['fit-selected','fit','Приблизить'],['move-selected','move','Переместить'],['hide','eye','Скрыть'],['isolate','face','Изолировать'],['export-part-dxf','download','Скачать выбранную деталь в DXF'],['section-from-selection','section','Сечение от грани']]){
   const button=$('#'+id);iconButton(button,icon,label);button.removeAttribute('title');
   if(id==='hide'){const slash=document.createElementNS('http://www.w3.org/2000/svg','path');slash.setAttribute('d','M3 3l18 18');button.querySelector('svg').append(slash);}
   function show(){tippedButton=button;actionTip.textContent=label;actionTip.hidden=false;button.setAttribute('aria-describedby',actionTip.id);placeActionTip();}

@@ -79,7 +79,7 @@ html:fullscreen #tree-panel{position:relative;left:auto;top:auto;bottom:auto;z-i
 .selection-actions .icon-button svg{width:22px;height:22px}
 #selection-action-tip{position:absolute;z-index:30;pointer-events:none;width:max-content;max-width:calc(100% - 16px);padding:7px 10px;border:1px solid #ffffff25;border-radius:5px;background:#20262bf5;color:#f5f7fa;font-size:12px;line-height:1.4;box-shadow:0 3px 12px #0004}
 @media(min-width:769px){
- #selection.floating{width:280px;max-width:calc(100% - 24px);padding:14px;background:rgba(31,37,43,.9);color:#f4f6f8;border-color:#ffffff24;border-radius:9px;box-shadow:0 8px 28px #0004;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+ #selection.floating{width:302px;max-width:calc(100% - 24px);padding:14px;background:rgba(31,37,43,.9);color:#f4f6f8;border-color:#ffffff24;border-radius:9px;box-shadow:0 8px 28px #0004;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
  #selection.floating strong{font-size:13px;line-height:1.35;margin-bottom:7px}
  #selection.floating small{color:#c4cdd3;font-size:11px}
  #selection.floating #selected-path{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden;margin-bottom:5px}
