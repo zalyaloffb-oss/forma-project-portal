@@ -15,7 +15,8 @@ export function planarFace(mesh,faceIndex){
  });
  const visited=new Set(),queue=[faceIndex];while(queue.length){const i=queue.pop();if(visited.has(i)||!candidates.has(i))continue;visited.add(i);const keys=candidates.get(i);for(let j=0;j<3;j++)for(const n of adj.get([keys[j],keys[(j+1)%3]].sort().join('|')))if(!visited.has(n))queue.push(n);}
  const vertices=[...visited].flatMap(i=>ts[i].flatMap(v=>v.toArray()));
- return {normal,point:origin.clone(),vertices,area:[...visited].reduce((a,i)=>a+new THREE.Triangle(...ts[i]).getArea(),0)};
+ const surfaceId=[...visited].reduce((min,index)=>Math.min(min,index),faceIndex);
+ return {surfaceId,normal,point:origin.clone(),vertices,area:[...visited].reduce((a,i)=>a+new THREE.Triangle(...ts[i]).getArea(),0)};
 }
 export function sectionGeometry(mesh,plane){
  const eps=1e-5,segments=[];

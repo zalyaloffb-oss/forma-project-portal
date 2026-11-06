@@ -1,6 +1,6 @@
 import {loadCatalogue,permittedModel,projectModel} from './site-config.js?v=furniture-2';
 import * as THREE from 'three';
-import {partDxf,dxfFilename} from './part-dxf.js?v=2';
+import {partDxf,dxfFilename,flatContours} from './part-dxf.js?v=3';
 import {measurementMarkerRadius} from './measurement-markers.js?v=1';
 import {createComponentHover} from './component-hover.js?v=1';
 import {createViewCube} from './viewer-cube.js?v=2';
@@ -10,7 +10,7 @@ import {createHistory} from './viewer-history.js?v=1';
 import {addPartNumbers} from './part-numbers.js?v=github-v183';
 import {viewerLink,copyViewerLink} from './viewer-share.js?v=furniture-2';
 import {iconButton} from './viewer-icons.js?v=lucide-20261105';
-import {planarFace,sectionGeometry} from './geometry-tools.js';
+import {planarFace,sectionGeometry} from './geometry-tools.js?v=sheet-layout-1';
 import {edgeMeasurement,planeMeasurement,stitchEdges} from './measure-geometry.js';
 import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
@@ -176,6 +176,36 @@ try{
    select([]);
   }
  };
+ const addToSheetButton=document.createElement('button');
+ addToSheetButton.id='add-face-to-sheet';
+ $('.selection-actions').append(addToSheetButton);
+ const sheetButton=document.createElement('button');
+ iconButton(sheetButton,'tree','Раскладка на листе');
+ $('.toolbar').append(sheetButton);
+ let sheetLayoutPromise;
+ function sheetLayout(){
+  sheetLayoutPromise??=import('./sheet-layout.js?v=1')
+   .then(({createSheetLayout})=>createSheetLayout(projectTitle||'Модель'))
+   .catch(error=>{sheetLayoutPromise=null;throw error;});
+  return sheetLayoutPromise;
+ }
+ sheetButton.onclick=async()=>{
+  try{(await sheetLayout()).open();}
+  catch(error){alert(error.message);}
+ };
+ addToSheetButton.onclick=async()=>{
+  if(selected.length!==1||!Number.isInteger(selectionAnchor?.faceIndex))return;
+  const {id,faceIndex}=selectionAnchor,item=items[id];
+  try{
+   item.mesh.updateWorldMatrix(true,false);
+   const surface=planarFace(item.mesh,faceIndex);
+   if(!surface?.area)throw Error('Выберите плоскую грань детали.');
+   const loops=flatContours(item.mesh,mmPerUnit,surface.vertices);
+   const layout=await sheetLayout();
+   layout.add(id+':'+surface.surfaceId,item.name,loops);
+   layout.open();
+  }catch(error){alert(error.message);}
+ };
  function exportPart(item,chosenFace=null){
   const dialog=document.createElement('dialog');dialog.className='dxf-dialog';
   const title=document.createElement('h2');title.textContent='Экспорт детали в DXF';
@@ -314,6 +344,7 @@ try{
   $('#selection').hidden=!ids.length;
   dxfButton.disabled=ids.length!==1;
   selectionSectionButton.disabled=ids.length!==1||!Number.isInteger(selectionAnchor?.faceIndex);
+  addToSheetButton.disabled=selectionSectionButton.disabled;
   if(ids.length){const first=items[ids[0]],b=new THREE.Box3();ids.forEach(id=>b.union(new THREE.Box3().setFromObject(items[id].mesh)));b.getCenter(selectionCenter);const d=b.getSize(new THREE.Vector3()).multiplyScalar(mmPerUnit);$('#selected-title').textContent=ids.length===1?first.name:`Выбрано тел: ${ids.length}`;$('#selected-path').textContent=first.path.split('+').join(' / ');$('#selected-size').textContent=`Габариты X × Y × Z: ${d.toArray().map(v=>v.toLocaleString('ru-RU',{maximumFractionDigits:1})).join(' × ')} мм`;status('F — приблизить · H — скрыть · I — изолировать · Esc — снять выделение');}
   updateSelectionBox();syncTree();
  }
@@ -330,7 +361,7 @@ try{
   let y=a.bottom-r.top+8;if(y+h>r.height-8)y=a.top-r.top-h-8;
   actionTip.style.left=x+'px';actionTip.style.top=Math.max(8,y)+'px';
  }
- for(const [id,icon,label] of [['fit-selected','fit','Приблизить'],['move-selected','move','Переместить'],['hide','eye','Скрыть'],['isolate','face','Изолировать'],['export-part-dxf','download','Скачать выбранную деталь в DXF'],['section-from-selection','section','Сечение от грани']]){
+ for(const [id,icon,label] of [['fit-selected','fit','Приблизить'],['move-selected','move','Переместить'],['hide','eye','Скрыть'],['isolate','face','Изолировать'],['export-part-dxf','download','Скачать выбранную деталь в DXF'],['section-from-selection','section','Сечение от грани'],['add-face-to-sheet','tree','Добавить выбранную грань на лист']]){
   const button=$('#'+id);iconButton(button,icon,label);button.removeAttribute('title');
   if(id==='hide'){const slash=document.createElementNS('http://www.w3.org/2000/svg','path');slash.setAttribute('d','M3 3l18 18');button.querySelector('svg').append(slash);}
   function show(){tippedButton=button;actionTip.textContent=label;actionTip.hidden=false;button.setAttribute('aria-describedby',actionTip.id);placeActionTip();}

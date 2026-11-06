@@ -79,7 +79,7 @@ html:fullscreen #tree-panel{position:relative;left:auto;top:auto;bottom:auto;z-i
 .selection-actions .icon-button svg{width:22px;height:22px}
 #selection-action-tip{position:absolute;z-index:30;pointer-events:none;width:max-content;max-width:calc(100% - 16px);padding:7px 10px;border:1px solid #ffffff25;border-radius:5px;background:#20262bf5;color:#f5f7fa;font-size:12px;line-height:1.4;box-shadow:0 3px 12px #0004}
 @media(min-width:769px){
- #selection.floating{width:302px;max-width:calc(100% - 24px);padding:14px;background:rgba(31,37,43,.9);color:#f4f6f8;border-color:#ffffff24;border-radius:9px;box-shadow:0 8px 28px #0004;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+ #selection.floating{width:348px;max-width:calc(100% - 24px);padding:14px;background:rgba(31,37,43,.9);color:#f4f6f8;border-color:#ffffff24;border-radius:9px;box-shadow:0 8px 28px #0004;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
  #selection.floating strong{font-size:13px;line-height:1.35;margin-bottom:7px}
  #selection.floating small{color:#c4cdd3;font-size:11px}
  #selection.floating #selected-path{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden;margin-bottom:5px}
@@ -126,3 +126,11 @@ body{background:#fff}.statusbar{background:#fff}.toolbar{background:rgba(38,44,5
 
 .slider-panels #section-panel.face-preview select,
 .slider-panels #section-panel.face-preview label{display:none}
+
+.sheet-layout{width:720px}
+.sheet-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 14px}
+.sheet-fields input{display:block;width:100%;margin-top:4px;padding:7px}
+.sheet-preview{display:block;width:100%;height:clamp(130px,32dvh,340px);background:#eef2ee}
+.sheet-parts{list-style:none;padding:0;max-height:160px;overflow:auto}
+.sheet-parts li{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:5px 0}
+.sheet-parts button{flex:none}

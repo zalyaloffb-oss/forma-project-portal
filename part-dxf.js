@@ -14,10 +14,24 @@ function coordinates(mesh,mmPerUnit){
  }
  if(!result.length)fail('У детали нет поверхности.');return result;
 }
-function document(entities){
+function document(entities,layers=['PART']){
+ const layerRecords=layers.flatMap((layer,index)=>[
+  '0','LAYER','5',(index+3).toString(16),'330','2','100','AcDbSymbolTableRecord',
+  '100','AcDbLayerTableRecord','2',layer,'70','0','62','7','6','CONTINUOUS'
+ ]);
  return ['0','SECTION','2','HEADER','9','$ACADVER','1','AC1015','9','$INSUNITS','70','4','9','$MEASUREMENT','70','1','0','ENDSEC',
-  '0','SECTION','2','TABLES','0','TABLE','2','LAYER','5','2','330','0','100','AcDbSymbolTable','70','1','0','LAYER','5','3','330','2','100','AcDbSymbolTableRecord','100','AcDbLayerTableRecord','2','PART','70','0','62','7','6','CONTINUOUS','0','ENDTAB','0','ENDSEC',
-  '0','SECTION','2','ENTITIES',...entities,'0','ENDSEC','0','EOF',''].join('\r\n');
+  '0','SECTION','2','TABLES','0','TABLE','2','LAYER','5','2','330','0','100','AcDbSymbolTable','70',String(layers.length),...layerRecords,'0','ENDTAB','0','ENDSEC',
+  '0','SECTION','2','ENTITIES',...entities,'0','ENDSEC','0','EOF'].join('\r\n');
+}
+function appendPolyline(entities,loop,layer){
+ entities.push('0','LWPOLYLINE','100','AcDbEntity','8',layer,'100','AcDbPolyline','90',String(loop.length),'70','1');
+ for(const [x,y] of loop)entities.push('10',number(x),'20',number(y));
+}
+export function sheetDxf(width,height,loops){
+ const entities=[];
+ appendPolyline(entities,[[0,0],[width,0],[width,height],[0,height]],'FRAME_NO_CUT');
+ for(const loop of loops)appendPolyline(entities,loop,'CUT');
+ return document(entities,['CUT','FRAME_NO_CUT']);
 }
 // Choose the largest coplanar surface, rather than an arbitrary large triangle.
 export function flatContours(mesh,mmPerUnit,faceVertices=null){
@@ -64,7 +78,7 @@ export function flatContours(mesh,mmPerUnit,faceVertices=null){
 export function partDxf(mesh,mmPerUnit,{mode='flat',faceVertices=null,cadEdges=null}={}){
  if(mode==='flat'){
   const loops=flatContours(mesh,mmPerUnit,faceVertices),entities=[];
-  for(const loop of loops){entities.push('0','LWPOLYLINE','100','AcDbEntity','8','PART','100','AcDbPolyline','90',String(loop.length),'70','1');for(const [x,y] of loop)entities.push('10',number(x),'20',number(y));}
+  for(const loop of loops)appendPolyline(entities,loop,'PART');
   return {text:document(entities),contours:loops.length,kind:'Контур 2D'};
  }
  if(mode!=='edges')fail('Неизвестный режим DXF.');
