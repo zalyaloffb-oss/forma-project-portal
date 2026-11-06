@@ -375,7 +375,7 @@ try{
  window.addEventListener('resize',()=>{if(treePanel.hidden||!treePanel.style.left)return;const p=clampTree(parseFloat(treePanel.style.left)||0,parseFloat(treePanel.style.top)||0);treePanel.style.left=p.x+'px';treePanel.style.top=p.y+'px';});
  let measureKind='points';const rulerEdges=new Map();let rulerFaces=[];
  function disposeMeasureVisuals(){for(const o of measureObjects){scene.remove(o);o.geometry?.dispose();o.material?.dispose();}measureObjects=[];measurementCenter=null;$('#measure-label').hidden=true;}
- function measurePrompt(){return measureKind==='edges'?'Выберите ребро. Ctrl + щелчок — добавить или убрать; две раздельные группы — расстояние.':measureKind==='planes'?'Выберите первую плоскость, затем вторую. Расстояние измеряется по перпендикуляру.':'Укажите две точки на поверхности модели';}
+ function measurePrompt(){if(measureKind==='section')return 'Укажите две точки на срезе модели';return measureKind==='edges'?'Выберите ребро. Ctrl + щелчок — добавить или убрать; две раздельные группы — расстояние.':measureKind==='planes'?'Выберите первую плоскость, затем вторую. Расстояние измеряется по перпендикуляру.':'Укажите две точки на поверхности модели';}
  function clearMeasurement(){disposeMeasureVisuals();points=[];rulerEdges.clear();rulerFaces=[];$('#measure-value').textContent=measurePrompt();stage.dataset.measureSelection='0';delete stage.dataset.measureValue;}
  function measureStroke(ends,color=0x008dff){const line=new LineSegments2(new LineSegmentsGeometry().setPositions(ends.flatMap(p=>p.toArray())),new LineMaterial({color,linewidth:3,worldUnits:false,depthTest:false,depthWrite:false,transparent:true,opacity:.9}));line.renderOrder=20;scene.add(line);measureObjects.push(line);return line;}
  function measureResult(text,anchor,value=null){measurementCenter=anchor.clone();$('#measure-label').textContent=text;$('#measure-label').hidden=false;$('#measure-value').textContent=text;if(value!==null)stage.dataset.measureValue=String(value);else delete stage.dataset.measureValue;invalidate();}
@@ -413,7 +413,7 @@ try{
  function toolMenu(button,choices,onChoose,isAvailable=()=>true){const menu=document.createElement('div');menu.className='tool-choice-menu';menu.hidden=true;menu.setAttribute('role','group');document.body.append(menu);for(const [value,label] of choices){const choice=document.createElement('button');choice.type='button';choice.dataset.choice=value;choice.textContent=label;choice.onclick=()=>{menu.hidden=true;button.setAttribute('aria-expanded','false');onChoose(value);};menu.append(choice);}button.setAttribute('aria-expanded','false');button.onclick=()=>{const open=menu.hidden;document.querySelectorAll('.tool-choice-menu').forEach(m=>m.hidden=true);closeNavigation();menu.hidden=!open;button.setAttribute('aria-expanded',String(open));if(open){for(const choice of menu.children)choice.hidden=!isAvailable(choice.dataset.choice);const r=button.getBoundingClientRect();menu.style.left=Math.max(8,Math.min(innerWidth-190,r.left))+'px';menu.style.bottom=(innerHeight-r.top+8)+'px';}};document.addEventListener('pointerdown',e=>{if(!menu.contains(e.target)&&!button.contains(e.target)){menu.hidden=true;button.setAttribute('aria-expanded','false');}});document.addEventListener('keydown',e=>{if(e.key==='Escape'){menu.hidden=true;button.setAttribute('aria-expanded','false');}});}
  let snapToVertices=true;
  toolMenu($('[data-mode="measure"]'),[
-  ['planes','По плоскостям'],['points','По точкам'],['edges','По рёбрам'],
+  ['planes','По плоскостям'],['points','По точкам'],['edges','По рёбрам'],['section','По сечению'],
   ['snap','Привязка к вершинам'],['clear','Очистить измерение'],['off','Завершить измерение']
  ],value=>{
   if(value==='snap'){
@@ -423,14 +423,28 @@ try{
   }
   if(value==='clear'){clearMeasurement();return;}
   if(value==='off'){setMode('orbit');return;}
+  if(value==='section'&&!sectionOn){
+   $('#section-toggle').click();
+   return;
+  }
   measureKind=value;
   clearMeasurement();
   setMode('measure');
  });
+ function pickSectionPoint(event){
+  if(!sectionOn)return null;
+  if(capsDirty)rebuildCaps();
+  pointerRay(event);
+  const hit=raycaster.intersectObjects(caps.children,false)[0];
+  if(!hit)return null;
+  const surface=pick(event);
+  if(surface&&surface.distance<hit.distance-0.00001)return null;
+  return plane.projectPoint(snapPoint(hit,event,true),new THREE.Vector3());
+ }
  function pick(event){const r=renderer.domElement.getBoundingClientRect();mouse.set((event.clientX-r.left)/r.width*2-1,-(event.clientY-r.top)/r.height*2+1);raycaster.setFromCamera(mouse,camera);return raycaster.intersectObjects(items.filter(i=>i.visible).map(i=>i.mesh),false).find(h=>!sectionOn||plane.distanceToPoint(h.point)>=-.00001);}
- function snapPoint(hit,event){if(!snapToVertices)return hit.point.clone();const rect=renderer.domElement.getBoundingClientRect(),attr=hit.object.geometry.attributes.position;let best=hit.point.clone(),distance=10;for(const index of [hit.face.a,hit.face.b,hit.face.c]){const v=new THREE.Vector3().fromBufferAttribute(attr,index).applyMatrix4(hit.object.matrixWorld);if(sectionOn&&plane.distanceToPoint(v)<0)continue;const p=v.clone().project(camera),px=rect.left+(p.x+1)*rect.width/2,py=rect.top+(1-p.y)*rect.height/2;const d=Math.hypot(px-event.clientX,py-event.clientY);if(d<distance){distance=d;best=v;}}return best;}
- function addPoint(p){if(points.length===2)clearMeasurement();points.push(p);stage.dataset.measureSelection=String(points.length);disposeMeasureVisuals();if(points.length===1){distanceVisual(p,p);measureResult('Точка 1 · выберите вторую',p);return;}distanceVisual(...points);const delta=points[1].clone().sub(points[0]).multiplyScalar(mmPerUnit),distance=delta.length();measureResult('Между точками: '+mm(distance)+` · ΔX ${Math.abs(delta.x).toFixed(1)} · ΔY ${Math.abs(delta.y).toFixed(1)} · ΔZ ${Math.abs(delta.z).toFixed(1)}`,points[0].clone().add(points[1]).multiplyScalar(.5),distance);}
- let pointerDown=null;renderer.domElement.addEventListener('pointerdown',e=>{if(e.button===0)pointerDown={x:e.clientX,y:e.clientY};});renderer.domElement.addEventListener('pointerup',e=>{if(mode==='move'){pointerDown=null;return;}if(e.button!==0||!pointerDown)return;const moved=Math.hypot(e.clientX-pointerDown.x,e.clientY-pointerDown.y);pointerDown=null;if(moved>5)return;if(mode==='edge'){chooseEdge(e);return;}if(mode==='measure'&&measureKind==='edges'){rulerEdge(e);return;}const hit=pick(e);if(mode==='face'){chooseFace(hit);return;}if(mode==='measure'){if(measureKind==='planes')rulerPlane(hit);else if(hit)addPoint(snapPoint(hit,e));}else if(['orbit','pan','zoom'].includes(mode))select(hit?[hit.object.userData.itemId]:[],hit);});renderer.domElement.addEventListener('dblclick',e=>{if(mode==='measure'||mode==='edge'||mode==='face'||mode==='move')return;const hit=pick(e);if(hit){select([hit.object.userData.itemId],hit);fit(null,true);}});
+ function snapPoint(hit,event,onSection=false){if(!snapToVertices)return hit.point.clone();const rect=renderer.domElement.getBoundingClientRect(),attr=hit.object.geometry.attributes.position;let best=hit.point.clone(),distance=10;for(const index of [hit.face.a,hit.face.b,hit.face.c]){const v=new THREE.Vector3().fromBufferAttribute(attr,index).applyMatrix4(hit.object.matrixWorld);if(sectionOn&&!onSection&&plane.distanceToPoint(v)<0)continue;const p=v.clone().project(camera),px=rect.left+(p.x+1)*rect.width/2,py=rect.top+(1-p.y)*rect.height/2;const d=Math.hypot(px-event.clientX,py-event.clientY);if(d<distance){distance=d;best=v;}}return best;}
+ function addPoint(p){if(points.length===2)clearMeasurement();points.push(p);stage.dataset.measureSelection=String(points.length);disposeMeasureVisuals();if(points.length===1){distanceVisual(p,p);measureResult('Точка 1 · выберите вторую',p);return;}distanceVisual(...points);const delta=points[1].clone().sub(points[0]).multiplyScalar(mmPerUnit),distance=delta.length();measureResult((measureKind==='section'?'По сечению: ':'Между точками: ')+mm(distance)+` · ΔX ${Math.abs(delta.x).toFixed(1)} · ΔY ${Math.abs(delta.y).toFixed(1)} · ΔZ ${Math.abs(delta.z).toFixed(1)}`,points[0].clone().add(points[1]).multiplyScalar(.5),distance);}
+ let pointerDown=null;renderer.domElement.addEventListener('pointerdown',e=>{if(e.button===0)pointerDown={x:e.clientX,y:e.clientY};});renderer.domElement.addEventListener('pointerup',e=>{if(mode==='move'){pointerDown=null;return;}if(e.button!==0||!pointerDown)return;const moved=Math.hypot(e.clientX-pointerDown.x,e.clientY-pointerDown.y);pointerDown=null;if(moved>5)return;if(mode==='edge'){chooseEdge(e);return;}if(mode==='measure'&&measureKind==='edges'){rulerEdge(e);return;}if(mode==='measure'&&measureKind==='section'){const point=pickSectionPoint(e);if(point)addPoint(point);return;}const hit=pick(e);if(mode==='face'){chooseFace(hit);return;}if(mode==='measure'){if(measureKind==='planes')rulerPlane(hit);else if(hit)addPoint(snapPoint(hit,e));}else if(['orbit','pan','zoom'].includes(mode))select(hit?[hit.object.userData.itemId]:[],hit);});renderer.domElement.addEventListener('dblclick',e=>{if(mode==='measure'||mode==='edge'||mode==='face'||mode==='move')return;const hit=pick(e);if(hit){select([hit.object.userData.itemId],hit);fit(null,true);}});
  function setFaceOffsetRange(offset){
   const extent=Math.max(1,Math.ceil(modelBox.getSize(new THREE.Vector3()).length()*mmPerUnit));
   faceOffsetRange.min=String(Math.min(-extent,offset));
