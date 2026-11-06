@@ -163,7 +163,6 @@ try{
  let selectionAnchor=null;const selectionCenter=new THREE.Vector3();
  let selected=[],mode='orbit',sectionOn=false,explode=0,points=[],measureObjects=[],measurementCenter=null;
  const dxfButton=document.createElement('button');dxfButton.id='export-part-dxf';$('.selection-actions').append(dxfButton);
- const faceDxfButton=document.createElement('button');faceDxfButton.id='export-face-dxf';faceDxfButton.textContent='Скачать контур DXF';$('#face-selection').append(faceDxfButton);
  function exportPart(item,chosenFace=null){
   const dialog=document.createElement('dialog');dialog.className='dxf-dialog';
   const title=document.createElement('h2');title.textContent='Экспорт детали в DXF';
@@ -186,7 +185,6 @@ try{
   dialog.addEventListener('keydown',e=>e.stopPropagation());dialog.addEventListener('close',()=>dialog.remove(),{once:true});dialog.showModal();
  }
  dxfButton.onclick=()=>{if(selected.length===1)exportPart(items[selected[0]]);};
- faceDxfButton.onclick=()=>{if(face)exportPart(face.item,face);};
  const plane=new THREE.Plane(new THREE.Vector3(1,0,0),0),clipPlanes=[plane];let planeHelper=null,selectionBox=null;
  const raycaster=new THREE.Raycaster(),mouse=new THREE.Vector2();
  const chosenEdges=new Map(),edgeCandidates=[];
@@ -245,9 +243,8 @@ try{
   material.customProgramCacheKey=()=> 'cad-analytic-hatch-v1';return material;
  }
  const sectionPanel=$('#section-panel');
- const mobileSection=matchMedia('(max-width:620px)');
  function syncFaceSectionPreview(){
-  const preview=mobileSection.matches&&!!face&&!sectionOn;
+  const preview=!!face;
   const wasPreview=sectionPanel.classList.contains('face-preview');
   sectionPanel.classList.toggle('face-preview',preview);
   if(preview){
@@ -256,14 +253,14 @@ try{
    faceOffsetRange.hidden=false;
    setFaceOffsetRange(0);
    $('#section-value').textContent='0 мм';
-  }else if(wasPreview&&$('#section-toggle').getAttribute('aria-pressed')!=='true'){
-   sectionPanel.hidden=true;
+  }else if(wasPreview){
+   sectionPanel.hidden=$('#section-toggle').getAttribute('aria-pressed')!=='true';
+   if(!sectionPanel.hidden)section();
   }
  }
- mobileSection.addEventListener('change',syncFaceSectionPreview);
- function clearFace(){if(faceOverlay){faceOverlay.removeFromParent();faceOverlay.geometry.dispose();faceOverlay.material.dispose();faceOverlay=null;}face=null;$('#face-selection').hidden=true;syncFaceSectionPreview();}
- function chooseFace(hit){clearFace();if(!hit)return;const geometry=planarFace(hit.object,hit.faceIndex);if(!geometry)return;const item=items[hit.object.userData.itemId];face={...geometry,item};$('#face-section').disabled=false;select([]);
-  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(geometry.vertices,3));faceOverlay=new THREE.Mesh(g,new THREE.MeshBasicMaterial({color:0x008dff,transparent:true,opacity:.38,side:THREE.DoubleSide,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-1,polygonOffsetUnits:-2}));scene.add(faceOverlay);$('#face-selection').hidden=false;$('#face-name').textContent=item.path.split('+').at(-1)+' / '+item.name;$('#face-area').textContent='Площадь: '+(geometry.area*mmPerUnit*mmPerUnit).toLocaleString('ru-RU',{maximumFractionDigits:1})+' мм²';syncFaceSectionPreview();status('Плоская грань выбрана. Нажмите «Сечение от грани».');
+ function clearFace(){if(faceOverlay){faceOverlay.removeFromParent();faceOverlay.geometry.dispose();faceOverlay.material.dispose();faceOverlay=null;}face=null;syncFaceSectionPreview();}
+ function chooseFace(hit){clearFace();if(!hit)return;const geometry=planarFace(hit.object,hit.faceIndex);if(!geometry)return;const item=items[hit.object.userData.itemId];face={...geometry,item};select([]);
+  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(geometry.vertices,3));faceOverlay=new THREE.Mesh(g,new THREE.MeshBasicMaterial({color:0x008dff,transparent:true,opacity:.38,side:THREE.DoubleSide,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-1,polygonOffsetUnits:-2}));scene.add(faceOverlay);syncFaceSectionPreview();status('Сдвиньте ползунок для сечения от грани.');
  }
  function rebuildCaps(){capsDirty=false;while(caps.children.length){const c=caps.children[0];caps.remove(c);c.traverse(o=>{o.geometry?.dispose();if(o.material&&o.material!==cutOutlineMaterial)o.material.dispose();});}if(!sectionOn){stage.dataset.sectionCaps='0';return;}scene.updateMatrixWorld(true);for(const item of items){if(!item.visible)continue;const g=sectionGeometry(item.mesh,plane);if(!g)continue;const cap=new THREE.Mesh(g,cutMaterial(item.id));cap.renderOrder=2;const boundary=new THREE.EdgesGeometry(g,1),outline=new LineSegments2(new LineSegmentsGeometry().fromEdgesGeometry(boundary),cutOutlineMaterial);boundary.dispose();outline.renderOrder=3;cap.add(outline);caps.add(cap);}stage.dataset.sectionCaps=String(caps.children.length);}
  function startFaceSection(offset){
@@ -275,11 +272,10 @@ try{
   $('#section-toggle').setAttribute('aria-pressed','true');
   sectionOn=true;
   sectionPanel.hidden=false;
+  sectionPanel.classList.remove('face-preview');
   setMode('orbit');
   section();
  }
- $('#face-section').onclick=()=>startFaceSection(0);
- $('#face-clear').onclick=clearFace;
  function pointerRay(e){const r=renderer.domElement.getBoundingClientRect();mouse.set((e.clientX-r.left)/r.width*2-1,1-(e.clientY-r.top)/r.height*2);raycaster.setFromCamera(mouse,camera);}
  renderer.domElement.addEventListener('pointerdown',e=>{if(mode!=='move'||e.button!==0)return;controls.enabled=false;e.stopImmediatePropagation();const hit=pick(e);if(!hit){controls.enabled=true;return;}clearFace();clearEdges();clearMeasurement();const item=items[hit.object.userData.itemId];select([item.id],hit);const dragPlane=new THREE.Plane().setFromNormalAndCoplanarPoint(camera.getWorldDirection(new THREE.Vector3()),hit.point);dragBody={item,plane:dragPlane,start:hit.point.clone(),base:item.mesh.position.clone(),pointer:e.pointerId};renderer.domElement.setPointerCapture(e.pointerId);},true);
  renderer.domElement.addEventListener('pointermove',e=>{if(!dragBody)return;e.stopImmediatePropagation();pointerRay(e);const p=raycaster.ray.intersectPlane(dragBody.plane,new THREE.Vector3());if(!p)return;dragBody.item.mesh.position.copy(dragBody.base).add(p.sub(dragBody.start));dragBody.item.mesh.updateMatrixWorld(true);capsDirty=true;const d=dragBody.item.mesh.position.clone().sub(dragBody.base).length()*mmPerUnit;status('Перемещение тела: '+d.toFixed(1)+' мм · «Вернуть тела» отменяет перемещения');},true);
@@ -414,7 +410,7 @@ try{
  }
  function setMode(value){componentHover.hide();mode=value;controls.enabled=true;if(value!=='face')clearFace();if(value!=='edge')clearEdges();if(value==='edge'||value==='measure')select([]);updateEdgePanel();controls.mouseButtons.LEFT=value==='pan'?THREE.MOUSE.PAN:value==='zoom'?THREE.MOUSE.DOLLY:THREE.MOUSE.ROTATE;for(const b of document.querySelectorAll('[data-mode]'))b.setAttribute('aria-pressed',String(b.dataset.mode===value));if(value!=='measure')clearMeasurement();status(value==='move'?'Зажмите левую кнопку на теле и перетащите его в плоскости экрана':value==='face'?'Щёлкните плоскую грань тела для выбора плоскости сечения':value==='edge'?'Щёлкайте рёбра для добавления к сумме · Повторный щелчок снимает выделение':value==='measure'?measurePrompt():value==='pan'?'Перетаскивайте модель левой кнопкой для перемещения':value==='zoom'?'Перетаскивайте мышь для изменения масштаба':'Щелчок — выделение · Левая кнопка — вращение · Средняя — сдвиг · Колёсико — масштаб');}
  document.querySelectorAll('[data-mode]').forEach(b=>b.onclick=()=>setMode(b.dataset.mode));
- function toolMenu(button,choices,onChoose){const menu=document.createElement('div');menu.className='tool-choice-menu';menu.hidden=true;menu.setAttribute('role','group');document.body.append(menu);for(const [value,label] of choices){const choice=document.createElement('button');choice.type='button';choice.textContent=label;choice.onclick=()=>{menu.hidden=true;button.setAttribute('aria-expanded','false');onChoose(value);};menu.append(choice);}button.setAttribute('aria-expanded','false');button.onclick=()=>{const open=menu.hidden;document.querySelectorAll('.tool-choice-menu').forEach(m=>m.hidden=true);closeNavigation();menu.hidden=!open;button.setAttribute('aria-expanded',String(open));if(open){const r=button.getBoundingClientRect();menu.style.left=Math.max(8,Math.min(innerWidth-190,r.left))+'px';menu.style.bottom=(innerHeight-r.top+8)+'px';}};document.addEventListener('pointerdown',e=>{if(!menu.contains(e.target)&&!button.contains(e.target)){menu.hidden=true;button.setAttribute('aria-expanded','false');}});document.addEventListener('keydown',e=>{if(e.key==='Escape'){menu.hidden=true;button.setAttribute('aria-expanded','false');}});}
+ function toolMenu(button,choices,onChoose,isAvailable=()=>true){const menu=document.createElement('div');menu.className='tool-choice-menu';menu.hidden=true;menu.setAttribute('role','group');document.body.append(menu);for(const [value,label] of choices){const choice=document.createElement('button');choice.type='button';choice.dataset.choice=value;choice.textContent=label;choice.onclick=()=>{menu.hidden=true;button.setAttribute('aria-expanded','false');onChoose(value);};menu.append(choice);}button.setAttribute('aria-expanded','false');button.onclick=()=>{const open=menu.hidden;document.querySelectorAll('.tool-choice-menu').forEach(m=>m.hidden=true);closeNavigation();menu.hidden=!open;button.setAttribute('aria-expanded',String(open));if(open){for(const choice of menu.children)choice.hidden=!isAvailable(choice.dataset.choice);const r=button.getBoundingClientRect();menu.style.left=Math.max(8,Math.min(innerWidth-190,r.left))+'px';menu.style.bottom=(innerHeight-r.top+8)+'px';}};document.addEventListener('pointerdown',e=>{if(!menu.contains(e.target)&&!button.contains(e.target)){menu.hidden=true;button.setAttribute('aria-expanded','false');}});document.addEventListener('keydown',e=>{if(e.key==='Escape'){menu.hidden=true;button.setAttribute('aria-expanded','false');}});}
  let snapToVertices=true;
  toolMenu($('[data-mode="measure"]'),[
   ['planes','По плоскостям'],['points','По точкам'],['edges','По рёбрам'],
@@ -456,7 +452,23 @@ try{
   $('#section-offset').value=String(offset);
   section();
  };
- toolMenu($('#section-toggle'),[['x','Сечение по X'],['y','Сечение по Y'],['z','Сечение по Z'],['face','От плоскости'],['off','Выключить сечение']],value=>{if(value==='face'){setMode('face');$('#face-selection').hidden=false;$('#face-name').textContent='Выберите плоскую грань модели';$('#face-area').textContent='';$('#face-section').disabled=true;status('Выберите плоскую грань, затем нажмите «Сечение от грани».');return;}const on=value!=='off';$('#section-toggle').setAttribute('aria-pressed',String(on));$('#section-panel').hidden=!on;if(on){$('#section-axis').value=value;setMode('orbit');controls.enabled=true;controls.enableRotate=true;$('#help-panel').hidden=true;}section();});
+ toolMenu($('#section-toggle'),[
+  ['x','Сечение по X'],['y','Сечение по Y'],['z','Сечение по Z'],
+  ['face','От плоскости'],['face-start','Сечение от выбранной грани'],
+  ['face-dxf','Скачать контур DXF'],['face-clear','Снять выбор грани'],
+  ['off','Выключить сечение']
+ ],value=>{
+  if(value==='face'){setMode('face');status('Выберите плоскую грань модели.');return;}
+  if(value==='face-start'){startFaceSection(0);return;}
+  if(value==='face-dxf'){if(face)exportPart(face.item,face);return;}
+  if(value==='face-clear'){clearFace();return;}
+  const on=value!=='off';
+  $('#section-toggle').setAttribute('aria-pressed',String(on));
+  $('#section-panel').hidden=!on;
+  if(on){$('#section-axis').value=value;$('#help-panel').hidden=true;}
+  setMode('orbit');
+  section();
+ },value=>!value.startsWith('face-')||!!face);
  const componentCenters=new Map();for(const i of items){const key=i.path;if(!componentCenters.has(key))componentCenters.set(key,new THREE.Box3());componentCenters.get(key).union(i.box);}for(const [key,b] of componentCenters)componentCenters.set(key,b.getCenter(new THREE.Vector3()));
  function explodeModel(){capsDirty=true;clearFace();explode=Number($('#explode-range').value)/100;for(const i of items){const direction=componentCenters.get(i.path).clone().sub(modelBox.getCenter(new THREE.Vector3()));i.mesh.position.copy(i.base).addScaledVector(direction,explode*1.4);}scene.updateMatrixWorld(true);$('#explode-value').textContent=Math.round(explode*100)+'%';updateSelectionBox();clearMeasurement();}
  // Native Fusion hinges control the whole moving component, including fittings and labels.
