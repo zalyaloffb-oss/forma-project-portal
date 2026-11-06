@@ -26,6 +26,11 @@ import {FXAAShader} from 'three/addons/shaders/FXAAShader.js';
 const $=s=>document.querySelector(s),escape=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let renderer,controls,resizeObserver,raf,environment;
 const stage=$('#stage'),loading=$('#loading');
+const sliderPanels=document.createElement('div');sliderPanels.className='slider-panels';sliderPanels.setAttribute('aria-label','Настройки инструментов');document.body.append(sliderPanels);
+for(const selector of ['#section-panel','#explode-panel','#joints-panel'])sliderPanels.append($(selector));
+const faceOffsetRange=document.createElement('input');faceOffsetRange.type='range';faceOffsetRange.id='section-face-range';faceOffsetRange.hidden=true;faceOffsetRange.step='1';faceOffsetRange.setAttribute('aria-label','Смещение сечения от грани, мм');$('#section-position').after(faceOffsetRange);
+function positionSliderPanels(){const toolbar=$('.toolbar').getBoundingClientRect();sliderPanels.style.bottom=Math.max(0,innerHeight-toolbar.top+8)+'px';}
+new ResizeObserver(positionSliderPanels).observe($('.toolbar'));window.addEventListener('resize',positionSliderPanels);positionSliderPanels();
 function modelMetadata(object,key){for(let current=object;current;current=current.parent){if(current.userData?.[key])return current.userData[key];}return null;}
 const params=new URLSearchParams(location.search),projectId=window.FORMA_PROJECT?.id||params.get('project');
 let shareProject=window.FORMA_PROJECT||(projectId?{id:projectId}:{modelUrl:params.get('model')});
@@ -390,12 +395,14 @@ try{
  $('#measure-clear').onclick=clearMeasurement;
  function section(){clearEdges();sectionOn=$('#section-toggle').getAttribute('aria-pressed')==='true';let axis=$('#section-axis').value;const flip=$('#section-flip').checked?-1:1;
  if(axis==='face'&&!customSection){axis='x';$('#section-axis').value='x';status('Сначала выберите грань в режиме «Плоскости».');}
- const fromFace=axis==='face';$('#section-position').hidden=fromFace;$('#section-offset-label').hidden=!fromFace;
+ const fromFace=axis==='face';$('#section-position').hidden=fromFace;faceOffsetRange.hidden=!fromFace;$('#section-offset-label').hidden=!fromFace;
+ if(fromFace){const extent=Math.max(1,Math.ceil(modelBox.getSize(new THREE.Vector3()).length()*mmPerUnit)),offset=Number($('#section-offset').value)||0;faceOffsetRange.min=String(Math.min(-extent,offset));faceOffsetRange.max=String(Math.max(extent,offset));faceOffsetRange.value=String(offset);}
  if(fromFace){const offset=Number($('#section-offset').value)||0;plane.normal.copy(customSection.normal).multiplyScalar(flip);plane.constant=-plane.normal.dot(customSection.point.clone().addScaledVector(customSection.normal,offset/mmPerUnit));$('#section-value').textContent=offset+' мм от грани';}
  else{const index={x:0,y:1,z:2}[axis],value=Number($('#section-position').value)/100;const location=THREE.MathUtils.lerp(modelBox.min.getComponent(index),modelBox.max.getComponent(index),value);plane.normal.set(0,0,0).setComponent(index,flip);plane.constant=-location*flip;$('#section-value').textContent=Math.round(value*100)+'%';}
  materials.forEach(m=>{const next=sectionOn?clipPlanes:null;if(m.clippingPlanes!==next){m.clippingPlanes=next;m.needsUpdate=true;}});const nextClip=sectionOn?clipPlanes:null;if(edgeMaterial.clippingPlanes!==nextClip){edgeMaterial.clippingPlanes=nextClip;edgeMaterial.needsUpdate=true;}capsDirty=true;clearMeasurement();
  }
  $('#section-toggle').onclick=()=>{const on=$('#section-toggle').getAttribute('aria-pressed')!=='true';$('#section-toggle').setAttribute('aria-pressed',String(on));$('#section-panel').hidden=!on;if(on){setMode('orbit');controls.enabled=true;controls.enableRotate=true;$('#help-panel').hidden=true;}section();};['section-axis','section-position','section-flip','section-offset'].forEach(id=>$('#'+id).oninput=section);
+ faceOffsetRange.oninput=()=>{$('#section-offset').value=faceOffsetRange.value;section();};
  toolMenu($('#section-toggle'),[['x','Сечение по X'],['y','Сечение по Y'],['z','Сечение по Z'],['face','От плоскости'],['off','Выключить сечение']],value=>{if(value==='face'){setMode('face');$('#face-selection').hidden=false;$('#face-name').textContent='Выберите плоскую грань модели';$('#face-area').textContent='';$('#face-section').disabled=true;status('Выберите плоскую грань, затем нажмите «Сечение от грани».');return;}const on=value!=='off';$('#section-toggle').setAttribute('aria-pressed',String(on));$('#section-panel').hidden=!on;if(on){$('#section-axis').value=value;setMode('orbit');controls.enabled=true;controls.enableRotate=true;$('#help-panel').hidden=true;}section();});
  const componentCenters=new Map();for(const i of items){const key=i.path;if(!componentCenters.has(key))componentCenters.set(key,new THREE.Box3());componentCenters.get(key).union(i.box);}for(const [key,b] of componentCenters)componentCenters.set(key,b.getCenter(new THREE.Vector3()));
  function explodeModel(){capsDirty=true;clearFace();explode=Number($('#explode-range').value)/100;for(const i of items){const direction=componentCenters.get(i.path).clone().sub(modelBox.getCenter(new THREE.Vector3()));i.mesh.position.copy(i.base).addScaledVector(direction,explode*1.4);}scene.updateMatrixWorld(true);$('#explode-value').textContent=Math.round(explode*100)+'%';updateSelectionBox();clearMeasurement();}
