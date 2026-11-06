@@ -275,7 +275,7 @@ try{
  function chooseFace(hit){clearFace();if(!hit)return;const geometry=planarFace(hit.object,hit.faceIndex);if(!geometry)return;const item=items[hit.object.userData.itemId];face={...geometry,item};select([]);
   const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(geometry.vertices,3));faceOverlay=new THREE.Mesh(g,new THREE.MeshBasicMaterial({color:0x008dff,transparent:true,opacity:.38,side:THREE.DoubleSide,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-1,polygonOffsetUnits:-2}));scene.add(faceOverlay);syncFaceSectionPreview();status('Сдвиньте ползунок для сечения от грани.');
  }
- function rebuildCaps(){capsDirty=false;while(caps.children.length){const c=caps.children[0];caps.remove(c);c.traverse(o=>{o.geometry?.dispose();if(o.material&&o.material!==cutOutlineMaterial)o.material.dispose();});}if(!sectionOn){stage.dataset.sectionCaps='0';return;}scene.updateMatrixWorld(true);for(const item of items){if(!item.visible)continue;const g=sectionGeometry(item.mesh,plane);if(!g)continue;const cap=new THREE.Mesh(g,cutMaterial(item.id));cap.renderOrder=2;const boundary=new THREE.EdgesGeometry(g,1),outline=new LineSegments2(new LineSegmentsGeometry().fromEdgesGeometry(boundary),cutOutlineMaterial);boundary.dispose();outline.renderOrder=3;cap.add(outline);caps.add(cap);}stage.dataset.sectionCaps=String(caps.children.length);}
+ function rebuildCaps(){clearSectionHover();capsDirty=false;while(caps.children.length){const c=caps.children[0];caps.remove(c);c.traverse(o=>{o.geometry?.dispose();if(o.material&&o.material!==cutOutlineMaterial)o.material.dispose();});}if(!sectionOn){stage.dataset.sectionCaps='0';return;}scene.updateMatrixWorld(true);for(const item of items){if(!item.visible)continue;const g=sectionGeometry(item.mesh,plane);if(!g)continue;const cap=new THREE.Mesh(g,cutMaterial(item.id));cap.renderOrder=2;const boundary=new THREE.EdgesGeometry(g,1),outline=new LineSegments2(new LineSegmentsGeometry().fromEdgesGeometry(boundary),cutOutlineMaterial);cap.userData.contour=boundary.getAttribute('position');boundary.dispose();outline.renderOrder=3;cap.add(outline);caps.add(cap);}stage.dataset.sectionCaps=String(caps.children.length);}
  function startFaceSection(offset,surface=face){
   if(!surface)return;
   customSection={normal:surface.normal.clone(),point:surface.point.clone()};
@@ -390,7 +390,7 @@ try{
  let measureKind='points';const rulerEdges=new Map();let rulerFaces=[];
  function disposeMeasureVisuals(){for(const o of measureObjects){scene.remove(o);o.geometry?.dispose();o.material?.dispose();}measureObjects=[];measurementCenter=null;$('#measure-label').hidden=true;}
  function measurePrompt(){if(measureKind==='section')return 'Укажите две точки на срезе модели';return measureKind==='edges'?'Выберите ребро. Ctrl + щелчок — добавить или убрать; две раздельные группы — расстояние.':measureKind==='planes'?'Выберите первую плоскость, затем вторую. Расстояние измеряется по перпендикуляру.':'Укажите две точки на поверхности модели';}
- function clearMeasurement(){disposeMeasureVisuals();points=[];rulerEdges.clear();rulerFaces=[];$('#measure-value').textContent=measurePrompt();stage.dataset.measureSelection='0';delete stage.dataset.measureValue;}
+ function clearMeasurement(){clearSectionHover();disposeMeasureVisuals();points=[];rulerEdges.clear();rulerFaces=[];$('#measure-value').textContent=measurePrompt();stage.dataset.measureSelection='0';delete stage.dataset.measureValue;}
  function measureStroke(ends,color=0x008dff){const line=new LineSegments2(new LineSegmentsGeometry().setPositions(ends.flatMap(p=>p.toArray())),new LineMaterial({color,linewidth:3,worldUnits:false,depthTest:false,depthWrite:false,transparent:true,opacity:.9}));line.renderOrder=20;scene.add(line);measureObjects.push(line);return line;}
  function measureResult(text,anchor,value=null){measurementCenter=anchor.clone();$('#measure-label').textContent=text;$('#measure-label').hidden=false;$('#measure-value').textContent=text;if(value!==null)stage.dataset.measureValue=String(value);else delete stage.dataset.measureValue;invalidate();}
  function distanceVisual(a,b){const separate=a.distanceToSquared(b)>1e-20;if(separate)measureStroke([a,b],0x267aac);for(const p of separate?[a,b]:[a]){const marker=new THREE.Mesh(new THREE.SphereGeometry(1,16,12),new THREE.MeshBasicMaterial({color:0x267aac,depthTest:false,depthWrite:false}));marker.position.copy(p);marker.userData.measurementPoint=true;marker.renderOrder=21;scene.add(marker);measureObjects.push(marker);}}
@@ -445,7 +445,26 @@ try{
   clearMeasurement();
   setMode('measure');
  });
- function pickSectionPoint(event){
+ const emptyHoverGeometry=new THREE.BufferGeometry();
+ const sectionHoverFace=new THREE.Mesh(emptyHoverGeometry,new THREE.MeshBasicMaterial({
+  color:0x267aac,side:THREE.DoubleSide,transparent:true,opacity:.30,depthWrite:false,
+  polygonOffset:true,polygonOffsetFactor:0,polygonOffsetUnits:-2
+ }));
+ const sectionHoverPoint=new THREE.Mesh(new THREE.SphereGeometry(1,16,12),new THREE.MeshBasicMaterial({
+  color:0xffb53e,depthTest:false,depthWrite:false
+ }));
+ sectionHoverFace.renderOrder=4;
+ sectionHoverPoint.renderOrder=22;
+ sectionHoverFace.visible=sectionHoverPoint.visible=false;
+ scene.add(sectionHoverFace,sectionHoverPoint);
+
+ function clearSectionHover(){
+  if(sectionHoverFace.visible||sectionHoverPoint.visible)invalidate();
+  sectionHoverFace.visible=sectionHoverPoint.visible=false;
+  sectionHoverFace.geometry=emptyHoverGeometry;
+ }
+
+ function pickSectionTarget(event){
   if(!sectionOn)return null;
   if(capsDirty)rebuildCaps();
   pointerRay(event);
@@ -453,12 +472,47 @@ try{
   if(!hit)return null;
   const surface=pick(event);
   if(surface&&surface.distance<hit.distance-0.00001)return null;
-  return plane.projectPoint(snapPoint(hit,event,true),new THREE.Vector3());
+
+  const point=plane.projectPoint(hit.point,new THREE.Vector3());
+  let snapped=false;
+  if(snapToVertices){
+   const rect=renderer.domElement.getBoundingClientRect();
+   const contour=hit.object.userData.contour;
+   const vertex=new THREE.Vector3(),screen=new THREE.Vector3();
+   let closest=event.pointerType==='touch'?22:14;
+   for(let index=0;index<contour.count;index++){
+    vertex.fromBufferAttribute(contour,index);
+    screen.copy(vertex).project(camera);
+    if(screen.z<-1||screen.z>1)continue;
+    const dx=rect.left+(screen.x+1)*rect.width/2-event.clientX;
+    const dy=rect.top+(1-screen.y)*rect.height/2-event.clientY;
+    const distance=Math.hypot(dx,dy);
+    if(distance>=closest)continue;
+    closest=distance;
+    plane.projectPoint(vertex,point);
+    snapped=true;
+   }
+  }
+  return {point,cap:hit.object,snapped};
  }
+
+ renderer.domElement.addEventListener('pointermove',event=>{
+  if(event.buttons||mode!=='measure'||measureKind!=='section'){clearSectionHover();return;}
+  const target=pickSectionTarget(event);
+  if(!target){clearSectionHover();return;}
+  sectionHoverFace.geometry=target.cap.geometry;
+  sectionHoverFace.visible=true;
+  sectionHoverPoint.position.copy(target.point);
+  sectionHoverPoint.material.color.setHex(target.snapped?0xffb53e:0x267aac);
+  sectionHoverPoint.visible=true;
+  invalidate();
+ });
+ renderer.domElement.addEventListener('pointerleave',clearSectionHover);
+ renderer.domElement.addEventListener('pointerdown',clearSectionHover);
  function pick(event){const r=renderer.domElement.getBoundingClientRect();mouse.set((event.clientX-r.left)/r.width*2-1,-(event.clientY-r.top)/r.height*2+1);raycaster.setFromCamera(mouse,camera);return raycaster.intersectObjects(items.filter(i=>i.visible).map(i=>i.mesh),false).find(h=>!sectionOn||plane.distanceToPoint(h.point)>=-.00001);}
- function snapPoint(hit,event,onSection=false){if(!snapToVertices)return hit.point.clone();const rect=renderer.domElement.getBoundingClientRect(),attr=hit.object.geometry.attributes.position;let best=hit.point.clone(),distance=10;for(const index of [hit.face.a,hit.face.b,hit.face.c]){const v=new THREE.Vector3().fromBufferAttribute(attr,index).applyMatrix4(hit.object.matrixWorld);if(sectionOn&&!onSection&&plane.distanceToPoint(v)<0)continue;const p=v.clone().project(camera),px=rect.left+(p.x+1)*rect.width/2,py=rect.top+(1-p.y)*rect.height/2;const d=Math.hypot(px-event.clientX,py-event.clientY);if(d<distance){distance=d;best=v;}}return best;}
+ function snapPoint(hit,event){if(!snapToVertices)return hit.point.clone();const rect=renderer.domElement.getBoundingClientRect(),attr=hit.object.geometry.attributes.position;let best=hit.point.clone(),distance=10;for(const index of [hit.face.a,hit.face.b,hit.face.c]){const v=new THREE.Vector3().fromBufferAttribute(attr,index).applyMatrix4(hit.object.matrixWorld);if(sectionOn&&plane.distanceToPoint(v)<0)continue;const p=v.clone().project(camera),px=rect.left+(p.x+1)*rect.width/2,py=rect.top+(1-p.y)*rect.height/2;const d=Math.hypot(px-event.clientX,py-event.clientY);if(d<distance){distance=d;best=v;}}return best;}
  function addPoint(p){if(points.length===2)clearMeasurement();points.push(p);stage.dataset.measureSelection=String(points.length);disposeMeasureVisuals();if(points.length===1){distanceVisual(p,p);measureResult('Точка 1 · выберите вторую',p);return;}distanceVisual(...points);const delta=points[1].clone().sub(points[0]).multiplyScalar(mmPerUnit),distance=delta.length();measureResult((measureKind==='section'?'По сечению: ':'Между точками: ')+mm(distance)+` · ΔX ${Math.abs(delta.x).toFixed(1)} · ΔY ${Math.abs(delta.y).toFixed(1)} · ΔZ ${Math.abs(delta.z).toFixed(1)}`,points[0].clone().add(points[1]).multiplyScalar(.5),distance);}
- let pointerDown=null;renderer.domElement.addEventListener('pointerdown',e=>{if(e.button===0)pointerDown={x:e.clientX,y:e.clientY};});renderer.domElement.addEventListener('pointerup',e=>{if(mode==='move'){pointerDown=null;return;}if(e.button!==0||!pointerDown)return;const moved=Math.hypot(e.clientX-pointerDown.x,e.clientY-pointerDown.y);pointerDown=null;if(moved>5)return;if(mode==='edge'){chooseEdge(e);return;}if(mode==='measure'&&measureKind==='edges'){rulerEdge(e);return;}if(mode==='measure'&&measureKind==='section'){const point=pickSectionPoint(e);if(point)addPoint(point);return;}const hit=pick(e);if(mode==='face'){chooseFace(hit);return;}if(mode==='measure'){if(measureKind==='planes')rulerPlane(hit);else if(hit)addPoint(snapPoint(hit,e));}else if(['orbit','pan','zoom'].includes(mode))select(hit?[hit.object.userData.itemId]:[],hit);});renderer.domElement.addEventListener('dblclick',e=>{if(mode==='measure'||mode==='edge'||mode==='face'||mode==='move')return;const hit=pick(e);if(hit){select([hit.object.userData.itemId],hit);fit(null,true);}});
+ let pointerDown=null;renderer.domElement.addEventListener('pointerdown',e=>{if(e.button===0)pointerDown={x:e.clientX,y:e.clientY};});renderer.domElement.addEventListener('pointerup',e=>{if(mode==='move'){pointerDown=null;return;}if(e.button!==0||!pointerDown)return;const moved=Math.hypot(e.clientX-pointerDown.x,e.clientY-pointerDown.y);pointerDown=null;if(moved>5)return;if(mode==='edge'){chooseEdge(e);return;}if(mode==='measure'&&measureKind==='edges'){rulerEdge(e);return;}if(mode==='measure'&&measureKind==='section'){const target=pickSectionTarget(e);if(target)addPoint(target.point);return;}const hit=pick(e);if(mode==='face'){chooseFace(hit);return;}if(mode==='measure'){if(measureKind==='planes')rulerPlane(hit);else if(hit)addPoint(snapPoint(hit,e));}else if(['orbit','pan','zoom'].includes(mode))select(hit?[hit.object.userData.itemId]:[],hit);});renderer.domElement.addEventListener('dblclick',e=>{if(mode==='measure'||mode==='edge'||mode==='face'||mode==='move')return;const hit=pick(e);if(hit){select([hit.object.userData.itemId],hit);fit(null,true);}});
  function setFaceOffsetRange(offset){
   const extent=Math.max(1,Math.ceil(modelBox.getSize(new THREE.Vector3()).length()*mmPerUnit));
   faceOffsetRange.min=String(Math.min(-extent,offset));
@@ -629,8 +683,8 @@ try{
   else if(!e.ctrlKey&&!e.metaKey&&!e.altKey)recordAction();
  });
  if(items.length>200&&params.get('batch')!=='off')interactionBatch=createInteractionBatch({items,edges,edgeMaterial,scene});
- function tick(){raf=requestAnimationFrame(tick);controls.update();quality();if(interactionBatch&&!interacting&&batchDirty){const began=performance.now();const changed=interactionBatch.refresh();if(changed)interactionBatch.render(()=>renderer.compile(scene,camera));batchDirty=false;stage.dataset.batchBuildMs=(performance.now()-began).toFixed(2);stage.dataset.batchedBodies=String(interactionBatch.stats.bodies);stage.dataset.batchCalls=String(interactionBatch.stats.calls);}contactDepthUniforms.contactClipRange.value.set(camera.near,camera.far);if(capsDirty){rebuildCaps();invalidate();}if(measurementCenter){const p=measurementCenter.clone().project(camera),label=$('#measure-label');label.hidden=p.z>1||p.z< -1;const half=label.offsetWidth/2+12,height=label.offsetHeight+12;label.style.left=THREE.MathUtils.clamp((p.x+1)*stage.clientWidth/2,half,Math.max(half,stage.clientWidth-half))+'px';label.style.top=THREE.MathUtils.clamp((1-p.y)*stage.clientHeight/2-12,height,Math.max(height,stage.clientHeight-12))+'px';}if(renderDirty){camera.updateMatrixWorld(true);for(const marker of measureObjects)if(marker.userData.measurementPoint)marker.scale.setScalar(measurementMarkerRadius(camera,marker.position,stage.clientHeight));stage.dataset.measureMarkerPixels='7';orientationCube.update(camera.quaternion);positionSelectionCard();renderView();}}tick();
- addEventListener('pagehide',()=>{cancelAnimationFrame(raf);componentHover.dispose();orientationCube.dispose();interactionBatch?.dispose();resizeObserver.disconnect();controls.dispose();clearFace();sectionOn=false;rebuildCaps();cutOutlineMaterial.dispose();clearEdges();clearMeasurement();items.forEach(i=>i.mesh.geometry.dispose());edges.forEach(e=>{e.geometry.dispose();e.userData.sourceGeometry.dispose();});materials.forEach(m=>m.dispose());textures.forEach(t=>t.dispose());edgeMaterial.dispose();environment.dispose();composer.dispose();outputPass.dispose();fxaaPass.dispose();renderer.dispose();},{once:true});
+ function tick(){raf=requestAnimationFrame(tick);controls.update();quality();if(interactionBatch&&!interacting&&batchDirty){const began=performance.now();const changed=interactionBatch.refresh();if(changed)interactionBatch.render(()=>renderer.compile(scene,camera));batchDirty=false;stage.dataset.batchBuildMs=(performance.now()-began).toFixed(2);stage.dataset.batchedBodies=String(interactionBatch.stats.bodies);stage.dataset.batchCalls=String(interactionBatch.stats.calls);}contactDepthUniforms.contactClipRange.value.set(camera.near,camera.far);if(capsDirty){rebuildCaps();invalidate();}if(measurementCenter){const p=measurementCenter.clone().project(camera),label=$('#measure-label');label.hidden=p.z>1||p.z< -1;const half=label.offsetWidth/2+12,height=label.offsetHeight+12;label.style.left=THREE.MathUtils.clamp((p.x+1)*stage.clientWidth/2,half,Math.max(half,stage.clientWidth-half))+'px';label.style.top=THREE.MathUtils.clamp((1-p.y)*stage.clientHeight/2-12,height,Math.max(height,stage.clientHeight-12))+'px';}if(renderDirty){camera.updateMatrixWorld(true);for(const marker of measureObjects)if(marker.userData.measurementPoint)marker.scale.setScalar(measurementMarkerRadius(camera,marker.position,stage.clientHeight));if(sectionHoverPoint.visible)sectionHoverPoint.scale.setScalar(measurementMarkerRadius(camera,sectionHoverPoint.position,stage.clientHeight));stage.dataset.measureMarkerPixels='7';orientationCube.update(camera.quaternion);positionSelectionCard();renderView();}}tick();
+ addEventListener('pagehide',()=>{cancelAnimationFrame(raf);componentHover.dispose();orientationCube.dispose();interactionBatch?.dispose();resizeObserver.disconnect();controls.dispose();clearFace();sectionOn=false;rebuildCaps();cutOutlineMaterial.dispose();emptyHoverGeometry.dispose();sectionHoverFace.material.dispose();sectionHoverPoint.geometry.dispose();sectionHoverPoint.material.dispose();clearEdges();clearMeasurement();items.forEach(i=>i.mesh.geometry.dispose());edges.forEach(e=>{e.geometry.dispose();e.userData.sourceGeometry.dispose();});materials.forEach(m=>m.dispose());textures.forEach(t=>t.dispose());edgeMaterial.dispose();environment.dispose();composer.dispose();outputPass.dispose();fxaaPass.dispose();renderer.dispose();},{once:true});
 }catch(error){console.error(error);loading.textContent='Не удалось открыть модель: '+error.message;loading.classList.add('error');}
 $('#full').onclick=async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else await document.documentElement.requestFullscreen();}catch{$('#status').textContent='Откройте просмотрщик в отдельной вкладке для полноэкранного режима.';}};
 document.addEventListener('fullscreenchange',()=>{iconButton($('#full'),'full',document.fullscreenElement?'Свернуть':'На весь экран');});
