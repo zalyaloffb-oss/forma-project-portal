@@ -244,12 +244,41 @@ try{
   };
   material.customProgramCacheKey=()=> 'cad-analytic-hatch-v1';return material;
  }
- function clearFace(){if(faceOverlay){faceOverlay.removeFromParent();faceOverlay.geometry.dispose();faceOverlay.material.dispose();faceOverlay=null;}face=null;$('#face-selection').hidden=true;}
+ const sectionPanel=$('#section-panel');
+ const mobileSection=matchMedia('(max-width:620px)');
+ function syncFaceSectionPreview(){
+  const preview=mobileSection.matches&&!!face&&!sectionOn;
+  const wasPreview=sectionPanel.classList.contains('face-preview');
+  sectionPanel.classList.toggle('face-preview',preview);
+  if(preview){
+   sectionPanel.hidden=false;
+   $('#section-position').hidden=true;
+   faceOffsetRange.hidden=false;
+   setFaceOffsetRange(0);
+   $('#section-value').textContent='0 мм';
+  }else if(wasPreview&&$('#section-toggle').getAttribute('aria-pressed')!=='true'){
+   sectionPanel.hidden=true;
+  }
+ }
+ mobileSection.addEventListener('change',syncFaceSectionPreview);
+ function clearFace(){if(faceOverlay){faceOverlay.removeFromParent();faceOverlay.geometry.dispose();faceOverlay.material.dispose();faceOverlay=null;}face=null;$('#face-selection').hidden=true;syncFaceSectionPreview();}
  function chooseFace(hit){clearFace();if(!hit)return;const geometry=planarFace(hit.object,hit.faceIndex);if(!geometry)return;const item=items[hit.object.userData.itemId];face={...geometry,item};$('#face-section').disabled=false;select([]);
-  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(geometry.vertices,3));faceOverlay=new THREE.Mesh(g,new THREE.MeshBasicMaterial({color:0x008dff,transparent:true,opacity:.38,side:THREE.DoubleSide,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-1,polygonOffsetUnits:-2}));scene.add(faceOverlay);$('#face-selection').hidden=false;$('#face-name').textContent=item.path.split('+').at(-1)+' / '+item.name;$('#face-area').textContent='Площадь: '+(geometry.area*mmPerUnit*mmPerUnit).toLocaleString('ru-RU',{maximumFractionDigits:1})+' мм²';status('Плоская грань выбрана. Нажмите «Сечение от грани».');
+  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(geometry.vertices,3));faceOverlay=new THREE.Mesh(g,new THREE.MeshBasicMaterial({color:0x008dff,transparent:true,opacity:.38,side:THREE.DoubleSide,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-1,polygonOffsetUnits:-2}));scene.add(faceOverlay);$('#face-selection').hidden=false;$('#face-name').textContent=item.path.split('+').at(-1)+' / '+item.name;$('#face-area').textContent='Площадь: '+(geometry.area*mmPerUnit*mmPerUnit).toLocaleString('ru-RU',{maximumFractionDigits:1})+' мм²';syncFaceSectionPreview();status('Плоская грань выбрана. Нажмите «Сечение от грани».');
  }
  function rebuildCaps(){capsDirty=false;while(caps.children.length){const c=caps.children[0];caps.remove(c);c.traverse(o=>{o.geometry?.dispose();if(o.material&&o.material!==cutOutlineMaterial)o.material.dispose();});}if(!sectionOn){stage.dataset.sectionCaps='0';return;}scene.updateMatrixWorld(true);for(const item of items){if(!item.visible)continue;const g=sectionGeometry(item.mesh,plane);if(!g)continue;const cap=new THREE.Mesh(g,cutMaterial(item.id));cap.renderOrder=2;const boundary=new THREE.EdgesGeometry(g,1),outline=new LineSegments2(new LineSegmentsGeometry().fromEdgesGeometry(boundary),cutOutlineMaterial);boundary.dispose();outline.renderOrder=3;cap.add(outline);caps.add(cap);}stage.dataset.sectionCaps=String(caps.children.length);}
- $('#face-section').onclick=()=>{if(!face)return;customSection={normal:face.normal.clone(),point:face.point.clone()};$('#section-axis').value='face';$('#section-flip').checked=true;$('#section-offset').value='0';$('#section-toggle').setAttribute('aria-pressed','true');$('#section-panel').hidden=false;clearFace();setMode('orbit');section();};
+ function startFaceSection(offset){
+  if(!face)return;
+  customSection={normal:face.normal.clone(),point:face.point.clone()};
+  $('#section-axis').value='face';
+  $('#section-flip').checked=true;
+  $('#section-offset').value=String(offset);
+  $('#section-toggle').setAttribute('aria-pressed','true');
+  sectionOn=true;
+  sectionPanel.hidden=false;
+  setMode('orbit');
+  section();
+ }
+ $('#face-section').onclick=()=>startFaceSection(0);
  $('#face-clear').onclick=clearFace;
  function pointerRay(e){const r=renderer.domElement.getBoundingClientRect();mouse.set((e.clientX-r.left)/r.width*2-1,1-(e.clientY-r.top)/r.height*2);raycaster.setFromCamera(mouse,camera);}
  renderer.domElement.addEventListener('pointerdown',e=>{if(mode!=='move'||e.button!==0)return;controls.enabled=false;e.stopImmediatePropagation();const hit=pick(e);if(!hit){controls.enabled=true;return;}clearFace();clearEdges();clearMeasurement();const item=items[hit.object.userData.itemId];select([item.id],hit);const dragPlane=new THREE.Plane().setFromNormalAndCoplanarPoint(camera.getWorldDirection(new THREE.Vector3()),hit.point);dragBody={item,plane:dragPlane,start:hit.point.clone(),base:item.mesh.position.clone(),pointer:e.pointerId};renderer.domElement.setPointerCapture(e.pointerId);},true);
@@ -406,16 +435,27 @@ try{
  function snapPoint(hit,event){if(!snapToVertices)return hit.point.clone();const rect=renderer.domElement.getBoundingClientRect(),attr=hit.object.geometry.attributes.position;let best=hit.point.clone(),distance=10;for(const index of [hit.face.a,hit.face.b,hit.face.c]){const v=new THREE.Vector3().fromBufferAttribute(attr,index).applyMatrix4(hit.object.matrixWorld);if(sectionOn&&plane.distanceToPoint(v)<0)continue;const p=v.clone().project(camera),px=rect.left+(p.x+1)*rect.width/2,py=rect.top+(1-p.y)*rect.height/2;const d=Math.hypot(px-event.clientX,py-event.clientY);if(d<distance){distance=d;best=v;}}return best;}
  function addPoint(p){if(points.length===2)clearMeasurement();points.push(p);stage.dataset.measureSelection=String(points.length);disposeMeasureVisuals();if(points.length===1){distanceVisual(p,p);measureResult('Точка 1 · выберите вторую',p);return;}distanceVisual(...points);const delta=points[1].clone().sub(points[0]).multiplyScalar(mmPerUnit),distance=delta.length();measureResult('Между точками: '+mm(distance)+` · ΔX ${Math.abs(delta.x).toFixed(1)} · ΔY ${Math.abs(delta.y).toFixed(1)} · ΔZ ${Math.abs(delta.z).toFixed(1)}`,points[0].clone().add(points[1]).multiplyScalar(.5),distance);}
  let pointerDown=null;renderer.domElement.addEventListener('pointerdown',e=>{if(e.button===0)pointerDown={x:e.clientX,y:e.clientY};});renderer.domElement.addEventListener('pointerup',e=>{if(mode==='move'){pointerDown=null;return;}if(e.button!==0||!pointerDown)return;const moved=Math.hypot(e.clientX-pointerDown.x,e.clientY-pointerDown.y);pointerDown=null;if(moved>5)return;if(mode==='edge'){chooseEdge(e);return;}if(mode==='measure'&&measureKind==='edges'){rulerEdge(e);return;}const hit=pick(e);if(mode==='face'){chooseFace(hit);return;}if(mode==='measure'){if(measureKind==='planes')rulerPlane(hit);else if(hit)addPoint(snapPoint(hit,e));}else if(['orbit','pan','zoom'].includes(mode))select(hit?[hit.object.userData.itemId]:[],hit);});renderer.domElement.addEventListener('dblclick',e=>{if(mode==='measure'||mode==='edge'||mode==='face'||mode==='move')return;const hit=pick(e);if(hit){select([hit.object.userData.itemId],hit);fit(null,true);}});
+ function setFaceOffsetRange(offset){
+  const extent=Math.max(1,Math.ceil(modelBox.getSize(new THREE.Vector3()).length()*mmPerUnit));
+  faceOffsetRange.min=String(Math.min(-extent,offset));
+  faceOffsetRange.max=String(Math.max(extent,offset));
+  faceOffsetRange.value=String(offset);
+ }
  function section(){clearEdges();sectionOn=$('#section-toggle').getAttribute('aria-pressed')==='true';let axis=$('#section-axis').value;const flip=$('#section-flip').checked?-1:1;
  if(axis==='face'&&!customSection){axis='x';$('#section-axis').value='x';status('Сначала выберите грань в режиме «Плоскости».');}
  const fromFace=axis==='face';$('#section-position').hidden=fromFace;faceOffsetRange.hidden=!fromFace;$('#section-offset-label').hidden=!fromFace;
- if(fromFace){const extent=Math.max(1,Math.ceil(modelBox.getSize(new THREE.Vector3()).length()*mmPerUnit)),offset=Number($('#section-offset').value)||0;faceOffsetRange.min=String(Math.min(-extent,offset));faceOffsetRange.max=String(Math.max(extent,offset));faceOffsetRange.value=String(offset);}
+ if(fromFace)setFaceOffsetRange(Number($('#section-offset').value)||0);
  if(fromFace){const offset=Number($('#section-offset').value)||0;plane.normal.copy(customSection.normal).multiplyScalar(flip);plane.constant=-plane.normal.dot(customSection.point.clone().addScaledVector(customSection.normal,offset/mmPerUnit));$('#section-value').textContent=offset+' мм от грани';}
  else{const index={x:0,y:1,z:2}[axis],value=Number($('#section-position').value)/100;const location=THREE.MathUtils.lerp(modelBox.min.getComponent(index),modelBox.max.getComponent(index),value);plane.normal.set(0,0,0).setComponent(index,flip);plane.constant=-location*flip;$('#section-value').textContent=Math.round(value*100)+'%';}
  materials.forEach(m=>{const next=sectionOn?clipPlanes:null;if(m.clippingPlanes!==next){m.clippingPlanes=next;m.needsUpdate=true;}});const nextClip=sectionOn?clipPlanes:null;if(edgeMaterial.clippingPlanes!==nextClip){edgeMaterial.clippingPlanes=nextClip;edgeMaterial.needsUpdate=true;}capsDirty=true;clearMeasurement();
  }
  $('#section-toggle').onclick=()=>{const on=$('#section-toggle').getAttribute('aria-pressed')!=='true';$('#section-toggle').setAttribute('aria-pressed',String(on));$('#section-panel').hidden=!on;if(on){setMode('orbit');controls.enabled=true;controls.enableRotate=true;$('#help-panel').hidden=true;}section();};['section-axis','section-position','section-flip','section-offset'].forEach(id=>$('#'+id).oninput=section);
- faceOffsetRange.oninput=()=>{$('#section-offset').value=faceOffsetRange.value;section();};
+ faceOffsetRange.oninput=()=>{
+  const offset=Number(faceOffsetRange.value);
+  if(sectionPanel.classList.contains('face-preview')){startFaceSection(offset);return;}
+  $('#section-offset').value=String(offset);
+  section();
+ };
  toolMenu($('#section-toggle'),[['x','Сечение по X'],['y','Сечение по Y'],['z','Сечение по Z'],['face','От плоскости'],['off','Выключить сечение']],value=>{if(value==='face'){setMode('face');$('#face-selection').hidden=false;$('#face-name').textContent='Выберите плоскую грань модели';$('#face-area').textContent='';$('#face-section').disabled=true;status('Выберите плоскую грань, затем нажмите «Сечение от грани».');return;}const on=value!=='off';$('#section-toggle').setAttribute('aria-pressed',String(on));$('#section-panel').hidden=!on;if(on){$('#section-axis').value=value;setMode('orbit');controls.enabled=true;controls.enableRotate=true;$('#help-panel').hidden=true;}section();});
  const componentCenters=new Map();for(const i of items){const key=i.path;if(!componentCenters.has(key))componentCenters.set(key,new THREE.Box3());componentCenters.get(key).union(i.box);}for(const [key,b] of componentCenters)componentCenters.set(key,b.getCenter(new THREE.Vector3()));
  function explodeModel(){capsDirty=true;clearFace();explode=Number($('#explode-range').value)/100;for(const i of items){const direction=componentCenters.get(i.path).clone().sub(modelBox.getCenter(new THREE.Vector3()));i.mesh.position.copy(i.base).addScaledVector(direction,explode*1.4);}scene.updateMatrixWorld(true);$('#explode-value').textContent=Math.round(explode*100)+'%';updateSelectionBox();clearMeasurement();}
