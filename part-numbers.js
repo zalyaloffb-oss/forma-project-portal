@@ -62,7 +62,7 @@ function numberTexture(number){
 export async function addPartNumbers({items,projectId,mmPerUnit,materials,textures,toolbar,invalidate,stage,cacheKey}){
  const knownProject='fusion-e803b1fe3ca3173cff2efdb19a0e8413ecfbd5cb2b1d47e7bd79fccf9b84987b';
  const engelsProject='max-f57ca5ffdbf719fc37fb7510db76a51ac165e5e3b638b9eb7ad467e92c449e86';
- const scopes=projectId===knownProject?['reception','wall','support','ring']:projectId===engelsProject?['engels']:projectId==='fusion-33a9c8dba62e3ca65ecc75221596d8db8c99fb2f54aa3f1ea461dbb80483f617'?['trest']:null;
+ const scopes=projectId==='fpp-2026'?['fpp']:projectId==='fpp-2-2026'?['fpp2']:projectId===knownProject?['reception','wall','support','ring']:projectId===engelsProject?['engels']:projectId==='fusion-33a9c8dba62e3ca65ecc75221596d8db8c99fb2f54aa3f1ea461dbb80483f617'?['trest']:null;
  if(!scopes)return;
  const configs=await Promise.all(scopes.map(async scope=>{
   const response=await fetch(`./${scope}-part-numbers.json?v=${encodeURIComponent(cacheKey||"github-20261104")}`);

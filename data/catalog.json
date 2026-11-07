@@ -10,14 +10,7 @@
       "status": "Не указан",
       "source": "",
       "viewerPath": "/fpp",
-      "attachments": [
-        {
-          "id": "electrical",
-          "name": "ФПП — электросхема.pdf",
-          "kind": "pdf",
-          "url": "assets/fpp/electric-75c352d8c757.pdf"
-        }
-      ],
+      "attachments": [],
       "published": true,
       "model": "fusion",
       "fusionDataFileId": "urn:adsk.wipprod:dm.lineage:4whWBbzETiSb7nrgzPuJzw",
@@ -26,10 +19,11 @@
       "modelUrl": "assets/fpp/model-7032cc3c28a2.glb",
       "coverUrl": "assets/fpp/cover-cbf118207985.png",
       "assemblyUrl": "assets/fpp/assembly-8ffed7d81e30.pdf",
-      "updatedAt": "2026-11-07T14:41:21.446200+00:00",
+      "updatedAt": "2026-11-07T15:10:40.657624+00:00",
       "sourceApp": "Fusion",
       "bodyCount": 640,
-      "designUrl": "assets/fpp/design-48437026b061.pdf"
+      "designUrl": "assets/fpp/design-48437026b061.pdf",
+      "electricalUrl": "assets/fpp/electric-75c352d8c757.pdf"
     },
     {
       "id": "fpp-2-2026",
@@ -41,23 +35,18 @@
       "status": "Не указан",
       "source": "",
       "viewerPath": "/fpp-2",
-      "attachments": [
-        {
-          "id": "electrical",
-          "name": "ФПП 2 — электросхема.pdf",
-          "kind": "pdf",
-          "url": "assets/fpp-2/electric-e995661265e9.pdf"
-        }
-      ],
+      "attachments": [],
       "published": true,
       "model": "fusion",
       "modelUrl": "assets/fpp-2/model-84d91ec00a4b.glb",
       "coverUrl": "assets/fpp-2/cover-78c35d0e03e1.png",
       "f3dUrl": "assets/fpp-2/f3d-0a1471950d10.f3d",
       "assemblyUrl": "assets/fpp-2/assembly-1533d43b5ef6.pdf",
-      "updatedAt": "2026-11-07T14:31:54.309438+00:00",
+      "updatedAt": "2026-11-07T15:10:40.711496+00:00",
       "sourceApp": "Fusion",
-      "designUrl": "assets/fpp-2/design-362f230f44fc.pdf"
+      "designUrl": "assets/fpp-2/design-362f230f44fc.pdf",
+      "electricalUrl": "assets/fpp-2/electric-e995661265e9.pdf",
+      "expoUrl": "assets/fpp-2/expo-14c186f3eb0f.pdf"
     },
     {
       "id": "fusion-33a9c8dba62e3ca65ecc75221596d8db8c99fb2f54aa3f1ea461dbb80483f617",

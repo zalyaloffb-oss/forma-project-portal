@@ -31,7 +31,7 @@ def main():
                 project={'id':draft['id'],'viewerPath':'/'+slug,'published':True,'attachments':[]};catalog['projects'].insert(0,project)
             for key in ['title','customer','event','manager','date','status','source']:
                 if isinstance(draft.get(key),str):project[key]=draft[key]
-            for key in ['design','assembly','cover']:
+            for key in ['design','assembly','expo','electrical','cover']:
                 value=draft.get(key)
                 if isinstance(value,dict) and value.get('$file'):project[key+'Url']=file_path(project,value,key)
             attachments=[]

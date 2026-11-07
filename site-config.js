@@ -9,7 +9,7 @@ export function assetUrl(path){
 }
 export function normalizeProject(project){
  const p={...project};
- for(const key of ['modelUrl','coverUrl','designUrl','assemblyUrl','autoAssemblyUrl','f3dUrl','sourceFileUrl','dxfUrl'])p[key]=assetUrl(p[key]);
+ for(const key of ['modelUrl','coverUrl','designUrl','assemblyUrl','expoUrl','electricalUrl','autoAssemblyUrl','f3dUrl','sourceFileUrl','dxfUrl'])p[key]=assetUrl(p[key]);
  p.attachments=(p.attachments||[]).map(a=>({...a,url:assetUrl(a.url)}));
  p.furniture=(p.furniture||[]).map(item=>normalizeProject(item));
  return p;
