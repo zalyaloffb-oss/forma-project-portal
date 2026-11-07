@@ -1,6 +1,33 @@
 {
   "projects": [
     {
+      "id": "fpp-2-2026",
+      "title": "ФПП 2",
+      "customer": "ФПП",
+      "event": "",
+      "manager": "",
+      "date": "2026-11-07",
+      "status": "Не указан",
+      "source": "",
+      "viewerPath": "/fpp-2",
+      "attachments": [
+        {
+          "id": "electrical",
+          "name": "ФПП 2 — электросхема.pdf",
+          "kind": "pdf",
+          "url": "assets/fpp-2/electric-e995661265e9.pdf"
+        }
+      ],
+      "published": true,
+      "model": "fusion",
+      "modelUrl": "assets/fpp-2/model-84d91ec00a4b.glb",
+      "coverUrl": "assets/fpp-2/cover-78c35d0e03e1.png",
+      "f3dUrl": "assets/fpp-2/f3d-0a1471950d10.f3d",
+      "assemblyUrl": "assets/fpp-2/assembly-1533d43b5ef6.pdf",
+      "updatedAt": "2026-11-07T14:31:54.309438+00:00",
+      "sourceApp": "Fusion"
+    },
+    {
       "id": "fusion-33a9c8dba62e3ca65ecc75221596d8db8c99fb2f54aa3f1ea461dbb80483f617",
       "title": "Первый трест",
       "customer": "Первый трест",
