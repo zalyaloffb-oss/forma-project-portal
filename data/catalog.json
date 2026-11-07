@@ -1,6 +1,36 @@
 {
   "projects": [
     {
+      "id": "fpp-2026",
+      "title": "ФПП",
+      "customer": "ФПП",
+      "event": "",
+      "manager": "",
+      "date": "2026-11-07",
+      "status": "Не указан",
+      "source": "",
+      "viewerPath": "/fpp",
+      "attachments": [
+        {
+          "id": "electrical",
+          "name": "ФПП — электросхема.pdf",
+          "kind": "pdf",
+          "url": "assets/fpp/electric-75c352d8c757.pdf"
+        }
+      ],
+      "published": true,
+      "model": "fusion",
+      "fusionDataFileId": "urn:adsk.wipprod:dm.lineage:4whWBbzETiSb7nrgzPuJzw",
+      "fusionVersion": "1",
+      "f3dUrl": "assets/fpp/f3d-0896fd56f369.f3d",
+      "modelUrl": "assets/fpp/model-7032cc3c28a2.glb",
+      "coverUrl": "assets/fpp/cover-cbf118207985.png",
+      "assemblyUrl": "assets/fpp/assembly-172953c95781.pdf",
+      "updatedAt": "2026-11-07T14:41:21.446200+00:00",
+      "sourceApp": "Fusion",
+      "bodyCount": 640
+    },
+    {
       "id": "fpp-2-2026",
       "title": "ФПП 2",
       "customer": "ФПП",
