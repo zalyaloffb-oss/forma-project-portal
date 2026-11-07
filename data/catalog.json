@@ -39,16 +39,16 @@
       "attachments": [],
       "published": true,
       "model": "fusion",
-      "modelUrl": "assets/fpp-2/model-b2e81a485702.glb",
-      "coverUrl": "assets/fpp-2/cover-f66d16640c5e.png",
-      "f3dUrl": "assets/fpp-2/f3d-ebf2ce322f07.f3d",
-      "assemblyUrl": "assets/fpp-2/assembly-430ec66eeb69.pdf",
-      "updatedAt": "2026-11-07T18:26:20.391552+00:00",
+      "modelUrl": "assets/fpp-2/model-9982c4f25130.glb",
+      "coverUrl": "assets/fpp-2/cover-b834708c2eaa.png",
+      "f3dUrl": "assets/fpp-2/f3d-a75cdd6f8a1c.f3d",
+      "assemblyUrl": "assets/fpp-2/assembly-e2b0ffe7e6ab.pdf",
+      "updatedAt": "2026-11-07T18:34:26.075369+00:00",
       "sourceApp": "Fusion",
       "designUrl": "assets/fpp-2/design-362f230f44fc.pdf",
       "electricalUrl": "assets/fpp-2/electric-16c2a08dd50f.pdf",
       "expoUrl": "assets/fpp-2/expo-14c186f3eb0f.pdf",
-      "bodyCount": 975
+      "bodyCount": 969
     },
     {
       "id": "fusion-33a9c8dba62e3ca65ecc75221596d8db8c99fb2f54aa3f1ea461dbb80483f617",

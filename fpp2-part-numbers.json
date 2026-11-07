@@ -1,6 +1,6 @@
 {
   "projectId": "fpp-2-2026",
-  "source": "Fusion model and assembly PDF, utility wall moved 120 mm",
+  "source": "Fusion model and assembly PDF, DK-12 removed",
   "entries": [
     {
       "path": "МДФ 6мм 2700x1660 - 1шт:1",
@@ -481,42 +481,6 @@
       "body": "Крышка 2",
       "number": "Д11-4",
       "display": "Д11-4"
-    },
-    {
-      "path": "Добор ДК-12 2040x120x120:1",
-      "body": "Панель 1",
-      "number": "Д12-1",
-      "display": "Д12-1"
-    },
-    {
-      "path": "Добор ДК-12 2040x120x120:1",
-      "body": "Панель 2",
-      "number": "Д12-1",
-      "display": "Д12-1"
-    },
-    {
-      "path": "Добор ДК-12 2040x120x120:1",
-      "body": "Торец 1",
-      "number": "Д12-2",
-      "display": "Д12-2"
-    },
-    {
-      "path": "Добор ДК-12 2040x120x120:1",
-      "body": "Торец 2",
-      "number": "Д12-2",
-      "display": "Д12-2"
-    },
-    {
-      "path": "Добор ДК-12 2040x120x120:1",
-      "body": "Крышка 1",
-      "number": "Д12-3",
-      "display": "Д12-3"
-    },
-    {
-      "path": "Добор ДК-12 2040x120x120:1",
-      "body": "Крышка 2",
-      "number": "Д12-3",
-      "display": "Д12-3"
     },
     {
       "path": "Добор ДК-5 2040x130x120:1",
