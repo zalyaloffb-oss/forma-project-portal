@@ -1,6 +1,6 @@
 {
   "projectId": "fpp-2-2026",
-  "source": "Fusion current model 11.11.2026; montage pending",
+  "source": "Fusion current model and assembly PDF: MDF 2700+300",
   "entries": [
     {
       "path": "Добор ДК-1 2000x380x120:1",
@@ -573,18 +573,6 @@
       "display": "Д7-4"
     },
     {
-      "path": "MDF 6mm 3000x1136:1",
-      "body": "MDF 6mm",
-      "number": "МДФ-1",
-      "display": "МДФ-1"
-    },
-    {
-      "path": "MDF 6mm 3000x1880:1",
-      "body": "MDF 6mm",
-      "number": "МДФ-2",
-      "display": "МДФ-2"
-    },
-    {
       "path": "DSP 16 exterior 1:4",
       "body": "DSP 16mm",
       "number": "ЗК-1",
@@ -643,6 +631,30 @@
       "body": "Panel 4",
       "number": "Д4-2",
       "display": "Д4-2"
+    },
+    {
+      "path": "MDF 6mm 2700+300x1136:1",
+      "body": "MDF 6mm",
+      "number": "МДФ-1",
+      "display": "МДФ-1"
+    },
+    {
+      "path": "MDF 6mm 2700+300x1136:1",
+      "body": "MDF 6mm 300x1136",
+      "number": "МДФ-3",
+      "display": "МДФ-3"
+    },
+    {
+      "path": "MDF 6mm 2700+300x1880:1",
+      "body": "MDF 6mm",
+      "number": "МДФ-2",
+      "display": "МДФ-2"
+    },
+    {
+      "path": "MDF 6mm 2700+300x1880:1",
+      "body": "MDF 6mm 300x1880",
+      "number": "МДФ-4",
+      "display": "МДФ-4"
     }
   ]
 }
