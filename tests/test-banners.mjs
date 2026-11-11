@@ -1,0 +1,37 @@
+import fs from 'node:fs';
+import assert from 'node:assert/strict';
+const threeURL=new URL('../vendor/three/build/three.module.js',import.meta.url).href;
+const THREE=await import(threeURL);
+const source=fs.readFileSync(new URL('../banner-geometry.js',import.meta.url),'utf8').replace("from 'three'",`from '${threeURL}'`);
+const {bannerGeometry,rectangleGeometry,isNamedBanner}=await import('data:text/javascript;base64,'+Buffer.from(source).toString('base64'));
+const faceSource=fs.readFileSync(new URL('../geometry-tools.js',import.meta.url),'utf8').replace("from 'three'",`from '${threeURL}'`);
+const {planarFace}=await import('data:text/javascript;base64,'+Buffer.from(faceSource).toString('base64'));
+// A rotated/translated physical face keeps its exact area, upright UVs and dimensions.
+const mesh=new THREE.Mesh(new THREE.PlaneGeometry(2,3));mesh.rotation.y=.7;mesh.position.set(5,2,-4);mesh.updateMatrixWorld(true);
+const surface=planarFace(mesh,0),data=bannerGeometry(surface);
+assert.ok(Math.abs(data.width-2)<1e-5);assert.ok(Math.abs(data.height-3)<1e-5);
+assert.equal(data.geometry.attributes.position.count,6);
+const uv=data.geometry.attributes.uv.array;assert.ok([...uv].every(x=>x>=-1e-6&&x<=1.000001));
+const rectangle=rectangleGeometry(data.frame,7,4,1,2);rectangle.computeBoundingBox();
+const center=rectangle.boundingBox.getCenter(new THREE.Vector3());
+assert.ok(center.distanceTo(data.frame.center.clone().addScaledVector(data.frame.u,1).addScaledVector(data.frame.v,2))<1e-5);
+assert.throws(()=>rectangleGeometry(data.frame,-1,4));
+// Horizontal panels also get finite UVs; a frame or printing-related ancestor is not a banner.
+mesh.rotation.x=-Math.PI/2;mesh.rotation.y=0;mesh.updateMatrixWorld(true);
+assert.ok([...bannerGeometry(planarFace(mesh,0)).geometry.attributes.uv.array].every(Number.isFinite));
+assert.ok(isNamedBanner('Баннер 3000×2000'));assert.ok(isNamedBanner('banner_2'));
+assert.ok(!isNamedBanner('Подрамник баннера'));assert.ok(!isNamedBanner('Каркас баннер'));
+assert.ok(!isNamedBanner('ЛДСП под графику'));assert.ok(!isNamedBanner('Полотно двери'));
+console.log('PASS: banner face dimensions, transformed UVs, rectangle placement and conservative name detection.');
+const catalog=JSON.parse(fs.readFileSync(new URL('../data/catalog.json',import.meta.url)));
+const fpp=catalog.projects.find(p=>p.id==='fpp-2026');
+const layout=JSON.parse(fs.readFileSync(new URL('../'+fpp.bannerLayoutUrl,import.meta.url)));
+assert.equal(layout.modelUrl,fpp.modelUrl);assert.equal(layout.surfaces.length,4);
+const expected=[21.78,9.24,2.04,4.5-.84*2.04];
+layout.surfaces.forEach((record,i)=>{
+ const g=new THREE.BufferGeometry().setAttribute('position',new THREE.Float32BufferAttribute(record.worldVertices,3));
+ const mesh=new THREE.Mesh(g);mesh.updateMatrixWorld(true);const face=planarFace(mesh,0);
+ assert.ok(Math.abs(face.area-expected[i])<1e-5,record.name+' area or door opening changed');
+ assert.equal(face.vertices.length,record.worldVertices.length,'all primitive triangles must be connected');
+});
+console.log('PASS: FPP published starter planes match the current GLB and preserve the 840×2040 door opening.');
