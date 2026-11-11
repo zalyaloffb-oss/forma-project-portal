@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 const threeURL=new URL('../vendor/three/build/three.module.js',import.meta.url).href;
 const THREE=await import(threeURL);
 const source=fs.readFileSync(new URL('../banner-geometry.js',import.meta.url),'utf8').replace("from 'three'",`from '${threeURL}'`);
-const {bannerGeometry,rectangleGeometry,isNamedBanner}=await import('data:text/javascript;base64,'+Buffer.from(source).toString('base64'));
+const {bannerGeometry,rectangleGeometry,isNamedBanner,applyTexturePlacement}=await import('data:text/javascript;base64,'+Buffer.from(source).toString('base64'));
 const faceSource=fs.readFileSync(new URL('../geometry-tools.js',import.meta.url),'utf8').replace("from 'three'",`from '${threeURL}'`);
 const {planarFace}=await import('data:text/javascript;base64,'+Buffer.from(faceSource).toString('base64'));
 // A rotated/translated physical face keeps its exact area, upright UVs and dimensions.
@@ -35,3 +35,14 @@ layout.surfaces.forEach((record,i)=>{
  assert.equal(face.vertices.length,record.worldVertices.length,'all primitive triangles must be connected');
 });
 console.log('PASS: FPP published starter planes match the current GLB and preserve the 840×2040 door opening.');
+const mapped=new THREE.PlaneGeometry(1.5,3);
+applyTexturePlacement(mapped,1500,3000,{width:1500,height:1500,offsetU:0,offsetV:1800});
+const mappedUV=mapped.attributes.uv;
+assert.ok(Math.abs(Math.min(...Array.from({length:mappedUV.count},(_,i)=>mappedUV.getY(i)))+1.2)<1e-5);
+assert.ok(Math.abs(Math.max(...Array.from({length:mappedUV.count},(_,i)=>mappedUV.getY(i)))-.8)<1e-5);
+applyTexturePlacement(mapped,1500,3000,null);
+assert.equal(Math.max(...mapped.attributes.uv.array),1);
+assert.throws(()=>applyTexturePlacement(mapped,1500,3000,{width:0,height:1000}));
+assert.ok(layout.surfaces[0].imageUrl&&layout.surfaces[1].imageUrl&&layout.surfaces[3].imageUrl);
+for(const record of layout.surfaces)if(record.imageUrl)assert.ok(fs.existsSync(new URL('../'+record.imageUrl,import.meta.url)));
+console.log('PASS: physical artwork placement, reset and published texture files.');

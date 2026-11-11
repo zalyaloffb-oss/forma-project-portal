@@ -124,7 +124,7 @@ $('#batch-form').onsubmit=async e=>{e.preventDefault();const files=[...$('#batch
 
 function openModelViewer(project=selected,view=null){
  const modal=document.createElement('dialog');modal.className='model-dialog';modal.setAttribute('aria-label','3D-модель с инструментами');
- const viewerUrl=new URL(viewerLink(project));if(view)viewerUrl.searchParams.set('view',view);
+ const viewerUrl=new URL(viewerLink(project));if(view){viewerUrl.searchParams.set('view',view);viewerUrl.searchParams.set('v','2');}
  modal.innerHTML='<iframe src="'+esc(viewerUrl)+'" title="3D-модель с инструментами" allow="fullscreen" allowfullscreen></iframe>';
  const frame=modal.querySelector('iframe');const onMessage=event=>{if(event.origin===location.origin&&event.source===frame.contentWindow&&event.data?.type==='forma-close-viewer')modal.close();};
  window.addEventListener('message',onMessage);document.body.append(modal);modal.addEventListener('close',()=>{window.removeEventListener('message',onMessage);modal.remove();},{once:true});modal.showModal();

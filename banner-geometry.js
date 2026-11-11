@@ -1,4 +1,18 @@
 import * as THREE from 'three';
+const baseUVs=new WeakMap();
+
+// Place existing artwork at its physical size; clamp-to-edge keeps blank margins blank.
+export function applyTexturePlacement(geometry,width,height,placement){
+ const uv=geometry.attributes.uv;
+ if(!baseUVs.has(geometry))baseUVs.set(geometry,uv.array.slice());
+ const base=baseUVs.get(geometry);uv.array.set(base);
+ if(placement){
+  const {width:tw,height:th,offsetU=0,offsetV=0}=placement;
+  if(![tw,th,offsetU,offsetV].every(Number.isFinite)||tw<=0||th<=0||[tw,th,offsetU,offsetV].some(v=>Math.abs(v)>100000))throw Error('Некорректное размещение текстуры');
+  for(let i=0;i<uv.count;i++)uv.setXY(i,(base[i*2]*width-offsetU)/tw,(base[i*2+1]*height-offsetV)/th);
+ }
+ uv.needsUpdate=true;
+}
 
 // The face is already in world coordinates. Project to a stable, upright UV frame.
 export function bannerGeometry(surface){

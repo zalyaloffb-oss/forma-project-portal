@@ -21,6 +21,15 @@ def main():
             assert model[:4]==b'glTF' and struct.unpack_from('<I',model,8)[0]==len(model)
             g=json.loads(model[20:20+struct.unpack_from('<I',model,12)[0]])
             for r in g.get('buffers',[])+g.get('images',[]):assert not r.get('uri') or r['uri'].startswith('data:')
+            if entry.get('bannerLayoutUrl'):
+                layout=json.loads((ROOT/entry['bannerLayoutUrl']).read_text(encoding='utf-8'))
+                assert layout['modelUrl']==entry['modelUrl'],'Banner layout belongs to an older model'
+                for surface in layout['surfaces']:
+                    url=surface.get('imageUrl')
+                    if url:
+                        assert url.startswith('assets/') and '..' not in url
+                        assert (ROOT/url).is_file()
+                        checked+=1
     for name in ['viewer-pro.js','app.js','site-config.js','viewer-share.js']:
         text=(ROOT/name).read_text(encoding='utf-8');assert 'zalyaltn.beget.tech' not in text
         assert '/api/catalog/' not in text and '/api/fusion/' not in text
