@@ -53,7 +53,9 @@
       "bodyCount": 923,
       "fusionDataFileId": "urn:adsk.wipprod:dm.lineage:Wmx4DYQLSy-LY_qeLkCxnA",
       "fusionVersion": "8",
-      "modelGzipUrl": "assets/fpp-2/model-3f6e9bafee9a.glb.gz"
+      "modelGzipUrl": "assets/fpp-2/model-3f6e9bafee9a.glb.gz",
+      "bannerLayoutUrl": "assets/fpp-2/banners-fc23b0323261.json",
+      "bannerModelUrl": "assets/fpp-2/banner-model-d3d77756e346.glb"
     },
     {
       "id": "fusion-33a9c8dba62e3ca65ecc75221596d8db8c99fb2f54aa3f1ea461dbb80483f617",
