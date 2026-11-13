@@ -26,7 +26,8 @@
       "electricalUrl": "assets/fpp/electrical-43c666ee3e54.pdf",
       "expoUrl": "assets/fpp/expo-52ccf0132f72.pdf",
       "bannerLayoutUrl": "assets/fpp/banners-a24382e55d6e.json",
-      "modelGzipUrl": "assets/fpp/model-934129e0002b.glb.gz"
+      "modelGzipUrl": "assets/fpp/model-934129e0002b.glb.gz",
+      "bannerCoverUrl": "assets/fpp/banner-cover-d76335322dbf.png"
     },
     {
       "id": "fpp-2-2026",
@@ -55,7 +56,8 @@
       "fusionVersion": "8",
       "modelGzipUrl": "assets/fpp-2/model-3f6e9bafee9a.glb.gz",
       "bannerLayoutUrl": "assets/fpp-2/banners-df4698520772.json",
-      "bannerModelUrl": "assets/fpp-2/banner-model-e7e08b69bc7e.glb"
+      "bannerModelUrl": "assets/fpp-2/banner-model-e7e08b69bc7e.glb",
+      "bannerCoverUrl": "assets/fpp-2/banner-cover-706a3691ad92.png"
     },
     {
       "id": "fusion-33a9c8dba62e3ca65ecc75221596d8db8c99fb2f54aa3f1ea461dbb80483f617",

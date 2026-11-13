@@ -27,3 +27,5 @@
 .catalog-brand{margin:14px 0 16px;line-height:0}.catalog-brand img{display:block;width:300px;max-width:100%;height:auto;mix-blend-mode:multiply}@media(max-width:700px){.catalog-brand img{width:260px}}
 
 main>.stats{display:none}
+
+.banner-preview img{transform:scale(1.45)}

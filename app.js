@@ -1,4 +1,4 @@
-import {loadCatalogue,projectModel} from './site-config.js?v=performance-1';
+import {loadCatalogue,projectModel} from './site-config.js?v=banner-preview-1';
 import {openPdf} from './pdf-engine.js?v=lazy-pdf-1';
 import {viewerLink} from './viewer-share.js?v=performance-1';
 const $=s=>document.querySelector(s), esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -30,7 +30,7 @@ async function loadPDF(){
  }
 }
 async function loadTabContent(version){const old=doc;doc=null;if(old)await old.destroy();if(version!==renderVersion)return;if(downloadUrl)URL.revokeObjectURL(downloadUrl);downloadUrl=null;if(tab==='banners'){
- $('#pdf-area').innerHTML=selected.model?`<p class="model-note">Текущая модель стенда: выберите поверхности баннеров, соберите болванку и нанесите текстуры JPG / PNG.</p><button class="model-preview" id="open-banners" aria-label="Открыть Баннеры 3D"><img src="${esc(urls.get(selected.id)||selected.coverUrl||'')}" alt="Модель для схемы баннеров"><span><b>⛶</b>Открыть Баннеры 3D</span></button>`:'<div class="empty-file">Сначала добавьте 3D-модель проекта.</div>';
+ $('#pdf-area').innerHTML=selected.model?`<p class="model-note">Текущая модель стенда: выберите поверхности баннеров, соберите болванку и нанесите текстуры JPG / PNG.</p><button class="model-preview banner-preview" id="open-banners" aria-label="Открыть Баннеры 3D"><img src="${esc(selected.bannerCoverUrl||urls.get(selected.id)||selected.coverUrl||'')}" alt="Превью схемы размещения баннеров"><span><b>⛶</b>Открыть Баннеры 3D</span></button>`:'<div class="empty-file">Сначала добавьте 3D-модель проекта.</div>';
  if($('#open-banners'))$('#open-banners').onclick=()=>openModelViewer(selected,'banners');return;
 }if(tab==='furniture'){
  const items=selected.furniture||[];
