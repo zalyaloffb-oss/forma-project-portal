@@ -23,3 +23,5 @@
 @media(max-width:620px){.pdf-fullscreen-content .pdf-viewer{padding:4px}.pdf-fullscreen-header{padding:6px 10px}.pdf-fullscreen-content .pdf-toolbar{padding:8px}}
 
 .tab-loading{display:flex;align-items:center;gap:10px;margin:-8px 0 14px;color:#50795c;font-size:11px}.tab-loading[hidden]{display:none}.tab-loading-track{display:block;position:relative;flex:1;height:3px;overflow:hidden;background:#e2e8dc;border-radius:3px}.tab-loading-track i{display:block;width:35%;height:100%;background:#50795c;border-radius:3px;animation:tab-loading-slide 1.1s ease-in-out infinite}@keyframes tab-loading-slide{from{transform:translateX(-100%)}to{transform:translateX(390%)}}@media(prefers-reduced-motion:reduce){.tab-loading-track i{animation:none;width:100%;opacity:.55}}
+
+.catalog-brand{margin:14px 0 16px;line-height:0}.catalog-brand img{display:block;width:300px;max-width:100%;height:auto;mix-blend-mode:multiply}@media(max-width:700px){.catalog-brand img{width:260px}}
