@@ -7,7 +7,7 @@ import {viewerLink,copyViewerLink} from './viewer-share.js?v=performance-1';
 import {planarFace} from './geometry-tools.js?v=sheet-layout-1';
 import {bannerGeometry,rectangleGeometry,isNamedBanner,applyTexturePlacement} from './banner-geometry.js?v=texture-placement-1';
 
-const css=document.createElement('link');css.rel='stylesheet';css.href=new URL('./banner-viewer.css?v=mobile-model-2',import.meta.url);document.head.append(css);
+const css=document.createElement('link');css.rel='stylesheet';css.href=new URL('./banner-viewer.css?v=selection-fade-1',import.meta.url);document.head.append(css);
 // This mode has a dedicated workspace, without changing the normal CAD tools.
 document.querySelectorAll('link[rel=stylesheet]').forEach(link=>{if(link!==css)link.remove();});
 document.body.innerHTML=`<main class="banner-app"><header class="banner-header"><div><h1>Баннеры 3D</h1><small id="banner-project">Загрузка проекта…</small></div><div class="banner-actions"><button id="banner-share" aria-label="Скопировать ссылку на Баннеры 3D" title="Скопировать ссылку">Ссылка</button><button id="banner-full" aria-label="На весь экран">⛶</button><button id="banner-close" aria-label="Закрыть Баннеры 3D">✕</button></div></header><div class="banner-workspace"><aside class="banner-sidebar"><h2>Поверхности баннеров</h2><p>Нажмите плоскую поверхность стенда, чтобы добавить её в болванку. Перетаскивание вращает вид.</p><label><input type="checkbox" id="banner-context" checked> Показать конструкцию стенда</label><div id="banner-list" class="banner-list"></div><section id="banner-editor" hidden><label>Название<input type="text" id="banner-name" maxlength="120"></label><p id="banner-size"></p><label><input id="banner-rectangle" type="checkbox"> Прямоугольная болванка</label><div id="banner-dimensions" hidden><label>Ширина, мм<input id="banner-width" type="number" min="1" max="100000" step="1"></label><label>Высота, мм<input id="banner-height" type="number" min="1" max="100000" step="1"></label><label>Сдвиг вправо, мм<input id="banner-offset-u" type="number" min="-100000" max="100000" step="1"></label><label>Сдвиг вверх, мм<input id="banner-offset-v" type="number" min="-100000" max="100000" step="1"></label><button id="banner-apply-size">Применить размеры</button></div><label class="banner-file-label">Текстура JPG / PNG<input id="banner-image" type="file" accept="image/jpeg,image/png,.jpg,.jpeg,.png"></label><label>Поворот текстуры<select id="banner-rotation"><option value="0">0°</option><option value="90">90°</option><option value="180">180°</option><option value="270">270°</option></select></label><label><input id="banner-mirror" type="checkbox"> Отразить по горизонтали</label><div class="banner-controls"><button id="banner-clear-image">Убрать текстуру</button><button id="banner-remove">Удалить поверхность из схемы</button></div></section><p class="banner-warning">Это визуальная болванка для размещения графики. Размеры поверхностей взяты из модели; печатные припуски не добавляются.</p><div class="banner-controls"><button id="banner-published" hidden>Открыть опубликованную схему</button><button id="banner-save" class="primary">Сохранить на устройстве</button><button id="banner-export">Скачать схему с текстурами</button><button id="banner-glb">Скачать болванку GLB</button></div><details><summary>Загрузить сохранённую схему</summary><input id="banner-import" type="file" accept=".json,application/json"><p>Изменения видны только на этом устройстве. Для общего доступа передайте скачанную схему владельцу каталога для публикации.</p></details></aside><section class="banner-view" aria-label="Баннеры 3D"><div class="banner-busy" id="banner-loading" role="status">Загружаем текущую модель…</div><div class="banner-view-tools"><button id="banner-fit">Уместить</button><button id="banner-only">Болванка</button><button id="banner-shot">Снимок</button></div></section></div><footer class="banner-status" id="banner-status" role="status">Подготовка модели…</footer></main>`;
@@ -36,25 +36,38 @@ try{
  const neutral=new THREE.MeshLambertMaterial({color:0xdce1df,side:THREE.DoubleSide,polygonOffset:true,polygonOffsetFactor:1,polygonOffsetUnits:2});
  const metadata=(object,key)=>{for(let o=object;o;o=o.parent)if(o.userData?.[key])return o.userData[key];return '';};
  model.traverse(o=>{if(o.isMesh){o.userData.bannerIndex=meshes.length;o.userData.bannerName=metadata(o,'bodyName')||o.name||'Поверхность';o.material=neutral;meshes.push(o);}});
- let selected=null,nextNumber=1,nextPrimitive=-1;const ray=new THREE.Raycaster(),pointer=new THREE.Vector2();
+ let selected=null,selectionFocus=false,nextNumber=1,nextPrimitive=-1;const ray=new THREE.Raycaster(),pointer=new THREE.Vector2();
  function fit(){const box=new THREE.Box3().setFromObject(surfaces.length&&!$('banner-context').checked?surfaceGroup:root);if(box.isEmpty())return;const r=box.getSize(new THREE.Vector3()).length()/2,c=box.getCenter(new THREE.Vector3());const a=Math.min(camera.fov*Math.PI/180,2*Math.atan(Math.tan(camera.fov*Math.PI/360)*camera.aspect));camera.position.copy(c).addScaledVector(new THREE.Vector3(1,.7,1).normalize(),r/Math.sin(a/2)*1.12);controls.target.copy(c);controls.update();invalidate();}
  const escape=text=>String(text).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  function refresh(){
   $('banner-list').innerHTML=surfaces.length?surfaces.map(s=>`<button data-banner="${s.key}" aria-pressed="${s===selected}">${escape(s.name)}<small>${Math.ceil(s.width*mmPerUnit-1e-3)} × ${Math.ceil(s.height*mmPerUnit-1e-3)} мм${s.image?' · текстура':''}</small></button>`).join(''):'<p class="banner-empty">Выберите поверхности баннеров на модели. Затем нажмите «Болванка», чтобы оставить только их.</p>';
-  document.querySelectorAll('[data-banner]').forEach(b=>b.onclick=()=>choose(surfaces.find(s=>s.key===b.dataset.banner)));
+  document.querySelectorAll('[data-banner]').forEach(b=>b.onclick=()=>choose(surfaces.find(s=>s.key===b.dataset.banner),true));
   $('banner-editor').hidden=!selected;$('banner-only').disabled=!surfaces.length;$('banner-glb').disabled=!surfaces.length;
   if(selected){$('banner-name').value=selected.name;$('banner-size').textContent=`Габарит поверхности: ${Math.ceil(selected.width*mmPerUnit-1e-3)} × ${Math.ceil(selected.height*mmPerUnit-1e-3)} мм`;$('banner-rotation').value=String(selected.rotation);$('banner-mirror').checked=selected.mirror;
    $('banner-rectangle').checked=!!selected.rectangle;$('banner-dimensions').hidden=!selected.rectangle;
    $('banner-width').value=Math.ceil(selected.width*mmPerUnit-1e-3);$('banner-height').value=Math.ceil(selected.height*mmPerUnit-1e-3);
    $('banner-offset-u').value=selected.rectangle?.offsetU||0;$('banner-offset-v').value=selected.rectangle?.offsetV||0;}
-  for(const s of surfaces){s.mesh.material.color.set(s.image?0xffffff:s.fillColor|| (s===selected?0x3587e2:0x89bdf1));s.mesh.material.emissive?.set(s===selected?0x122d4a:0x000000);s.outline.material.color.set(s===selected?0x075ebf:0x226ea7);}
+  for(const s of surfaces){
+   const fade=selectionFocus&&selected&&s!==selected?0.2:0;
+   s.mesh.material.color.set(s.image?0xffffff:s.fillColor||0x89bdf1);
+   s.mesh.material.userData.selectionFade.value=fade;
+   s.outline.material.color.set(0x226ea7).lerp(new THREE.Color(0xffffff),fade);
+  }
+  view.dataset.selectedBanner=selectionFocus&&selected?selected.key:'';
+  view.dataset.otherBannerLightening=selectionFocus&&selected?'20%':'0%';
   view.dataset.bannerCount=String(surfaces.length);invalidate();
  }
- function choose(s){selected=s;refresh();}
+ function choose(s,focus=false){selected=s;selectionFocus=focus;refresh();}
  function addSurface(mesh,faceIndex,record={}){
   mesh.updateMatrixWorld(true);const face=planarFace(mesh,faceIndex);if(!face||face.area<1e-8)throw Error('Выберите плоскую грань детали');
   const key=mesh.userData.bannerIndex+':'+face.surfaceId,existing=surfaces.find(s=>s.key===key);if(existing){choose(existing);return existing;}
   const data=bannerGeometry(face),material=new THREE.MeshBasicMaterial({color:0x89bdf1,side:THREE.DoubleSide,polygonOffset:true,polygonOffsetFactor:-2,polygonOffsetUnits:-2});
+  // Mix with white after color conversion so texture and flat colors lighten equally.
+  material.userData.selectionFade={value:0};
+  material.onBeforeCompile=shader=>{
+   shader.uniforms.bannerSelectionFade=material.userData.selectionFade;
+   shader.fragmentShader='uniform float bannerSelectionFade;\n'+shader.fragmentShader.replace('#include <colorspace_fragment>','#include <colorspace_fragment>\ngl_FragColor.rgb = mix(gl_FragColor.rgb, vec3(1.0), bannerSelectionFade);');
+  };
   const patch=new THREE.Mesh(data.geometry,material);patch.position.copy(face.normal).multiplyScalar(.0004);patch.renderOrder=2;
   const outline=new THREE.LineSegments(new THREE.EdgesGeometry(data.geometry),new THREE.LineBasicMaterial({color:0x226ea7}));patch.add(outline);surfaceGroup.add(patch);
   const s={key,index:mesh.userData.bannerIndex,sourceMesh:mesh,worldVertices:record.worldVertices||null,faceIndex:face.surfaceId,name:String(record.name||`Б-${nextNumber++} · ${mesh.userData.bannerName}`).slice(0,120),mesh:patch,outline,...data,image:null,fillColor:/^#[0-9a-f]{6}$/i.test(record.fillColor)?record.fillColor:null,texturePlacement:record.texturePlacement||null,rotation:[0,90,180,270].includes(record.rotation)?record.rotation:0,mirror:record.mirror===true,rectangle:null};if(record.rectangle)resizeSurface(s,record.rectangle);applyTexturePlacement(s.geometry,s.width*mmPerUnit,s.height*mmPerUnit,s.texturePlacement);patch.userData.surface=s;surfaces.push(s);const code=/^Б-(\d+)(?:\D|$)/.exec(s.name);if(code)nextNumber=Math.max(nextNumber,Number(code[1])+1);choose(s);return s;
@@ -88,7 +101,7 @@ try{
   if(!down||Math.hypot(e.clientX-down.x,e.clientY-down.y)>6){down=null;return;}down=null;
   const rect=renderer.domElement.getBoundingClientRect();pointer.set((e.clientX-rect.left)/rect.width*2-1,-(e.clientY-rect.top)/rect.height*2+1);ray.setFromCamera(pointer,camera);
   const hits=ray.intersectObjects([...surfaces.map(s=>s.mesh),...($('banner-context').checked?meshes:[])],false),hit=hits[0];if(!hit)return;
-  if(hit.object.userData.surface){choose(hit.object.userData.surface);return;}
+  if(hit.object.userData.surface){choose(hit.object.userData.surface,true);return;}
   try{addSurface(hit.object,hit.faceIndex);message('Поверхность добавлена. Теперь можно наложить текстуру JPG / PNG.');}catch(e){message(e.message);}
  });
  renderer.domElement.addEventListener('pointercancel',()=>{down=null;});
