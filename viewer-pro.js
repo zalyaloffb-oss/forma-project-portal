@@ -1,5 +1,6 @@
-import {loadCatalogue,permittedModel,projectModel} from './site-config.js?v=furniture-2';
+import {loadCatalogue,permittedModel,projectModel} from './site-config.js?v=performance-1';
 import * as THREE from 'three';
+import {fetchModelBytes} from './model-transport.js?v=1';
 import {partDxf,dxfFilename,flatContours} from './part-dxf.js?v=3';
 import {measurementMarkerRadius} from './measurement-markers.js?v=1';
 import {createComponentHover} from './component-hover.js?v=1';
@@ -8,13 +9,12 @@ import {createInteractionBatch} from './viewer-batching.js?v=1';
 import {createJoints} from './viewer-joints.js?v=1';
 import {createHistory} from './viewer-history.js?v=1';
 import {addPartNumbers} from './part-numbers.js?v=fpp-labels-1';
-import {viewerLink,copyViewerLink} from './viewer-share.js?v=furniture-2';
+import {viewerLink,copyViewerLink} from './viewer-share.js?v=performance-1';
 import {iconButton} from './viewer-icons.js?v=lucide-20261105';
 import {planarFace,sectionGeometry} from './geometry-tools.js?v=sheet-layout-1';
 import {edgeMeasurement,planeMeasurement,stitchEdges} from './measure-geometry.js';
 import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
-import {RoomEnvironment} from 'three/addons/environments/RoomEnvironment.js';
 import {LineSegments2} from 'three/addons/lines/LineSegments2.js';
 import {LineSegmentsGeometry} from 'three/addons/lines/LineSegmentsGeometry.js';
 import {LineMaterial} from 'three/addons/lines/LineMaterial.js';
@@ -98,7 +98,6 @@ try{
  renderer.domElement.addEventListener('pointermove',e=>{if(e.buttons)activity();},true);
  document.addEventListener('click',invalidate,true);document.addEventListener('keydown',invalidate,true);
  document.addEventListener('input',activity,true);document.addEventListener('change',invalidate,true);
- const pmrem=new THREE.PMREMGenerator(renderer),room=new RoomEnvironment();environment=pmrem.fromScene(room,.04);scene.environment=environment.texture;scene.environmentIntensity=.65;room.dispose();pmrem.dispose();
  scene.add(new THREE.HemisphereLight(0xffffff,0x697b59,.65));const sun=new THREE.DirectionalLight(0xffffff,1.25);sun.position.set(4,8,5);scene.add(sun);
  let requested=params.get('model'),projectTitle='';
  if(projectId){
@@ -109,8 +108,15 @@ try{
  }
  // CAD-style diffuse lighting avoids the bright studio reflections on Fusion's solid colors.
  if(requested){renderer.toneMapping=THREE.NoToneMapping;scene.environment=null;scene.children.filter(o=>o.isLight).forEach(o=>scene.remove(o));scene.add(new THREE.AmbientLight(0xfff9eb,1.7));const cadSun=new THREE.DirectionalLight(0xffffff,.6);cadSun.position.set(4,8,5);scene.add(cadSun);}
+ if(!requested){
+  const {RoomEnvironment}=await import('three/addons/environments/RoomEnvironment.js');
+  const pmrem=new THREE.PMREMGenerator(renderer),room=new RoomEnvironment();
+  environment=pmrem.fromScene(room,.04);scene.environment=environment.texture;scene.environmentIntensity=.65;
+  room.dispose();pmrem.dispose();
+ }
  if(requested&&!permittedModel(requested))throw Error('Недопустимый адрес модели');
- const asset=await new GLTFLoader().loadAsync(requested||'./models/health-territory-v23.glb'),model=asset.scene;scene.add(model);model.updateMatrixWorld(true);
+ const loader=new GLTFLoader(),compressed=await fetchModelBytes(shareProject?.modelGzipUrl);stage.dataset.modelTransport=compressed?'gzip':'original';
+ const asset=compressed?await loader.parseAsync(compressed,new URL('.',requested).href):await loader.loadAsync(requested||'./models/health-territory-v23.glb'),model=asset.scene;scene.add(model);model.updateMatrixWorld(true);
  model.traverse(object=>{const node=asset.parser.associations.get(object)?.nodes;if(node!==undefined)Object.assign(object.userData,asset.parser.json.nodes[node]?.extras||{});});
  const fusionView=model.children[0]?.userData?.fusionCamera;
  const jointDescriptors=model.children[0]?.userData?.fusionJoints||[];
@@ -778,7 +784,7 @@ try{
  });
  if(items.length>200&&params.get('batch')!=='off')interactionBatch=createInteractionBatch({items,edges,edgeMaterial,scene});
  function tick(){raf=requestAnimationFrame(tick);controls.update();quality();if(interactionBatch&&!interacting&&batchDirty){const began=performance.now();const changed=interactionBatch.refresh();if(changed)interactionBatch.render(()=>renderer.compile(scene,camera));batchDirty=false;stage.dataset.batchBuildMs=(performance.now()-began).toFixed(2);stage.dataset.batchedBodies=String(interactionBatch.stats.bodies);stage.dataset.batchCalls=String(interactionBatch.stats.calls);}contactDepthUniforms.contactClipRange.value.set(camera.near,camera.far);if(capsDirty){rebuildCaps();invalidate();}if(measurementCenter){const p=measurementCenter.clone().project(camera),label=$('#measure-label');label.hidden=p.z>1||p.z< -1;const half=label.offsetWidth/2+12,height=label.offsetHeight+12;label.style.left=THREE.MathUtils.clamp((p.x+1)*stage.clientWidth/2,half,Math.max(half,stage.clientWidth-half))+'px';label.style.top=THREE.MathUtils.clamp((1-p.y)*stage.clientHeight/2-12,height,Math.max(height,stage.clientHeight-12))+'px';}if(renderDirty){camera.updateMatrixWorld(true);for(const marker of measureObjects)if(marker.userData.measurementPoint)marker.scale.setScalar(measurementMarkerRadius(camera,marker.position,stage.clientHeight));if(rulerHoverPoint.visible)rulerHoverPoint.scale.setScalar(measurementMarkerRadius(camera,rulerHoverPoint.position,stage.clientHeight));stage.dataset.measureMarkerPixels='7';orientationCube.update(camera.quaternion);positionSelectionCard();renderView();}}tick();
- addEventListener('pagehide',()=>{cancelAnimationFrame(raf);componentHover.dispose();orientationCube.dispose();interactionBatch?.dispose();resizeObserver.disconnect();controls.dispose();clearFace();sectionOn=false;rebuildCaps();cutOutlineMaterial.dispose();rulerPlaneGeometry.dispose();rulerHoverFace.material.dispose();rulerHoverPoint.geometry.dispose();rulerHoverPoint.material.dispose();rulerHoverEdge.geometry.dispose();rulerHoverEdge.material.dispose();clearEdges();clearMeasurement();items.forEach(i=>i.mesh.geometry.dispose());edges.forEach(e=>{e.geometry.dispose();e.userData.sourceGeometry.dispose();});materials.forEach(m=>m.dispose());textures.forEach(t=>t.dispose());edgeMaterial.dispose();environment.dispose();composer.dispose();outputPass.dispose();fxaaPass.dispose();renderer.dispose();},{once:true});
+ addEventListener('pagehide',()=>{cancelAnimationFrame(raf);componentHover.dispose();orientationCube.dispose();interactionBatch?.dispose();resizeObserver.disconnect();controls.dispose();clearFace();sectionOn=false;rebuildCaps();cutOutlineMaterial.dispose();rulerPlaneGeometry.dispose();rulerHoverFace.material.dispose();rulerHoverPoint.geometry.dispose();rulerHoverPoint.material.dispose();rulerHoverEdge.geometry.dispose();rulerHoverEdge.material.dispose();clearEdges();clearMeasurement();items.forEach(i=>i.mesh.geometry.dispose());edges.forEach(e=>{e.geometry.dispose();e.userData.sourceGeometry.dispose();});materials.forEach(m=>m.dispose());textures.forEach(t=>t.dispose());edgeMaterial.dispose();environment?.dispose();composer.dispose();outputPass.dispose();fxaaPass.dispose();renderer.dispose();},{once:true});
 }catch(error){console.error(error);loading.textContent='Не удалось открыть модель: '+error.message;loading.classList.add('error');}
 $('#full').onclick=async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else await document.documentElement.requestFullscreen();}catch{$('#status').textContent='Откройте просмотрщик в отдельной вкладке для полноэкранного режима.';}};
 document.addEventListener('fullscreenchange',()=>{iconButton($('#full'),'full',document.fullscreenElement?'Свернуть':'На весь экран');});

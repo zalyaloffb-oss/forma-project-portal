@@ -25,7 +25,8 @@
       "designUrl": "assets/fpp/design-0d374a7127df.pdf",
       "electricalUrl": "assets/fpp/electrical-43c666ee3e54.pdf",
       "expoUrl": "assets/fpp/expo-52ccf0132f72.pdf",
-      "bannerLayoutUrl": "assets/fpp/banners-a24382e55d6e.json"
+      "bannerLayoutUrl": "assets/fpp/banners-a24382e55d6e.json",
+      "modelGzipUrl": "assets/fpp/model-934129e0002b.glb.gz"
     },
     {
       "id": "fpp-2-2026",
@@ -51,7 +52,8 @@
       "expoUrl": "assets/fpp-2/expo-14c186f3eb0f.pdf",
       "bodyCount": 923,
       "fusionDataFileId": "urn:adsk.wipprod:dm.lineage:Wmx4DYQLSy-LY_qeLkCxnA",
-      "fusionVersion": "8"
+      "fusionVersion": "8",
+      "modelGzipUrl": "assets/fpp-2/model-3f6e9bafee9a.glb.gz"
     },
     {
       "id": "fusion-33a9c8dba62e3ca65ecc75221596d8db8c99fb2f54aa3f1ea461dbb80483f617",
@@ -85,7 +87,8 @@
           "updatedAt": "2026-11-04T20:32:44.183750+00:00",
           "f3dUrl": "assets/pervyy-trest/f3d-11a1882211a4.f3d",
           "modelUrl": "assets/pervyy-trest/model-e6e9b17839a2.glb",
-          "coverUrl": "assets/pervyy-trest/cover-56cccefd3774.png"
+          "coverUrl": "assets/pervyy-trest/cover-56cccefd3774.png",
+          "modelGzipUrl": "assets/pervyy-trest/model-e6e9b17839a2.glb.gz"
         },
         {
           "id": "kashpo-2",
@@ -100,9 +103,11 @@
           "f3dUrl": "assets/pervyy-trest/f3d-ac5eee68aa18.f3d",
           "assemblyUrl": "assets/pervyy-trest/assembly-1089d702eca4.pdf",
           "dxfUrl": "assets/pervyy-trest/dxf-9b463ba8bf50.zip",
-          "fabricationNote": "Догбоны на уступах А-2 и А-5 добавлены в DXF; модель Fusion v5 их не содержит. Выборки А-4 показаны справочным слоем."
+          "fabricationNote": "Догбоны на уступах А-2 и А-5 добавлены в DXF; модель Fusion v5 их не содержит. Выборки А-4 показаны справочным слоем.",
+          "modelGzipUrl": "assets/pervyy-trest/model-657b6c0ad7d8.glb.gz"
         }
-      ]
+      ],
+      "modelGzipUrl": "assets/pervyy-trest/model-3d5cf157d5c1.glb.gz"
     },
     {
       "id": "fusion-809b7076045ef2f4710511fc90035e8b27a4116a8904dc34b782443d56f762ba",
@@ -129,7 +134,8 @@
       "designUrl": "",
       "assemblyUrl": "",
       "autoAssemblyUrl": "",
-      "published": true
+      "published": true,
+      "modelGzipUrl": "assets/tachpanel/model-c7616d17ffca.glb.gz"
     },
     {
       "id": "max-f57ca5ffdbf719fc37fb7510db76a51ac165e5e3b638b9eb7ad467e92c449e86",
@@ -156,7 +162,8 @@
       "autoAssemblyUrl": "",
       "fusionVersion": "67",
       "published": true,
-      "fusionDataFileId": "urn:adsk.wipprod:dm.lineage:OT0WxCN9RIaQmEEFghVJIQ"
+      "fusionDataFileId": "urn:adsk.wipprod:dm.lineage:OT0WxCN9RIaQmEEFghVJIQ",
+      "modelGzipUrl": "assets/engels/model-50996abe3e97.glb.gz"
     },
     {
       "id": "fusion-e803b1fe3ca3173cff2efdb19a0e8413ecfbd5cb2b1d47e7bd79fccf9b84987b",
@@ -190,7 +197,8 @@
       "fusionDataFileId": "urn:adsk.wipprod:dm.lineage:EUOgWTbhSSqFpfFxe-iYCw",
       "sourceFileUrl": "",
       "autoAssemblyUrl": "",
-      "published": true
+      "published": true,
+      "modelGzipUrl": "assets/1c-firma/model-b5536474aece.glb.gz"
     },
     {
       "id": "max-9fc19271087b38929a159b33ad9948b08cc9a5852c0a3bda9dc875b26ddfcdde",
@@ -216,7 +224,8 @@
       "autoAssemblyGeneratedAt": "2026-10-12T13:17:11+00:00",
       "f3dUrl": "",
       "designUrl": "",
-      "published": true
+      "published": true,
+      "modelGzipUrl": "assets/fpp-3-iyun-2026/model-a2cf882426b8.glb.gz"
     },
     {
       "id": "max-kazanforum-2026",
@@ -241,7 +250,8 @@
       "designUrl": "",
       "assemblyUrl": "",
       "autoAssemblyUrl": "",
-      "published": true
+      "published": true,
+      "modelGzipUrl": "assets/kazanforum-2026/model-88603205c3e9.glb.gz"
     },
     {
       "id": "fusion-628a8e9e7a5617a1a16b19cbc62faeb67fb40f0bb85e0e1b99c2c0567d7ed2bd",
@@ -265,7 +275,8 @@
       "fusionVersion": "22",
       "sourceFileUrl": "",
       "autoAssemblyUrl": "",
-      "published": true
+      "published": true,
+      "modelGzipUrl": "assets/dotspace-2026/model-3c078491a1e1.glb.gz"
     }
   ],
   "managers": [],

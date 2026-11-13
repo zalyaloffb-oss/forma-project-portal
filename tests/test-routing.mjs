@@ -1,6 +1,6 @@
 import fs from 'node:fs';
 import assert from 'node:assert/strict';
-const source=fs.readFileSync(new URL('../viewer-share.js',import.meta.url),'utf8').replace("import {SITE_ROOT} from './site-config.js?v=furniture-2';","const SITE_ROOT=new URL('https://zalyaloffb-oss.github.io/forma-project-portal/');");
+const source=fs.readFileSync(new URL('../viewer-share.js',import.meta.url),'utf8').replace("import {SITE_ROOT} from './site-config.js?v=performance-1';","const SITE_ROOT=new URL('https://zalyaloffb-oss.github.io/forma-project-portal/');");
 const {viewerLink}=await import('data:text/javascript;base64,'+Buffer.from(source).toString('base64'));
 assert.equal(viewerLink({viewerPath:'/pervyy-trest'}),'https://zalyaloffb-oss.github.io/forma-project-portal/pervyy-trest/');
 assert.equal(viewerLink({id:'fusion-123'}),'https://zalyaloffb-oss.github.io/forma-project-portal/viewer.html?project=fusion-123');

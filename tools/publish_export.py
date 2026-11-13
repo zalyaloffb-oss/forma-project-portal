@@ -3,7 +3,7 @@
 No GitHub credentials are ever placed in browser code or in this repository.
 """
 from pathlib import Path
-import argparse,datetime,hashlib,json,re,shutil,struct,subprocess,urllib.parse
+import argparse,datetime,hashlib,json,re,shutil,struct,subprocess,urllib.parse,gzip
 
 ROOT=Path(__file__).resolve().parent.parent
 SITE='https://zalyaloffb-oss.github.io/forma-project-portal/'
@@ -42,6 +42,9 @@ def write_asset(project,kind,source):
     name=kind+'-'+hashlib.sha256(data).hexdigest()[:12]+suffix
     target=ROOT/'assets'/project['viewerPath'].strip('/')/name
     target.parent.mkdir(parents=True,exist_ok=True);target.write_bytes(data)
+    if kind=='model':
+        packed=target.with_suffix(target.suffix+'.gz');packed.write_bytes(gzip.compress(data,compresslevel=6,mtime=0))
+        project['modelGzipUrl']=packed.relative_to(ROOT).as_posix()
     return target.relative_to(ROOT).as_posix()
 
 def save_catalog(data):

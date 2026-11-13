@@ -1,0 +1,17 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import {fetchModelBytes} from '../model-transport.js';
+const catalog=JSON.parse(fs.readFileSync(new URL('../data/catalog.json',import.meta.url)));
+const p=catalog.projects.find(p=>p.id==='fpp-2026');
+const packed=fs.readFileSync(new URL('../'+p.modelGzipUrl,import.meta.url));
+const original=fs.readFileSync(new URL('../'+p.modelUrl,import.meta.url));
+const decoded=await fetchModelBytes('test',{fetcher:async()=>new Response(packed)});
+assert.deepEqual(Buffer.from(decoded),original);
+assert.equal(await fetchModelBytes('test',{Decoder:null,fetcher:()=>{throw Error('Must not fetch');}}),null);
+assert.equal(await fetchModelBytes('test',{fetcher:async()=>new Response('',{status:404})}),null);
+assert.equal(await fetchModelBytes('test',{fetcher:async()=>{throw Error('offline');}}),null);
+assert.equal(await fetchModelBytes('test',{fetcher:async()=>new Response('corrupt')}),null);
+assert.deepEqual(Buffer.from(await fetchModelBytes('test',{fetcher:async()=>new Response(original)})),original);
+const truncated=original.subarray(0,50);
+assert.equal(await fetchModelBytes('test',{fetcher:async()=>new Response(truncated)}),null);
+console.log('PASS: lossless gzip transport, decoded HTTP responses, unsupported decoder, 404, offline and corrupt-data fallback.');

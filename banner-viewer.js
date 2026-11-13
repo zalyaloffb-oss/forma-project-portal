@@ -1,9 +1,9 @@
 import * as THREE from 'three';
+import {fetchModelBytes} from './model-transport.js?v=1';
 import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
-import {GLTFExporter} from 'three/addons/exporters/GLTFExporter.js';
-import {loadCatalogue,projectModel,permittedModel,assetUrl,SITE_ROOT} from './site-config.js?v=furniture-3';
-import {viewerLink,copyViewerLink} from './viewer-share.js?v=furniture-2';
+import {loadCatalogue,projectModel,permittedModel,assetUrl,SITE_ROOT} from './site-config.js?v=performance-1';
+import {viewerLink,copyViewerLink} from './viewer-share.js?v=performance-1';
 import {planarFace} from './geometry-tools.js?v=sheet-layout-1';
 import {bannerGeometry,rectangleGeometry,isNamedBanner,applyTexturePlacement} from './banner-geometry.js?v=texture-placement-1';
 
@@ -26,7 +26,8 @@ try{
  const scene=new THREE.Scene(),camera=new THREE.PerspectiveCamera(40,1,.01,5000),controls=new OrbitControls(camera,renderer.domElement);controls.mouseButtons.MIDDLE=THREE.MOUSE.PAN;controls.enableDamping=false;
  scene.add(new THREE.AmbientLight(0xffffff,2));const sun=new THREE.DirectionalLight(0xffffff,1);sun.position.set(4,8,5);scene.add(sun);
  let dirty=true;const invalidate=()=>{dirty=true;};controls.addEventListener('change',invalidate);
- const asset=await new GLTFLoader().loadAsync(project.modelUrl),model=asset.scene;
+ const loader=new GLTFLoader(),compressed=await fetchModelBytes(project.modelGzipUrl);view.dataset.modelTransport=compressed?'gzip':'original';
+ const asset=compressed?await loader.parseAsync(compressed,new URL('.',project.modelUrl).href):await loader.loadAsync(project.modelUrl),model=asset.scene;
  model.traverse(object=>{const node=asset.parser.associations.get(object)?.nodes;if(node!==undefined)Object.assign(object.userData,asset.parser.json.nodes[node]?.extras||{});});
  model.updateMatrixWorld(true);const bounds=new THREE.Box3().setFromObject(model),center=bounds.getCenter(new THREE.Vector3()),largest=Math.max(...bounds.getSize(new THREE.Vector3()).toArray());
  if(!Number.isFinite(largest)||largest<=0)throw Error('Пустая модель');
@@ -116,7 +117,7 @@ try{
  $('banner-glb').onclick=async()=>{
   const button=$('banner-glb');button.disabled=true;const output=new THREE.Group();
   try{for(const s of surfaces){const geometry=s.geometry.clone();geometry.scale(1/scale,1/scale,1/scale);geometry.translate(center.x,center.y,center.z);const material=new THREE.MeshStandardMaterial({color:s.fillColor||0xffffff,map:s.mesh.material.map,side:THREE.DoubleSide,roughness:1,metalness:0});const mesh=new THREE.Mesh(geometry,material);mesh.name=s.name;output.add(mesh);}
-   const bytes=await new GLTFExporter().parseAsync(output,{binary:true});download(new Blob([bytes],{type:'model/gltf-binary'}),project.title+' — Баннеры 3D.glb');message('Болванка GLB подготовлена: только плоскости баннеров, масштаб в метрах, текстуры встроены.');
+   const {GLTFExporter}=await import('three/addons/exporters/GLTFExporter.js');const bytes=await new GLTFExporter().parseAsync(output,{binary:true});download(new Blob([bytes],{type:'model/gltf-binary'}),project.title+' — Баннеры 3D.glb');message('Болванка GLB подготовлена: только плоскости баннеров, масштаб в метрах, текстуры встроены.');
   }catch(e){message('Не удалось экспортировать GLB: '+e.message);}finally{output.children.forEach(m=>{m.geometry.dispose();m.material.dispose();});button.disabled=!surfaces.length;}
  };
  $('banner-export').onclick=()=>download(new Blob([JSON.stringify(packet())],{type:'application/json'}),project.title+' — Баннеры 3D.json');

@@ -1,4 +1,4 @@
-import {SITE_ROOT} from './site-config.js?v=furniture-2';
+import {SITE_ROOT} from './site-config.js?v=performance-1';
 export function viewerLink(project) {
  if(typeof project?.viewerPath==='string'&&/^\/[a-z0-9][a-z0-9-]{0,79}$/.test(project.viewerPath)){
   const item=project.itemId;

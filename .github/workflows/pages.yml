@@ -18,6 +18,16 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate catalogue and performance contracts
+        run: |
+          node tests/test-routing.mjs
+          node tests/test-banners.mjs
+          node tests/test-model-transport.mjs
+          python3 tests/test_performance.py
+          python3 tools/validate_site.py
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
