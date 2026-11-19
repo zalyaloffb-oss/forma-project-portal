@@ -219,7 +219,7 @@ try{
   const label=document.createElement('label');label.textContent='Что экспортировать';
   const select=document.createElement('select');select.id='dxf-mode';label.htmlFor=select.id;
   for(const [value,text] of [...(chosenFace?[['face','Контур выбранной грани · 2D']]:[]),['flat','Контур наибольшей плоской поверхности · 2D'],['edges','Все рёбра детали · 3D']]){const o=document.createElement('option');o.value=value;o.textContent=text;select.append(o);}
-  const note=document.createElement('p');note.className='dxf-note';note.textContent='Масштаб 1:1, единицы — миллиметры. Контур включает отверстия выбранной поверхности. Кривые аппроксимированы отрезками сетки. Это не развёртка; глухие отверстия на другой стороне могут не попасть в контур. Перед изготовлением сверьте с исходной CAD-моделью.';
+  const note=document.createElement('p');note.className='dxf-note';note.textContent='Масштаб 1:1 в миллиметрах. Контур включает отверстия выбранной поверхности. Кривые аппроксимированы отрезками сетки. Это не развёртка; глухие отверстия на другой стороне могут не попасть в контур. Перед изготовлением сверьте с исходной CAD-моделью.';
   const error=document.createElement('p');error.className='dxf-error';error.setAttribute('role','alert');
   const actions=document.createElement('div');actions.className='dxf-actions';
   const cancel=document.createElement('button');cancel.textContent='Отмена';cancel.onclick=()=>dialog.close();
@@ -351,7 +351,7 @@ try{
   dxfButton.disabled=ids.length!==1;
   selectionSectionButton.disabled=ids.length!==1||!Number.isInteger(selectionAnchor?.faceIndex);
   addToSheetButton.disabled=selectionSectionButton.disabled;
-  if(ids.length){const first=items[ids[0]],b=new THREE.Box3();ids.forEach(id=>b.union(new THREE.Box3().setFromObject(items[id].mesh)));b.getCenter(selectionCenter);const d=b.getSize(new THREE.Vector3()).multiplyScalar(mmPerUnit);$('#selected-title').textContent=ids.length===1?first.name:`Выбрано тел: ${ids.length}`;$('#selected-path').textContent=first.path.split('+').join(' / ');$('#selected-size').textContent=`Габариты X × Y × Z: ${d.toArray().map(v=>v.toLocaleString('ru-RU',{maximumFractionDigits:1})).join(' × ')} мм`;status('F — приблизить · H — скрыть · I — изолировать · Esc — снять выделение');}
+  if(ids.length){const first=items[ids[0]],b=new THREE.Box3();ids.forEach(id=>b.union(new THREE.Box3().setFromObject(items[id].mesh)));b.getCenter(selectionCenter);const d=b.getSize(new THREE.Vector3()).multiplyScalar(mmPerUnit);$('#selected-title').textContent=ids.length===1?first.name:`Выбрано тел: ${ids.length}`;$('#selected-path').textContent=first.path.split('+').join(' / ');$('#selected-size').textContent=`Габариты X × Y × Z: ${d.toArray().map(v=>v.toLocaleString('ru-RU',{maximumFractionDigits:1})).join(' × ')} мм`;status('F: приблизить · H: скрыть · I: изолировать · Esc: снять выделение');}
   updateSelectionBox();syncTree();
  }
  // Desktop object inspector follows the picked surface in body-local coordinates.
@@ -426,7 +426,7 @@ try{
  window.addEventListener('resize',()=>{if(treePanel.hidden||!treePanel.style.left)return;const p=clampTree(parseFloat(treePanel.style.left)||0,parseFloat(treePanel.style.top)||0);treePanel.style.left=p.x+'px';treePanel.style.top=p.y+'px';});
  let measureKind='points';const rulerEdges=new Map();let rulerFaces=[];
  function disposeMeasureVisuals(){for(const o of measureObjects){scene.remove(o);o.geometry?.dispose();o.material?.dispose();}measureObjects=[];measurementCenter=null;$('#measure-label').hidden=true;}
- function measurePrompt(){if(measureKind==='section')return 'Укажите две точки на срезе модели';return measureKind==='edges'?'Выберите ребро. Ctrl + щелчок — добавить или убрать; две раздельные группы — расстояние.':measureKind==='planes'?'Выберите первую плоскость, затем вторую. Расстояние измеряется по перпендикуляру.':'Укажите две точки на поверхности модели';}
+ function measurePrompt(){if(measureKind==='section')return 'Укажите две точки на срезе модели';return measureKind==='edges'?'Выберите ребро. Ctrl + щелчок добавляет или убирает ребро. Две группы рёбер задают расстояние.':measureKind==='planes'?'Выберите первую плоскость, затем вторую. Расстояние измеряется по перпендикуляру.':'Укажите две точки на поверхности модели';}
  function clearMeasurement(){clearRulerHover();disposeMeasureVisuals();points=[];rulerEdges.clear();rulerFaces=[];$('#measure-value').textContent=measurePrompt();stage.dataset.measureSelection='0';delete stage.dataset.measureValue;}
  function measureStroke(ends,color=0x008dff){const line=new LineSegments2(new LineSegmentsGeometry().setPositions(ends.flatMap(p=>p.toArray())),new LineMaterial({color,linewidth:3,worldUnits:false,depthTest:false,depthWrite:false,transparent:true,opacity:.9}));line.renderOrder=20;scene.add(line);measureObjects.push(line);return line;}
  function measureResult(text,anchor,value=null){measurementCenter=anchor.clone();$('#measure-label').textContent=text;$('#measure-label').hidden=false;$('#measure-value').textContent=text;if(value!==null)stage.dataset.measureValue=String(value);else delete stage.dataset.measureValue;invalidate();}
@@ -459,7 +459,7 @@ try{
   if(result.kind==='nonparallel'){measureResult(`Плоскости не параллельны · угол ${result.angle.toLocaleString('ru-RU',{maximumFractionDigits:1})}°`,rulerFaces[0].point.clone().add(rulerFaces[1].point).multiplyScalar(.5));return;}
   const a=new THREE.Vector3(...result.a),b=new THREE.Vector3(...result.b),value=result.value*mmPerUnit;distanceVisual(a,b);measureResult('Между плоскостями: '+mm(value),a.clone().add(b).multiplyScalar(.5),value);
  }
- function setMode(value){componentHover.hide();mode=value;controls.enabled=true;if(value!=='face')clearFace();if(value!=='edge')clearEdges();if(value==='edge'||value==='measure')select([]);updateEdgePanel();controls.mouseButtons.LEFT=value==='pan'?THREE.MOUSE.PAN:value==='zoom'?THREE.MOUSE.DOLLY:THREE.MOUSE.ROTATE;for(const b of document.querySelectorAll('[data-mode]'))b.setAttribute('aria-pressed',String(b.dataset.mode===value));if(value!=='measure')clearMeasurement();status(value==='move'?'Зажмите левую кнопку на теле и перетащите его в плоскости экрана':value==='face'?'Щёлкните плоскую грань тела для выбора плоскости сечения':value==='edge'?'Щёлкайте рёбра для добавления к сумме · Повторный щелчок снимает выделение':value==='measure'?measurePrompt():value==='pan'?'Перетаскивайте модель левой кнопкой для перемещения':value==='zoom'?'Перетаскивайте мышь для изменения масштаба':'Щелчок — выделение · Левая кнопка — вращение · Средняя — сдвиг · Колёсико — масштаб');}
+ function setMode(value){componentHover.hide();mode=value;controls.enabled=true;if(value!=='face')clearFace();if(value!=='edge')clearEdges();if(value==='edge'||value==='measure')select([]);updateEdgePanel();controls.mouseButtons.LEFT=value==='pan'?THREE.MOUSE.PAN:value==='zoom'?THREE.MOUSE.DOLLY:THREE.MOUSE.ROTATE;for(const b of document.querySelectorAll('[data-mode]'))b.setAttribute('aria-pressed',String(b.dataset.mode===value));if(value!=='measure')clearMeasurement();status(value==='move'?'Зажмите левую кнопку на теле и перетащите его в плоскости экрана':value==='face'?'Щёлкните плоскую грань тела для выбора плоскости сечения':value==='edge'?'Щёлкайте рёбра для добавления к сумме · Повторный щелчок снимает выделение':value==='measure'?measurePrompt():value==='pan'?'Перетаскивайте модель левой кнопкой для перемещения':value==='zoom'?'Перетаскивайте мышь для изменения масштаба':'Щелчок: выделение · Левая кнопка: вращение · Средняя: сдвиг · Колёсико: масштаб');}
  document.querySelectorAll('[data-mode]').forEach(b=>b.onclick=()=>setMode(b.dataset.mode));
  function toolMenu(button,choices,onChoose,isAvailable=()=>true){const menu=document.createElement('div');menu.className='tool-choice-menu';menu.hidden=true;menu.setAttribute('role','group');document.body.append(menu);for(const [value,label] of choices){const choice=document.createElement('button');choice.type='button';choice.dataset.choice=value;choice.textContent=label;choice.onclick=()=>{menu.hidden=true;button.setAttribute('aria-expanded','false');onChoose(value);};menu.append(choice);}button.setAttribute('aria-expanded','false');button.onclick=()=>{const open=menu.hidden;document.querySelectorAll('.tool-choice-menu').forEach(m=>m.hidden=true);closeNavigation();menu.hidden=!open;button.setAttribute('aria-expanded',String(open));if(open){for(const choice of menu.children)choice.hidden=!isAvailable(choice.dataset.choice);const r=button.getBoundingClientRect();menu.style.left=Math.max(8,Math.min(innerWidth-190,r.left))+'px';menu.style.bottom=(innerHeight-r.top+8)+'px';}};document.addEventListener('pointerdown',e=>{if(!menu.contains(e.target)&&!button.contains(e.target)){menu.hidden=true;button.setAttribute('aria-expanded','false');}});document.addEventListener('keydown',e=>{if(e.key==='Escape'){menu.hidden=true;button.setAttribute('aria-expanded','false');}});}
  let snapToVertices=true;
@@ -688,8 +688,8 @@ try{
   if(Math.abs(camera.position.clone().sub(toScene(v.target)).normalize().y)>.999999)camera.up.set(...v.up).normalize();
   controls.object=camera;controls.target.copy(toScene(v.target));controls.update();camera.updateProjectionMatrix();stage.dataset.homeView='fusion';
  }
- if(fusionView){iconButton($('#home'),'home','Домашний вид — как в Fusion');}
- $('#move-selected').onclick=()=>{setMode('move');status('Перетащите выбранную деталь левой кнопкой мыши · Esc — вернуться к вращению');};
+ if(fusionView){iconButton($('#home'),'home','Домашний вид из Fusion');}
+ $('#move-selected').onclick=()=>{setMode('move');status('Перетащите выбранную деталь левой кнопкой мыши · Esc: вернуться к вращению');};
  $('#hide').onclick=()=>setVisible(selected,false);$('#isolate').onclick=isolate;$('#show-all').onclick=showAll;$('#fit-selected').onclick=()=>fit(null,true);$('#home').onclick=homeView;$('#fit').onclick=()=>fit(null,selected.length>0);
  const orientationCube=createViewCube({host:$('.viewcube'),onHome:homeView,onRoll:direction=>{camera.up.applyAxisAngle(camera.getWorldDirection(new THREE.Vector3()),-direction*Math.PI/2);controls.update();activity();},
   onNavigate:values=>{
@@ -716,8 +716,8 @@ try{
  // but selecting a body or opening a panel alone does not consume a history step.
  const undoButton=document.createElement('button'),redoButton=document.createElement('button');
  for(const [button,id,label,path] of [
-  [undoButton,'viewer-undo','Назад — отменить действие','M9 5l-5 5 5 5M4 10h9a7 7 0 0 1 7 7'],
-  [redoButton,'viewer-redo','Вперёд — повторить действие','M15 5l5 5-5 5M20 10h-9a7 7 0 0 0-7 7']]){
+  [undoButton,'viewer-undo','Отменить действие','M9 5l-5 5 5 5M4 10h9a7 7 0 0 1 7 7'],
+  [redoButton,'viewer-redo','Повторить действие','M15 5l5 5-5 5M20 10h-9a7 7 0 0 0-7 7']]){
   button.id=id;button.className='icon-button';button.setAttribute('aria-label',label);
   button.innerHTML=`<svg viewBox="0 0 24 24" aria-hidden="true"><path d="${path}"/></svg>`;
  }
@@ -766,7 +766,7 @@ try{
  }
  const history=createHistory({capture:captureViewer,restore:restoreViewer,key:historyKey,onChange:state=>{
   undoButton.disabled=!state.canUndo;redoButton.disabled=!state.canRedo;
-  undoButton.title='Назад — отменить действие (Ctrl+Z)';redoButton.title='Вперёд — повторить действие (Ctrl+Shift+Z / Ctrl+Y)';
+  undoButton.title='Отменить действие (Ctrl+Z)';redoButton.title='Повторить действие (Ctrl+Shift+Z / Ctrl+Y)';
   stage.dataset.undoCount=String(state.undoCount);stage.dataset.redoCount=String(state.redoCount);
  }});
  function navigateHistory(forward){clearTimeout(historyTimer);const changed=forward?history.redo():history.undo();if(changed)status(forward?'Действие повторено':'Действие отменено');invalidate();}
