@@ -4,6 +4,7 @@ on:
     branches: [main]
   workflow_dispatch:
 permissions:
+  actions: read
   contents: read
   pages: write
   id-token: write
@@ -33,6 +34,21 @@ jobs:
         with:
           name: github-pages-${{ github.run_attempt }}
           path: .
+      - name: Wait for the Pages artifact to become available
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ARTIFACT_NAME: github-pages-${{ github.run_attempt }}
+        run: |
+          endpoint="repos/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID/artifacts"
+          for attempt in {1..12}; do
+            if gh api "$endpoint" \
+              --jq '.artifacts[] | select(.expired == false) | .name' | grep -Fx -- "$ARTIFACT_NAME"; then
+              exit 0
+            fi
+            sleep 5
+          done
+          echo "::error::Pages artifact $ARTIFACT_NAME did not become available"
+          exit 1
       - name: Deploy
         id: deployment
         uses: actions/deploy-pages@v4
