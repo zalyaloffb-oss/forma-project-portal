@@ -94,21 +94,18 @@ function openPdfViewer(){
  const fullscreenButton=$('#pdf-fullscreen');
  const modal=document.createElement('dialog');
  modal.className='pdf-fullscreen-dialog';
- modal.setAttribute('aria-label','Полноэкранный просмотр PDF');
- const header=document.createElement('div');
- header.className='pdf-fullscreen-header';
- const title=document.createElement('span');
- title.textContent=selected.title;
+ modal.setAttribute('aria-label',`${selected.title} — полноэкранный просмотр PDF`);
  const close=document.createElement('button');
- close.className='quiet';
- close.textContent='× Закрыть';
+ close.className='pdf-fullscreen-close';
+ close.textContent='×';
+ close.title='Закрыть';
  close.setAttribute('aria-label','Закрыть полноэкранный PDF');
  close.onclick=()=>modal.close();
- header.append(title,close);
+ area.querySelector('.pdf-page-controls').append(close);
  const content=document.createElement('div');
  content.className='pdf-fullscreen-content';
  content.append(...area.childNodes);
- modal.append(header,content);
+ modal.append(content);
  document.body.append(modal);
  fullscreenButton.hidden=true;
  pdfViewerDialog=modal;
@@ -119,6 +116,7 @@ function openPdfViewer(){
   if(fullscreenRequest)fullscreenRequest.then(()=>{
    if(document.fullscreenElement===root)return document.exitFullscreen();
   }).catch(()=>{});
+  close.remove();
   area.append(...content.childNodes);
   fullscreenButton.hidden=false;
   modal.remove();
