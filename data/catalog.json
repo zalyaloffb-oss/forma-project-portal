@@ -22,7 +22,9 @@
       "designUrl": "assets/fpp-3/design-48eabc702deb.pdf",
       "electricalUrl": "assets/fpp-3/electric-aba687eee283.pdf",
       "assemblyUrl": "assets/fpp-3/assembly-4b18d20344e1.pdf",
-      "expoUrl": "assets/fpp-3/expo-142d345e0bfa.pdf"
+      "expoUrl": "assets/fpp-3/expo-142d345e0bfa.pdf",
+      "bannerLayoutUrl": "assets/fpp-3/banners-a5f8c364e332.json",
+      "bannerCoverUrl": "assets/fpp-3/banner-cover-6a4bcb8039ed.png"
     },
     {
       "id": "fpp-2026",
