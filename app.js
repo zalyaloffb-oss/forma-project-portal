@@ -37,7 +37,53 @@ async function loadTabContent(version){const old=doc;doc=null;if(old)await old.d
  $('#pdf-area').innerHTML='<div class="furniture-list">'+items.map(item=>`<article class="furniture-card"><h3>${esc(item.title)}</h3><button class="model-preview" data-furniture="${esc(item.id)}" aria-label="Открыть ${esc(item.title)} в 3D"><img src="${esc(item.coverUrl)}" alt="${esc(item.title)}"><span>Открыть 3D-модель</span></button>${item.f3dUrl?`<a class="quiet" href="${esc(item.f3dUrl)}" download>Скачать исходник F3D</a>`:''}${item.assemblyUrl?`<a class="quiet" href="${esc(item.assemblyUrl)}" target="_blank" rel="noopener noreferrer">Открыть монтажку PDF</a>`:''}${item.dxfUrl?`<a class="quiet" href="${esc(item.dxfUrl)}" download>Скачать комплект DXF</a>`:''}${item.fabricationNote?`<p>${esc(item.fabricationNote)}</p>`:''}</article>`).join('')+'</div>';
  document.querySelectorAll('[data-furniture]').forEach(button=>button.onclick=()=>openModelViewer(projectModel(selected,button.dataset.furniture)));
  return;
-}if(tab==='model'&&selected?.model){$('#pdf-area').innerHTML=`<button class="model-preview" aria-label="Открыть 3D-модель с инструментами"><img src="${esc(urls.get(selected.id)||selected.coverUrl||'./models/health-territory-v23.png')}" alt="Превью 3D-модели"><span>Открыть 3D-модель</span></button>`;$('.model-preview').onclick=()=>openModelViewer();return;}const attachment=tab==='files'?selected.attachments?.[Number($('#attachment-select')?.value||0)]:null;let blob=attachment?.blob||selected?.[tab];const fileUrl=attachment?.url||selected?.[tab+'Url'];if(fileUrl&&!blob){const response=await fetch(fileUrl);if(!response.ok){$('#pdf-area').innerHTML='<div class="empty-file">Не удалось загрузить файл с сервера.</div>';return;}blob=await response.blob();if(version!==renderVersion)return;}if(attachment?.kind==='jpg'){downloadUrl=URL.createObjectURL(blob);$('#pdf-area').innerHTML=`<div class="pdf-toolbar"><span>${esc(attachment.name)}</span><a href="${downloadUrl}" download="${esc(attachment.name)}">Скачать JPG</a></div><div class="pdf-viewer"><img src="${downloadUrl}" alt="${esc(attachment.name)}" style="max-width:100%;height:auto;display:block"></div>`;return;}if(!blob){const label={expo:'Экспоплан',electrical:'Электросхема'}[tab]||'PDF';$('#pdf-area').innerHTML='<div class="empty-file">'+label+' пока не добавлен. Загрузите PDF в настройках проекта.</div>';return;}$('#pdf-area').innerHTML='<div class="empty-file">Открываем документ…</div>';try{const loaded=await openPdf(blob);if(version!==renderVersion){await loaded.destroy();return;}doc=loaded;page=1;downloadUrl=URL.createObjectURL(blob);$('#pdf-area').innerHTML=`<div class="pdf-toolbar"><button id="prev-page" aria-label="Предыдущая страница">←</button><span id="page-number"></span><button id="next-page" aria-label="Следующая страница">→</button><button id="pdf-fullscreen" aria-label="Открыть PDF на весь экран">На весь экран</button><a href="${downloadUrl}" download="${esc(attachment?.name||selected.title+' — '+({design:'дизайн-проект',assembly:'монтажная схема',expo:'экспоплан',electrical:'электросхема'}[tab]||'документ')+'.pdf')}">Скачать PDF</a></div><div class="pdf-viewer" id="canvas-host"></div>`;$('#prev-page').onclick=()=>{if(page>1){page--;drawPage()}};$('#next-page').onclick=()=>{if(page<doc.numPages){page++;drawPage()}};$('#pdf-fullscreen').onclick=openPdfViewer;await drawPage();}catch(e){if(version===renderVersion)$('#pdf-area').innerHTML='<div class="empty-file">Не удалось открыть PDF. Возможно, он повреждён или защищён паролем.</div>';}}
+}if(tab==='model'&&selected?.model){$('#pdf-area').innerHTML=`<button class="model-preview" aria-label="Открыть 3D-модель с инструментами"><img src="${esc(urls.get(selected.id)||selected.coverUrl||'./models/health-territory-v23.png')}" alt="Превью 3D-модели"><span>Открыть 3D-модель</span></button>`;$('.model-preview').onclick=()=>openModelViewer();return;}const attachment=tab==='files'?selected.attachments?.[Number($('#attachment-select')?.value||0)]:null;let blob=attachment?.blob||selected?.[tab];const fileUrl=attachment?.url||selected?.[tab+'Url'];if(fileUrl&&!blob){const response=await fetch(fileUrl);if(!response.ok){$('#pdf-area').innerHTML='<div class="empty-file">Не удалось загрузить файл с сервера.</div>';return;}blob=await response.blob();if(version!==renderVersion)return;}if(attachment?.kind==='jpg'){downloadUrl=URL.createObjectURL(blob);$('#pdf-area').innerHTML=`<div class="pdf-toolbar"><span>${esc(attachment.name)}</span><a href="${downloadUrl}" download="${esc(attachment.name)}">Скачать JPG</a></div><div class="pdf-viewer"><img src="${downloadUrl}" alt="${esc(attachment.name)}" style="max-width:100%;height:auto;display:block"></div>`;return;}if(!blob){const label={expo:'Экспоплан',electrical:'Электросхема'}[tab]||'PDF';$('#pdf-area').innerHTML='<div class="empty-file">'+label+' пока не добавлен. Загрузите PDF в настройках проекта.</div>';return;}$('#pdf-area').innerHTML='<div class="empty-file">Открываем документ…</div>';try{
+ const loaded=await openPdf(blob);
+ if(version!==renderVersion){await loaded.destroy();return;}
+ doc=loaded;
+ page=1;
+ downloadUrl=URL.createObjectURL(blob);
+ const filename=attachment?.name||selected.title+' — '+({design:'дизайн-проект',assembly:'монтажная схема',expo:'экспоплан',electrical:'электросхема'}[tab]||'документ')+'.pdf';
+ $('#pdf-area').innerHTML=`<div class="pdf-toolbar pdf-page-controls">
+  <button id="prev-page" aria-label="Предыдущая страница">←</button>
+  <span id="page-number" aria-live="polite"></span>
+  <button id="next-page" aria-label="Следующая страница">→</button>
+  <button id="pdf-fullscreen" aria-label="Открыть PDF на весь экран">⛶ На весь экран</button>
+  <a href="${downloadUrl}" download="${esc(filename)}">Скачать PDF</a>
+ </div><div class="pdf-viewer" id="canvas-host"></div>`;
+ $('#prev-page').onclick=()=>turnPdfPage(-1);
+ $('#next-page').onclick=()=>turnPdfPage(1);
+ $('#pdf-fullscreen').onclick=openPdfViewer;
+ bindPdfSwipe($('#canvas-host'));
+ await drawPage();
+}catch(e){
+ if(version===renderVersion)$('#pdf-area').innerHTML='<div class="empty-file">Не удалось открыть PDF. Возможно, он повреждён или защищён паролем.</div>';
+}}
+function turnPdfPage(delta){
+ if(!doc)return;
+ const next=page+delta;
+ if(next<1||next>doc.numPages)return;
+ page=next;
+ drawPage();
+}
+function bindPdfSwipe(host){
+ let start=null;
+ host.addEventListener('touchstart',event=>{
+  const touch=event.touches[0];
+  start=event.touches.length===1&&(window.visualViewport?.scale??1)<1.02
+   ?{id:touch.identifier,x:touch.clientX,y:touch.clientY}:null;
+ },{passive:true});
+ host.addEventListener('touchend',event=>{
+  if(!start)return;
+  const origin=start;
+  start=null;
+  const touch=Array.from(event.changedTouches).find(point=>point.identifier===origin.id);
+  if(!touch||event.touches.length)return;
+  const dx=touch.clientX-origin.x,dy=touch.clientY-origin.y;
+  if(Math.abs(dx)>=50&&Math.abs(dx)>Math.abs(dy)*1.5)turnPdfPage(dx<0?1:-1);
+ },{passive:true});
+ host.addEventListener('touchcancel',()=>{start=null;},{passive:true});
+}
 let pdfViewerDialog=null;
 function closePdfViewer(){
  if(pdfViewerDialog?.open)pdfViewerDialog.close();
@@ -45,6 +91,7 @@ function closePdfViewer(){
 function openPdfViewer(){
  if(!doc||pdfViewerDialog)return;
  const area=$('#pdf-area');
+ const fullscreenButton=$('#pdf-fullscreen');
  const modal=document.createElement('dialog');
  modal.className='pdf-fullscreen-dialog';
  modal.setAttribute('aria-label','Полноэкранный просмотр PDF');
@@ -63,21 +110,47 @@ function openPdfViewer(){
  content.append(...area.childNodes);
  modal.append(header,content);
  document.body.append(modal);
- const fullscreenButton=$('#pdf-fullscreen');
  fullscreenButton.hidden=true;
  pdfViewerDialog=modal;
+
+ const root=document.documentElement;
+ let fullscreenRequest=null;
  modal.addEventListener('close',()=>{
-  if(document.fullscreenElement===modal)document.exitFullscreen().catch(()=>{});
+  if(fullscreenRequest)fullscreenRequest.then(()=>{
+   if(document.fullscreenElement===root)return document.exitFullscreen();
+  }).catch(()=>{});
   area.append(...content.childNodes);
   fullscreenButton.hidden=false;
   modal.remove();
   pdfViewerDialog=null;
-  fullscreenButton.focus();
+  if($('#drawer').open)fullscreenButton.focus();
  },{once:true});
  modal.showModal();
- if(modal.requestFullscreen)modal.requestFullscreen().catch(()=>{});
+ if(!document.fullscreenElement&&root.requestFullscreen){
+  fullscreenRequest=root.requestFullscreen();
+  fullscreenRequest.catch(()=>{});
+ }
 }
-async function drawPage(){const version=++drawVersion,current=doc;if(!current)return;const n=page;$('#page-number').textContent=`${n} / ${current.numPages}`;$('#prev-page').disabled=n===1;$('#next-page').disabled=n===current.numPages;const p=await current.getPage(n);if(version!==drawVersion)return;const v=p.getViewport({scale:1.8}),canvas=document.createElement('canvas');canvas.width=v.width;canvas.height=v.height;try{await p.render({canvasContext:canvas.getContext('2d'),viewport:v}).promise;if(version===drawVersion)$('#canvas-host')?.replaceChildren(canvas);}catch{}}
+async function drawPage(){
+ const version=++drawVersion,current=doc;
+ if(!current)return;
+ const number=page;
+ $('#page-number').textContent=`${number} / ${current.numPages}`;
+ $('#prev-page').disabled=number===1;
+ $('#next-page').disabled=number===current.numPages;
+ try{
+  const pdfPage=await current.getPage(number);
+  if(version!==drawVersion)return;
+  const viewport=pdfPage.getViewport({scale:1.8});
+  const canvas=document.createElement('canvas');
+  canvas.width=viewport.width;
+  canvas.height=viewport.height;
+  await pdfPage.render({canvasContext:canvas.getContext('2d'),viewport}).promise;
+  if(version===drawVersion)$('#canvas-host')?.replaceChildren(canvas);
+ }catch(error){
+  if(version===drawVersion)console.error('Не удалось отрисовать страницу PDF',error);
+ }
+}
 function openEditor(id){editing=id?projects.find(p=>p.id===id):null;const form=$('#project-form');form.reset();fillManagers();$('#form-error').textContent='';$('#editor-title').textContent=editing?'Редактирование проекта':'Новый проект';const now=new Date();form.elements.date.value=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;if(editing)for(const key of ['title','customer','event','manager','date','status','source'])form.elements[key].value=editing[key];$('#editor').showModal()}
 $('#project-form').onsubmit=async e=>{e.preventDefault();const form=e.currentTarget,button=$('#save-btn');button.disabled=true;button.textContent='Сохраняем…';$('#form-error').textContent='';try{const data=new FormData(form),p={...(editing||{id:crypto.randomUUID(),demo:false})};for(const k of ['title','customer','event','manager','date','status','source'])p[k]=String(data.get(k)).trim();if(!p.title||!p.customer)throw Error('Укажите название проекта и заказчика.');if(p.source){const u=new URL(p.source);if(u.protocol!=='https:'||!['disk.yandex.ru','disk.yandex.com','yadi.sk'].includes(u.hostname))throw Error('Укажите HTTPS-ссылку на Яндекс Диск.');}for(const kind of ['design','assembly','expo','electrical']){const f=data.get(kind);if(f?.size){if(f.size>50*1024*1024)throw Error('PDF должен быть не больше 50 МБ.');if(await f.slice(0,5).text()!=='%PDF-')throw Error('Выберите корректный файл PDF.');const cover=await coverFor(f);p[kind]=f;if(kind==='design')p.cover=cover;}}await put(p);await refresh();$('#editor').close();toast('Черновик сохранён в этом браузере. Для общего доступа скачайте изменения для публикации.');}catch(e){$('#form-error').textContent=e.name==='QuotaExceededError'?'Недостаточно места в браузере для сохранения файлов.':e.message||'Не удалось сохранить проект.';}finally{button.disabled=false;button.textContent='Сохранить проект'}};
 document.querySelectorAll('.close').forEach(b=>b.onclick=()=>b.closest('dialog').close());document.querySelectorAll('dialog').forEach(d=>d.addEventListener('click',e=>{if(e.target===d&&!d.dataset.busy){const r=d.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)d.close()}}));$('#drawer').addEventListener('close',()=>{closePdfViewer();++renderVersion;++drawVersion;if(doc){doc.destroy();doc=null;}if(downloadUrl){URL.revokeObjectURL(downloadUrl);downloadUrl=null;}});$('#add-btn').onclick=()=>openEditor();$('#invite-btn').onclick=()=>$('#invite-modal').showModal();['search','customer-filter','status-filter','year-filter'].forEach(id=>$('#'+id).addEventListener(id==='search'?'input':'change',render));$('#all-nav').onclick=()=>{$('#search').value='';['customer-filter','status-filter','year-filter'].forEach(id=>$('#'+id).value='');render()};$('#clients-nav').onclick=()=>{$('#customer-filter').focus();$('#customer-filter').showPicker?.()};
