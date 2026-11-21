@@ -62,7 +62,7 @@ function numberTexture(number){
 export async function addPartNumbers({items,projectId,mmPerUnit,materials,textures,toolbar,invalidate,stage,cacheKey}){
  const knownProject='fusion-e803b1fe3ca3173cff2efdb19a0e8413ecfbd5cb2b1d47e7bd79fccf9b84987b';
  const engelsProject='max-f57ca5ffdbf719fc37fb7510db76a51ac165e5e3b638b9eb7ad467e92c449e86';
- const scopes=projectId==='fpp-2026'?['fpp']:projectId==='fpp-2-2026'?['fpp2']:projectId===knownProject?['reception','wall','support','ring']:projectId===engelsProject?['engels']:projectId==='fusion-33a9c8dba62e3ca65ecc75221596d8db8c99fb2f54aa3f1ea461dbb80483f617'?['trest']:null;
+ const scopes=projectId==='fpp-2026'?['fpp']:projectId==='fpp-2-2026'?['fpp2']:projectId==='fpp-3-2026'?['fpp3']:projectId===knownProject?['reception','wall','support','ring']:projectId===engelsProject?['engels']:projectId==='fusion-33a9c8dba62e3ca65ecc75221596d8db8c99fb2f54aa3f1ea461dbb80483f617'?['trest']:null;
  if(!scopes)return;
  const configs=await Promise.all(scopes.map(async scope=>{
   const response=await fetch(`./${scope}-part-numbers.json?v=${encodeURIComponent(cacheKey||"github-20261104")}`);
@@ -105,6 +105,7 @@ export async function addPartNumbers({items,projectId,mmPerUnit,materials,textur
  stage.dataset.numberedSupports=String(items.filter(i=>i.partScope==='support').length);stage.dataset.numberedRing=String(items.filter(i=>i.partScope==='ring').length);
  stage.dataset.numberedEngels=String(items.filter(i=>i.partScope==='engels').length);
  const button=document.createElement('button');button.id='part-numbers';button.textContent='Номера деталей';button.title='Маркировка ресепшена, стен, кольца и обшивки опор. К3/1 — короб №3, деталь №1; Н01/1 — нижний сектор кольца 01, деталь 1. Металлокаркас без маркировки.';button.setAttribute('aria-pressed','true');toolbar.prepend(button);
+ if(scopes.includes('fpp3')){button.classList.add('show-part-numbers');button.title='Маркировка ФПП №3: EES — тип стандартного короба, ДК — добор и номер детали, З и ЗБ — закладные, Н — накладки.';}
  if(scopes.includes('trest'))button.title='Номера деталей «Первого треста»: подтверждённые позиции коробов и мебели, идентификаторы остальных деталей.';
  if(projectId===engelsProject)button.title='Маркировка ЭНГЕЛЬС: ДК — короб/позиция; РС — ресепшен; Т1/Т2 — тумбы; С-01 — стеллаж. СТ — детали стандартных коробов; ЗБ — закладные; СВ — профили.';
  button.onclick=()=>{enabled.value=enabled.value?0:1;button.setAttribute('aria-pressed',String(!!enabled.value));stage.dataset.partNumbers=enabled.value?'on':'off';invalidate();};
