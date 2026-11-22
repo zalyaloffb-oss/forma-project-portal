@@ -51,7 +51,14 @@ async function loadPDF(){
  }
 }
 async function loadTabContent(version){const old=doc;doc=null;if(old)await old.destroy();if(version!==renderVersion)return;if(downloadUrl)URL.revokeObjectURL(downloadUrl);downloadUrl=null;if(tab==='banners'){
- $('#pdf-area').innerHTML=selected.model?`<button class="model-preview banner-preview" id="open-banners" aria-label="Открыть Баннеры 3D"><img src="${esc(selected.bannerCoverUrl||urls.get(selected.id)||selected.coverUrl||'')}" alt="Превью схемы размещения баннеров"><span>Открыть Баннеры 3D</span></button>`:'<div class="empty-file">Сначала добавьте 3D-модель проекта.</div>';
+ let preview=urls.get(selected.id)||selected.coverUrl||'';
+ if(selected.model&&selected.bannerCoverUrl){
+  const cover=await fetchAsset(selected.bannerCoverUrl)
+   .then(response=>response.ok?response.blob():null).catch(()=>null);
+  if(version!==renderVersion)return;
+  if(cover){downloadUrl=URL.createObjectURL(cover);preview=downloadUrl;}
+ }
+ $('#pdf-area').innerHTML=selected.model?`<button class="model-preview banner-preview" id="open-banners" aria-label="Открыть Баннеры 3D"><img src="${esc(preview)}" alt="Превью схемы размещения баннеров"><span>Открыть Баннеры 3D</span></button>`:'<div class="empty-file">Сначала добавьте 3D-модель проекта.</div>';
  if($('#open-banners'))$('#open-banners').onclick=()=>openModelViewer(selected,'banners');return;
 }if(tab==='furniture'){
  const items=selected.furniture||[];

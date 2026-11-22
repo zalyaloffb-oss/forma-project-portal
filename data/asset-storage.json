@@ -748,9 +748,80 @@
       "mime": "application/gzip",
       "decodedSHA256": "c7616d17ffca7f220a29bec0a9c5d743b47c3fd2a830d9028e191536d18bb8b9",
       "decodedBytes": 127012
+    },
+    "assets/fpp-3/banner-cover-fdf870e7bd5c.png": {
+      "bytes": 130941,
+      "sha256": "fdf870e7bd5ccb033a2abd63726f17e4490a8c2f064684ef73c4b2d604d5a979",
+      "mime": "image/png"
+    },
+    "assets/fpp-3/banner-texture-17d573d7474d.png": {
+      "bytes": 53422,
+      "sha256": "17d573d7474d3c28d6ff35589b84c185d31a687c9ca0a2bdc37a957a19456442",
+      "mime": "image/png"
+    },
+    "assets/fpp-3/banner-texture-2bb7403f2fdb.png": {
+      "bytes": 44669,
+      "sha256": "2bb7403f2fdb77f47f1885a4189846d9d18966cab3bc5dfa7a8c8977b9da8bbc",
+      "mime": "image/png"
+    },
+    "assets/fpp-3/banner-texture-3e9ac2163dbf.png": {
+      "bytes": 23066,
+      "sha256": "3e9ac2163dbfca6881c08a6a5f205512d8119852c6c3fd9654e8a241d9799acc",
+      "mime": "image/png"
+    },
+    "assets/fpp-3/banner-texture-66f482083cb8.png": {
+      "bytes": 102852,
+      "sha256": "66f482083cb8fff4c7082081a42ede5d56c149ab79e057a910c5a87c6c12e5f0",
+      "mime": "image/png"
+    },
+    "assets/fpp-3/banner-texture-6f573da413ff.png": {
+      "bytes": 142869,
+      "sha256": "6f573da413ffde727f3f69c8e81d0302139f7a981bf89b385088d5f08cb6d38f",
+      "mime": "image/png"
+    },
+    "assets/fpp-3/banner-texture-702b3ed044ab.png": {
+      "bytes": 24214,
+      "sha256": "702b3ed044ab35cd54c669277e270c350a70c064e0c8a3a82e8561833c5b31c1",
+      "mime": "image/png"
+    },
+    "assets/fpp-3/banner-texture-92ba6f970bee.png": {
+      "bytes": 103410,
+      "sha256": "92ba6f970bee7d4e612217d2b39b243bbe45b9330a1ed98a961ecc7449ad0ebf",
+      "mime": "image/png"
+    },
+    "assets/fpp-3/banner-texture-a4ed220ce20f.png": {
+      "bytes": 172183,
+      "sha256": "a4ed220ce20f688ecd573fea5b510aee6ad001cced8d2e9777e6b19f6415c321",
+      "mime": "image/png"
+    },
+    "assets/fpp-3/banner-texture-cfcf48b35b4c.png": {
+      "bytes": 315178,
+      "sha256": "cfcf48b35b4c881be647007cce780ee62afca459845a1876aaf53a9b181576b1",
+      "mime": "image/png"
+    },
+    "assets/fpp-3/banner-texture-d72c49d9fb8b.png": {
+      "bytes": 182938,
+      "sha256": "d72c49d9fb8bcbbcaaba72846c6e7fbda05e3bb613162fa22c6237ca814060fa",
+      "mime": "image/png"
+    },
+    "assets/fpp-3/banner-texture-da4d2c689d52.png": {
+      "bytes": 331745,
+      "sha256": "da4d2c689d52523787f578ead0c3a3e7022030d58f6f8127d22387b27ba4b93d",
+      "mime": "image/png"
+    },
+    "assets/fpp-3/banner-texture-de341be565a9.png": {
+      "bytes": 51094,
+      "sha256": "de341be565a941b3f3c50fd46d3b311f69d69557c4c5af30d5e7fc1e61577743",
+      "mime": "image/png"
+    },
+    "assets/fpp-3/banners-5d077bb354aa.json": {
+      "bytes": 7376,
+      "sha256": "5d077bb354aa461d4101a3eddb1ee6a9cb2cfa6cecea95ace544f5f55f81eb1a",
+      "mime": "application/json"
     }
   },
   "retainedFixtures": [
+    "assets/fpp-3/banners-5d077bb354aa.json",
     "assets/fpp/model-934129e0002b.glb",
     "assets/fpp/model-934129e0002b.glb.gz",
     "assets/tachpanel/model-c7616d17ffca.glb"

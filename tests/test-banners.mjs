@@ -50,3 +50,23 @@ for(const record of layout.surfaces)if(record.imageUrl){
  assert.ok(fs.existsSync(new URL('../'+record.imageUrl,import.meta.url))||(cloud&&cloud.bytes>0&&/^[a-f0-9]{64}$/.test(cloud.sha256)));
 }
 console.log('PASS: physical artwork placement, reset and published texture files.');
+
+const fpp3=catalog.projects.find(p=>p.id==='fpp-3-2026');
+const fpp3Layout=JSON.parse(fs.readFileSync(new URL('../'+fpp3.bannerLayoutUrl,import.meta.url)));
+assert.equal(fpp3Layout.modelUrl,fpp3.modelUrl);
+assert.equal(fpp3Layout.surfaces.length,12);
+assert.ok(storage.enabled&&storage.files[fpp3.bannerLayoutUrl]&&storage.files[fpp3.bannerCoverUrl]);
+for(const record of fpp3Layout.surfaces){
+ assert.ok(storage.files[record.imageUrl],record.name+' must have a texture on Disk');
+}
+assert.ok(!fpp3Layout.surfaces.some(({name})=>/^Б-1[12]\b/.test(name)));
+for(const code of ['Б-2','Б-4']){
+ const record=fpp3Layout.surfaces.find(({name})=>name.startsWith(code+' '));
+ assert.ok(record,code+' must include its frieze side');
+ const geometry=new THREE.BufferGeometry().setAttribute('position',new THREE.Float32BufferAttribute(record.worldVertices,3));
+ const side=new THREE.Mesh(geometry);side.updateMatrixWorld(true);
+ const face=planarFace(side,0);
+ assert.equal(face.vertices.length,record.worldVertices.length);
+ assert.ok(Math.abs(face.area-4.75)<1e-5,record.name+' must preserve the L-shaped cutout');
+}
+console.log('PASS: FPP #3 includes 12 Disk textures and both combined L-shaped sides.');
