@@ -205,12 +205,21 @@ $('#manager-form').onsubmit=async e=>{e.preventDefault();const name=$('#manager-
 
 async function put(project){return putLocal({...project,localDraft:true});}
 async function loadPublished(){
- const data=await loadCatalogue(),current=await records();
- const drafts=new Set(current.filter(p=>p.localDraft).map(p=>p.id));
- const published=data.projects.filter(item=>!drafts.has(item.id));
- if(published.length)await new Promise((resolve,reject)=>{
+ const data=await loadCatalogue();
+ const publishedIds=new Set(data.projects.map(project=>project.id));
+ await new Promise((resolve,reject)=>{
   const tx=db.transaction('projects','readwrite');
-  for(const item of published)tx.objectStore('projects').put({...item,published:true});
+  const store=tx.objectStore('projects');
+  const request=store.getAll();
+  request.onsuccess=()=>{
+   const drafts=new Set(request.result.filter(project=>project.localDraft).map(project=>project.id));
+   for(const project of request.result){
+    if(project.published&&!project.localDraft&&!publishedIds.has(project.id))store.delete(project.id);
+   }
+   for(const project of data.projects){
+    if(!drafts.has(project.id))store.put({...project,published:true});
+   }
+  };
   tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error);tx.onabort=()=>reject(tx.error);
  });
  // Public covers are normal lazy images, not serial downloads copied into IndexedDB.
