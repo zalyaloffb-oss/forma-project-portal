@@ -34,10 +34,11 @@ new ResizeObserver(positionSliderPanels).observe($('.toolbar'));window.addEventL
 function modelMetadata(object,key){for(let current=object;current;current=current.parent){if(current.userData?.[key])return current.userData[key];}return null;}
 const params=new URLSearchParams(location.search),projectId=window.FORMA_PROJECT?.id||params.get('project');
 let shareProject=window.FORMA_PROJECT||(projectId?{id:projectId}:{modelUrl:params.get('model')});
+let externalModelLink=null;
 const shareButton=document.createElement('button');shareButton.id='share-model';shareButton.title='Скопировать ссылку на просмотрщик этого проекта';shareButton.setAttribute('aria-label',shareButton.title);shareButton.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7 .5l3-3a5 5 0 0 0-7-7l-1.7 1.7M14 11a5 5 0 0 0-7-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg>';$('.topline > div').prepend(shareButton);
 for(const button of document.querySelectorAll('.selection-modes button'))document.querySelector('.toolbar').append(button);
 const closeButton=document.createElement('button');closeButton.id='viewer-close';closeButton.title='Выйти в каталог';closeButton.setAttribute('aria-label','Выйти в каталог');closeButton.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>';$('.topline > div').append(closeButton);closeButton.onclick=()=>{if(window.parent!==window)window.parent.postMessage({type:'forma-close-viewer'},location.origin);else window.location.href=new URL('./',document.baseURI).href;};
-shareButton.onclick=async()=>{const url=viewerLink(shareProject);if(await copyViewerLink(url)){$('#status').textContent='Ссылка скопирована';}};
+shareButton.onclick=async()=>{const url=new URL(viewerLink(shareProject));if(externalModelLink)url.searchParams.set('yadisk',externalModelLink);if(await copyViewerLink(url.href)){$('#status').textContent='Ссылка скопирована';}};
 const navigationMenu=document.createElement('div');navigationMenu.className='navigation-menu';navigationMenu.hidden=true;navigationMenu.setAttribute('aria-label','Управление видом');document.body.append(navigationMenu);
 const navigationButton=document.createElement('button');navigationButton.id='navigation-menu-toggle';navigationButton.setAttribute('aria-expanded','false');iconButton(navigationButton,'pan','Управление видом');const panButton=$('[data-mode="pan"]');panButton.before(navigationButton);
 for(const selector of ['[data-mode="orbit"]','[data-mode="pan"]','[data-mode="zoom"]','#fit','#home'])navigationMenu.append($(selector));
@@ -115,8 +116,20 @@ try{
   room.dispose();pmrem.dispose();
  }
  if(requested&&!permittedModel(requested))throw Error('Недопустимый адрес модели');
- const loader=new GLTFLoader(),compressed=await fetchModelBytes(shareProject?.modelGzipUrl);stage.dataset.modelTransport=compressed?'gzip':'original';
- const asset=compressed?await loader.parseAsync(compressed,new URL('.',requested).href):await loader.loadAsync(requested||'./models/health-territory-v23.glb'),model=asset.scene;scene.add(model);model.updateMatrixWorld(true);
+ const loader=new GLTFLoader();let asset;
+ if(params.has('yadisk')){
+  stage.dataset.modelTransport='yandex-pending';
+  const {loadYandexModel}=await import('./yandex-model.js?v=1');
+  const remote=await loadYandexModel(params.get('yadisk'),{onStage:text=>loading.textContent=text});
+  externalModelLink=remote.publicLink;
+  asset=await loader.parseAsync(remote.bytes,new URL('.',requested||import.meta.url).href);
+  stage.dataset.modelTransport='yandex-disk';stage.dataset.modelDownloadHost=remote.host;
+  stage.dataset.modelDownloadBytes=String(remote.size);stage.dataset.modelSHA256=remote.sha256;
+ }else{
+  const compressed=await fetchModelBytes(shareProject?.modelGzipUrl);stage.dataset.modelTransport=compressed?'gzip':'original';
+  asset=compressed?await loader.parseAsync(compressed,new URL('.',requested).href):await loader.loadAsync(requested||'./models/health-territory-v23.glb');
+ }
+ const model=asset.scene;scene.add(model);model.updateMatrixWorld(true);
  model.traverse(object=>{const node=asset.parser.associations.get(object)?.nodes;if(node!==undefined)Object.assign(object.userData,asset.parser.json.nodes[node]?.extras||{});});
  const fusionView=model.children[0]?.userData?.fusionCamera;
  const jointDescriptors=model.children[0]?.userData?.fusionJoints||[];
