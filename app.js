@@ -1,7 +1,7 @@
 import {loadCatalogue,projectModel} from './site-config.js?v=banner-preview-1';
 import {openPdf} from './pdf-engine.js?v=lazy-pdf-1';
 import {viewerLink} from './viewer-share.js?v=performance-1';
-import {fetchAsset,installAssetLinks} from './asset-store.js?v=1';
+import {fetchAsset,installAssetLinks} from './asset-store.js?v=large-source-1';
 const $=s=>document.querySelector(s), esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let db, projects=[], selected=null, editing=null, doc=null, page=1, renderVersion=0, drawVersion=0, tab='design', downloadUrl=null;
 const urls=new Map(), statuses=['Реализовано','На стадии проекта','Не согласовано'];

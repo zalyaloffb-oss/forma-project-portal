@@ -40,5 +40,17 @@ class PublicationChecks(unittest.TestCase):
             with self.assertRaises(RuntimeError):publish_export.write_asset({'viewerPath':'/test'},'model',ROOT/'models/health-territory-v23.glb')
             self.assertEqual(file.read_text(),original)
 
+    def test_large_cad_archive_is_streamed_and_marked_for_direct_download(self):
+        with tempfile.TemporaryDirectory() as folder,patch.object(publish_export,'ROOT',Path(folder)),patch('yandex_disk.Disk') as disk:
+            root=Path(folder);(root/'data').mkdir();config=root/'data/asset-storage.json'
+            config.write_text(json.dumps({'version':1,'provider':'yandex-disk','enabled':True,'files':{}}))
+            source=root/'large.f3d'
+            with source.open('wb') as stream:stream.truncate(201*1024*1024)
+            with patch.object(Path,'read_bytes',side_effect=AssertionError('Large archives must be streamed')):
+                path=publish_export.write_asset({'viewerPath':'/large-source'},'f3d',source)
+            row=json.loads(config.read_text())['files'][path]
+            self.assertTrue(row['downloadOnly']);self.assertEqual(row['bytes'],201*1024*1024)
+            self.assertNotIn('content',disk.return_value.upload.call_args.kwargs)
+
 
 if __name__=='__main__':unittest.main()

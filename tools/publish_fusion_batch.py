@@ -71,8 +71,8 @@ def main():
             if all(row['id'] in known for row in read(args.job)['exported']):break
         time.sleep(3)
     print(json.dumps({'phase':report['phase'],'published':len(report['published']),'uploadFailures':len(report['failed']),
-                      'exportFailures':len(job['failures']),'emptyModels':len(job['skipped'])}),flush=True)
-    if report['failed'] or job['failures']:raise SystemExit(1)
+                      'exportFailures':len(job['failures']),'dateFailures':len(job.get('dateFailures',[])),'emptyModels':len(job['skipped'])}),flush=True)
+    if report['failed'] or job['failures'] or job.get('dateFailures'):raise SystemExit(1)
 
 
 if __name__=='__main__':

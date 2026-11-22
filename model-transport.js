@@ -1,4 +1,4 @@
-import {fetchAsset} from './asset-store.js?v=1';
+import {fetchAsset} from './asset-store.js?v=large-source-1';
 function isGLB(buffer){
  if(buffer.byteLength<20)return false;
  const view=new DataView(buffer);

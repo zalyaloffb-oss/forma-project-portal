@@ -9,7 +9,10 @@ def creation_metadata(data_file, lookup=None):
         version_id=data_file.versionId
         original_id,count=re.subn(r'([?&]version=)\d+',r'\g<1>1',version_id)
         if count:
-            candidate=lookup(original_id)
+            try:candidate=lookup(original_id)
+            except RuntimeError as error:
+                print('Fusion direct version lookup failed; checking saved version history:',error)
+                candidate=None
             if candidate and candidate.id==data_file.id and candidate.versionNumber==1:
                 first=candidate
     if first is None:

@@ -1,6 +1,6 @@
 // Stable catalogue paths, public Disk storage, and integrity-checked browser reads.
 const SITE_ROOT=new URL('./',import.meta.url),API='https://cloud-api.yandex.net/v1/disk/public/resources/download';
-const LIMIT=200*1024*1024;
+const LIMIT=200*1024*1024,DOWNLOAD_LIMIT=50*1024**3;
 function publicKey(value){const u=new URL(value);if(u.protocol!=='https:'||u.username||u.password||u.port||!['disk.yandex.ru','disk.yandex.com','disk.360.yandex.ru','yadi.sk'].includes(u.hostname)||!/^\/d\/[\w-]+\/?$/.test(u.pathname))throw Error('Некорректная папка хранилища.');return u.href;}
 function transferURL(value){const u=new URL(value);if(u.protocol!=='https:'||u.username||u.password||!['','443'].includes(u.port)||!['yandex.ru','yandex.net'].some(h=>u.hostname.endsWith('.'+h)))throw Error('Некорректный адрес скачивания.');return u.href;}
 export function logicalAssetPath(value,base=SITE_ROOT){const u=new URL(typeof value==='string'||value instanceof URL?value:value.url,base),root=new URL(base);return u.origin===root.origin&&u.pathname.startsWith(root.pathname)?decodeURIComponent(u.pathname.slice(root.pathname.length)):null;}
@@ -17,7 +17,7 @@ export function createAssetStore({baseURL=SITE_ROOT,fetcher=fetch,configLoader,o
   const path=logicalAssetPath(value,baseURL);
   if(!path||!path.startsWith('assets/'))return null;
   const storage=await config(),row=storage?.files[path];if(!row)return null;
-  if(!Number.isSafeInteger(row.bytes)||row.bytes<0||row.bytes>LIMIT||!/^[a-f0-9]{64}$/.test(row.sha256))throw Error('Некорректная запись файла в хранилище.');
+  if(!Number.isSafeInteger(row.bytes)||row.bytes<0||row.bytes>(row.downloadOnly===true?DOWNLOAD_LIMIT:LIMIT)||!/^[a-f0-9]{64}$/.test(row.sha256))throw Error('Некорректная запись файла в хранилище.');
   const query=new URLSearchParams({public_key:storage.publicKey,path:'/'+path});
   const r=await fetcher(API+'?'+query,{credentials:'omit',referrerPolicy:'no-referrer',cache:'no-store',signal:options.signal||AbortSignal.timeout(120000)});
   if(!r.ok)throw Error('Яндекс Диск не выдал файл (HTTP '+r.status+').');
@@ -25,6 +25,7 @@ export function createAssetStore({baseURL=SITE_ROOT,fetcher=fetch,configLoader,o
  }
  async function read(value,options={}){
   const file=await locate(value,options);if(!file)return fetcher(value,options);
+  if(file.row.downloadOnly===true)throw Error('Крупный исходник доступен по ссылке для скачивания.');
   const r=await fetcher(file.href,{credentials:'omit',referrerPolicy:'no-referrer',cache:'no-store',signal:options.signal||AbortSignal.timeout(180000)});
   if(!r.ok)throw Error('Не удалось скачать файл с Диска (HTTP '+r.status+').');
   const decoded=file.row.decodedBytes&&/^[a-f0-9]{64}$/.test(file.row.decodedSHA256||'');

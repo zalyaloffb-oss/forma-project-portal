@@ -1,6 +1,6 @@
 import * as THREE from 'three';
-import {fetchAsset,readAssetBytes} from './asset-store.js?v=1';
-import {fetchModelBytes} from './model-transport.js?v=yandex-assets-1';
+import {fetchAsset,readAssetBytes} from './asset-store.js?v=large-source-1';
+import {fetchModelBytes} from './model-transport.js?v=large-source-1';
 import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 import {loadCatalogue,projectModel,permittedModel,assetUrl,SITE_ROOT} from './site-config.js?v=performance-1';

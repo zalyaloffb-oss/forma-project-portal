@@ -15,7 +15,7 @@
   document.querySelector('#catalogue').href=base.href;
   const status=document.querySelector('#status');status.textContent='Открываем файл с Яндекс Диска…';
   try{
-   const {createAssetStore}=await import(new URL('asset-store.js',base));
+   const {createAssetStore}=await import(new URL('asset-store.js?v=large-source-1',base));
    const href=await createAssetStore({baseURL:base}).downloadURL(location.href);
    if(new URL(href).origin!==location.origin)location.replace(href);
    else status.textContent='Файл не найден в каталоге.';

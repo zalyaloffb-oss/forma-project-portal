@@ -27,6 +27,12 @@ class FusionDates(unittest.TestCase):
         with self.assertRaises(ValueError):creation_date({'sourceCreatedAt':'2024-01-01T22:30:00'})
         with self.assertRaises(ValueError):creation_metadata(NS(id='x',name='Bad',versionNumber=1,dateCreated=0))
 
+    def test_version_history_is_used_when_direct_lookup_is_not_supported(self):
+        first=NS(id='same',name='Stand',versionNumber=1,dateCreated=1704067200)
+        latest=NS(id='same',name='Stand',versionNumber=4,versionId='urn:adsk:file:stand?version=4',versions=NS(count=1,item=lambda index:first))
+        def unsupported(key):raise RuntimeError('InternalValidationError: versions')
+        self.assertEqual(creation_metadata(latest,unsupported)['sourceCreatedAt'],'2024-01-01T00:00:00+00:00')
+
     def test_distinct_sources_with_same_title_do_not_replace_each_other(self):
         records=[{'id':'old','title':'Stand','fusionDataFileId':'first','model':'fusion'}]
         self.assertIsNone(match_project(records,{'title':'Stand','dataFileId':'second'}))

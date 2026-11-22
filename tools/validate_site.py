@@ -17,7 +17,8 @@ def main():
         file=ROOT/url;row=cloud.get(url)
         assert file.is_file() or row, 'Asset missing locally and from verified cloud storage: '+url
         if row:
-            assert 0<row['bytes']<=200*1024*1024 and re.fullmatch('[a-f0-9]{64}',row['sha256'])
+            assert 0<row['bytes']<=(50*1024**3 if row.get('downloadOnly') is True else 200*1024*1024) and re.fullmatch('[a-f0-9]{64}',row['sha256'])
+            if row.get('downloadOnly'):assert not url.endswith(('.glb','.glb.gz','.pdf','.png','.jpg','.jpeg'))
             if file.is_file():assert file.stat().st_size==row['bytes'] and hashlib.sha256(file.read_bytes()).hexdigest()==row['sha256'],url
         elif file.is_file():assert file.stat().st_size<100*1024*1024
         return file

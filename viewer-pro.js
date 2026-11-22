@@ -1,7 +1,7 @@
 import {loadCatalogue,permittedModel,projectModel} from './site-config.js?v=performance-1';
 import * as THREE from 'three';
-import {fetchModelBytes} from './model-transport.js?v=yandex-assets-1';
-import {readAssetBytes} from './asset-store.js?v=1';
+import {fetchModelBytes} from './model-transport.js?v=large-source-1';
+import {readAssetBytes} from './asset-store.js?v=large-source-1';
 import {partDxf,dxfFilename,flatContours} from './part-dxf.js?v=3';
 import {measurementMarkerRadius} from './measurement-markers.js?v=1';
 import {createComponentHover} from './component-hover.js?v=1';

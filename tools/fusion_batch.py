@@ -100,6 +100,7 @@ class Batch(adsk.core.CustomEventHandler):
 
     def candidates(self):
         if self.state.get('inventoryFirst') and self.state['folders']:return []
+        if not self.state['folders']:audit_existing_dates(self,Path(__file__).resolve().parents[1]/'data/catalog.json')
         done={r['id'] for key in ('exported','skipped','failures') for r in self.state[key] if r.get('kind')!='folder'}
         candidates=[f for f in self.state['files'] if f['extension'].lower() in ('f3d','f3z') and f['id'] not in done]
         # Verify the established exporter first on a small named furniture model.

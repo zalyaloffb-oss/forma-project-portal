@@ -27,4 +27,9 @@ const plain=setup({cfg:null});await plain.store.fetch(new URL('assets/test.pdf',
 const unmapped=setup();await unmapped.store.fetch(new URL('data/catalog.json',baseURL).href);assert.equal(unmapped.calls.length,1);
 const decodedConfig={...config,files:{'assets/test.pdf':{bytes:5,sha256:'0'.repeat(64),decodedBytes:bytes.length,decodedSHA256:sha256}}};
 const decoded=setup({cfg:decodedConfig});assert.deepEqual(new Uint8Array(await(await decoded.store.fetch(new URL('assets/test.pdf',baseURL).href)).arrayBuffer()),bytes);
+const largeConfig={...config,files:{'assets/archive.f3d':{bytes:403*1024*1024,sha256,downloadOnly:true}}};
+const large=setup({cfg:largeConfig}),largeUrl=new URL('assets/archive.f3d',baseURL).href;
+assert.equal(new URL(await large.store.downloadURL(largeUrl)).hostname,'downloader.disk.yandex.ru');
+await assert.rejects(()=>large.store.fetch(largeUrl),/Крупный исходник/);
+assert.ok(large.calls.every(c=>c.url.startsWith('https://cloud-api.yandex.net/')),'large CAD archives must not be fetched into browser memory');
 console.log('PASS: public-folder assets, exact bytes/SHA-256, no credentials/referrer, path/origin guards, failures and no GitHub fallback.');

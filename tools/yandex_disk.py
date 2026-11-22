@@ -23,6 +23,12 @@ VAULT = Path(os.environ.get('LOCALAPPDATA', str(Path.home() / 'AppData/Local')))
 ROOT = 'disk:/EES проекты/forma-project-portal'
 TOKEN_FILE = VAULT / 'oauth.dpapi'
 
+def file_sha256(path):
+    digest=hashlib.sha256()
+    with Path(path).open('rb') as stream:
+        for block in iter(lambda:stream.read(1024*1024),b''):digest.update(block)
+    return digest.hexdigest()
+
 
 class DiskError(RuntimeError):
     def __init__(self, message, status=0):
@@ -169,7 +175,7 @@ class Disk:
         local = Path(local).resolve(strict=True)
         if not local.is_file():
             raise DiskError('Нужен существующий файл.')
-        data_hash = hashlib.sha256(content if content is not None else local.read_bytes()).hexdigest()
+        data_hash = hashlib.sha256(content).hexdigest() if content is not None else file_sha256(local)
         size = len(content) if content is not None else local.stat().st_size
         if expected_sha256 and data_hash != expected_sha256:
             raise DiskError('Локальный файл изменился после составления списка: ' + relative)

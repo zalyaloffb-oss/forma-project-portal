@@ -44,10 +44,22 @@ def match_project(items,meta):
     return found[0] if found else None
 
 def write_asset(project,kind,source,disk=None):
-    source=Path(source);data=source.read_bytes()
+    source=Path(source)
     storage_file=ROOT/'data/asset-storage.json'
     storage=json.loads(storage_file.read_text(encoding='utf-8')) if storage_file.is_file() else None
     cloud=storage and storage.get('enabled') and kind!='cover'
+    size=source.stat().st_size
+    if cloud and kind in ('f3d','source') and size>200*1024*1024:
+        from yandex_disk import Disk,file_sha256
+        if size>50*1024**3:raise ValueError('Source exceeds the verified Disk file limit: '+source.name)
+        digest=file_sha256(source);suffix='.f3d' if kind=='f3d' else source.suffix.lower()
+        path='assets/'+project['viewerPath'].strip('/')+'/'+kind+'-'+digest[:12]+suffix
+        (disk or Disk()).upload(source,path,expected_sha256=digest)
+        storage['files'][path]={'bytes':size,'sha256':digest,'mime':'application/octet-stream','downloadOnly':True}
+        temporary=storage_file.with_suffix('.json.next')
+        temporary.write_text(json.dumps(storage,ensure_ascii=False,indent=2)+'\n',encoding='utf-8');temporary.replace(storage_file)
+        return path
+    data=source.read_bytes()
     limit=(200 if cloud else 99)*1024*1024
     if len(data)>limit:raise ValueError('File exceeds the storage limit: '+source.name)
     suffix={ 'model':'.glb','cover':('.jpg' if data.startswith(b'\xff\xd8') else '.png'),'f3d':'.f3d','assembly':'.pdf'}.get(kind,source.suffix.lower())
