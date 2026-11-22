@@ -24,8 +24,9 @@ def materialized_viewer(project,base):
     s=(ROOT/'viewer.html').read_text(encoding='utf-8')
     s=s.replace('<head>','<head><base href="'+base+'">',1)
     title=html.escape(project['title']+' — 3D');s=re.sub(r'<title>.*?</title>','<title>'+title+'</title>',s,count=1)
+    s=s.replace('<span>EES проекты</span>','<span>'+html.escape(project['title'])+'</span>',1)
     payload=json.dumps(project,ensure_ascii=False,separators=(',',':')).replace('<','\\u003c')
-    s=s.replace('</head>','<link rel="canonical" href="https://zalyaloffb-oss.github.io/forma-project-portal/'+project['viewerPath'].strip('/')+'/"><meta property="og:image" content="https://zalyaloffb-oss.github.io/forma-project-portal/'+project.get('coverUrl','')+'"><meta property="og:title" content="'+title+'"><meta property="og:description" content="3D-модель проекта в каталоге Форма"><script>window.FORMA_PROJECT='+payload+';</script></head>')
+    s=s.replace('</head>','<link rel="canonical" href="https://zalyaloffb-oss.github.io/forma-project-portal/'+project['viewerPath'].strip('/')+'/"><meta property="og:image" content="https://zalyaloffb-oss.github.io/forma-project-portal/'+project.get('coverUrl','')+'"><meta property="og:title" content="'+title+'"><meta property="og:description" content="3D-модель проекта в EES проекты"><script>window.FORMA_PROJECT='+payload+';</script></head>')
     folder=ROOT/project['viewerPath'].strip('/');folder.mkdir(exist_ok=True);(folder/'index.html').write_text(s,encoding='utf-8')
 
 def main():
