@@ -818,6 +818,150 @@
       "bytes": 7376,
       "sha256": "5d077bb354aa461d4101a3eddb1ee6a9cb2cfa6cecea95ace544f5f55f81eb1a",
       "mime": "application/json"
+    },
+    "assets/vitrina-500-x-500-x-2000/f3d-aedd58c27de9.f3d": {
+      "bytes": 705192,
+      "sha256": "aedd58c27de9531ccd8df1c127cd44f2aa84be20e4f6d3bf2196860898253a8c",
+      "mime": "application/octet-stream"
+    },
+    "assets/vitrina-500-x-500-x-2000/model-43ca9e64a7de.glb": {
+      "bytes": 311336,
+      "sha256": "43ca9e64a7de9523fb5765e37a0e7268f1b2553b8169cd7b2aa91b4e8a891de3",
+      "mime": "model/gltf-binary",
+      "selfContainedGLB": true
+    },
+    "assets/vitrina-500-x-500-x-2000/model-43ca9e64a7de.glb.gz": {
+      "bytes": 24984,
+      "sha256": "14d7bd5fae6f72b2e12fba61a9ea74f835470942076de3d7d4da611a6871b7ed",
+      "mime": "application/gzip",
+      "decodedSHA256": "43ca9e64a7de9523fb5765e37a0e7268f1b2553b8169cd7b2aa91b4e8a891de3",
+      "decodedBytes": 311336
+    },
+    "assets/80h25-shater/f3d-ea42fd26a82a.f3d": {
+      "bytes": 188163,
+      "sha256": "ea42fd26a82a95d7079251d5ab75c15cbe33815cd0470cf44a182e68e9446c15",
+      "mime": "application/octet-stream"
+    },
+    "assets/80h25-shater/model-20407b84e2af.glb": {
+      "bytes": 78788,
+      "sha256": "20407b84e2afed48e3d082a250c0d579c929d4a5275edfc91230dc5b68cd2059",
+      "mime": "model/gltf-binary",
+      "selfContainedGLB": true
+    },
+    "assets/80h25-shater/model-20407b84e2af.glb.gz": {
+      "bytes": 7108,
+      "sha256": "ca8489f46336cf5e1f431c4234e3b0076f545f306e0388147a6aa94ade9a50a1",
+      "mime": "application/gzip",
+      "decodedSHA256": "20407b84e2afed48e3d082a250c0d579c929d4a5275edfc91230dc5b68cd2059",
+      "decodedBytes": 78788
+    },
+    "assets/utair/f3d-7127ecbc1295.f3d": {
+      "bytes": 574269,
+      "sha256": "7127ecbc12959202d922ede9e09ba1d2dbd3a15f0ca80efad733973c28382adf",
+      "mime": "application/octet-stream"
+    },
+    "assets/utair/model-8d2c9776a911.glb": {
+      "bytes": 1020844,
+      "sha256": "8d2c9776a91104884f5972e99672944636804baf80b2adc49c57cbe403a5e14f",
+      "mime": "model/gltf-binary",
+      "selfContainedGLB": true
+    },
+    "assets/utair/model-8d2c9776a911.glb.gz": {
+      "bytes": 198843,
+      "sha256": "1c7a4ded5bbebfbd077db6771d68f90d77d26990ed94e191f76e27bd5b9f1dcb",
+      "mime": "application/gzip",
+      "decodedSHA256": "8d2c9776a91104884f5972e99672944636804baf80b2adc49c57cbe403a5e14f",
+      "decodedBytes": 1020844
+    },
+    "assets/avg-dlya-prosmotra/f3d-92f5740537e6.f3d": {
+      "bytes": 6842285,
+      "sha256": "92f5740537e67fda755b405972d34a82029bddb14c322ab6475dc86dd42a0f47",
+      "mime": "application/octet-stream"
+    },
+    "assets/avg-dlya-prosmotra/model-a759268e15d4.glb": {
+      "bytes": 19144696,
+      "sha256": "a759268e15d498c6b382aa46c40dd96d885ed76846f94df3b63acdfc8e890afd",
+      "mime": "model/gltf-binary",
+      "selfContainedGLB": true
+    },
+    "assets/avg-dlya-prosmotra/model-a759268e15d4.glb.gz": {
+      "bytes": 1499303,
+      "sha256": "2b97e95437cd84031303fc3d1d4edd170fb80a11d4dbfe0ef361f7a4b1a5fc3b",
+      "mime": "application/gzip",
+      "decodedSHA256": "a759268e15d498c6b382aa46c40dd96d885ed76846f94df3b63acdfc8e890afd",
+      "decodedBytes": 19144696
+    },
+    "assets/basis/f3d-1f8cebdc239a.f3d": {
+      "bytes": 1254935,
+      "sha256": "1f8cebdc239ad749a5d531907ff393af98169a864cf0610694117ec0a05afba5",
+      "mime": "application/octet-stream"
+    },
+    "assets/basis/model-6b8f62a77cfc.glb": {
+      "bytes": 686800,
+      "sha256": "6b8f62a77cfc06507b554d96917ec13d0a47533b1bbf973d64169bdd4db3d0ae",
+      "mime": "model/gltf-binary",
+      "selfContainedGLB": true
+    },
+    "assets/basis/model-6b8f62a77cfc.glb.gz": {
+      "bytes": 95127,
+      "sha256": "aec48d820f2028274119d3c1432ac45a52d4cd47da4ac38d920fc58bac36380c",
+      "mime": "application/gzip",
+      "decodedSHA256": "6b8f62a77cfc06507b554d96917ec13d0a47533b1bbf973d64169bdd4db3d0ae",
+      "decodedBytes": 686800
+    },
+    "assets/pla/f3d-e0fe91061ebf.f3d": {
+      "bytes": 2905108,
+      "sha256": "e0fe91061ebf498577407b09a4151858fe7b0c6cb8a10f1550f5b7dcb4bfe811",
+      "mime": "application/octet-stream"
+    },
+    "assets/pla/model-f726f10b6ae9.glb": {
+      "bytes": 7005980,
+      "sha256": "f726f10b6ae9a37ab162f90d17177f07fbb29adbd95773cdc1d021895d77d9b9",
+      "mime": "model/gltf-binary",
+      "selfContainedGLB": true
+    },
+    "assets/pla/model-f726f10b6ae9.glb.gz": {
+      "bytes": 588509,
+      "sha256": "93cecf41b552b5a651c80597c177d8ab09bc57d4e96e359a390a96edd0eb64d8",
+      "mime": "application/gzip",
+      "decodedSHA256": "f726f10b6ae9a37ab162f90d17177f07fbb29adbd95773cdc1d021895d77d9b9",
+      "decodedBytes": 7005980
+    },
+    "assets/plastmass-ground/f3d-20ac20ac32aa.f3d": {
+      "bytes": 415466,
+      "sha256": "20ac20ac32aab4eb7928ce48b79ee7474c8e6432a4bfe9a4821958fb222ab871",
+      "mime": "application/octet-stream"
+    },
+    "assets/plastmass-ground/model-ef18c2a0c6b6.glb": {
+      "bytes": 161584,
+      "sha256": "ef18c2a0c6b649ddc62eb3eba931bcae0a10126bcd6b391386d9aad1058546a9",
+      "mime": "model/gltf-binary",
+      "selfContainedGLB": true
+    },
+    "assets/plastmass-ground/model-ef18c2a0c6b6.glb.gz": {
+      "bytes": 26079,
+      "sha256": "381fa1b460e6600617f7524c2ba014133eac49d293de4865f6af570382f59045",
+      "mime": "application/gzip",
+      "decodedSHA256": "ef18c2a0c6b649ddc62eb3eba931bcae0a10126bcd6b391386d9aad1058546a9",
+      "decodedBytes": 161584
+    },
+    "assets/rhe/f3d-81460bf72fbe.f3d": {
+      "bytes": 6321318,
+      "sha256": "81460bf72fbef212ace63e18a2db3925f12e5580a912943364755282b966a076",
+      "mime": "application/octet-stream"
+    },
+    "assets/rhe/model-703de303c4fd.glb": {
+      "bytes": 3694204,
+      "sha256": "703de303c4fd945b65579fa445eabaf7c0e5e3d32da51564ffcd12e2f80d8edd",
+      "mime": "model/gltf-binary",
+      "selfContainedGLB": true
+    },
+    "assets/rhe/model-703de303c4fd.glb.gz": {
+      "bytes": 277665,
+      "sha256": "3d8763ed19dd7fcf0f53b5cf200763dbfd26e6e41a72693d5b7385ff2306bfd3",
+      "mime": "application/gzip",
+      "decodedSHA256": "703de303c4fd945b65579fa445eabaf7c0e5e3d32da51564ffcd12e2f80d8edd",
+      "decodedBytes": 3694204
     }
   },
   "retainedFixtures": [

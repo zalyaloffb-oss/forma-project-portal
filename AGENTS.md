@@ -15,6 +15,9 @@ Local owner configuration only gives a repository path and is outside this check
 
 Source identity and stable viewerPath must survive model replacement. Preserve
 PDF/JPG and project fields. Never guess a match if source IDs or titles conflict.
+For Fusion, creation means DataFile version 1 dateCreated, not the latest version
+or the export clock. Store the UTC source timestamp and show its Moscow date.
+Never substitute today's date when original creation metadata is unavailable.
 Run tools/validate_site.py and tests/test-routing.mjs before publishing. Check the
 GitHub Pages workflow and live model after push; a Git push alone is not deployment.
 Do not use the one-off migrate_local.py to reset newly published records.

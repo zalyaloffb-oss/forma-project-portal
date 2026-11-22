@@ -15,6 +15,16 @@ def slugify(value):
 
 def read_catalog():return json.loads((ROOT/'data/catalog.json').read_text(encoding='utf-8'))
 
+def creation_date(meta):
+    value=meta.get('sourceCreatedAt')
+    if value:
+        created=datetime.datetime.fromisoformat(value.replace('Z','+00:00'))
+        if created.tzinfo is None:raise ValueError('Fusion creation time must include its timezone')
+        return created.astimezone(datetime.timezone(datetime.timedelta(hours=3))).date().isoformat()
+    if meta.get('dataFileId'):
+        raise ValueError('Fusion не передал дату первой версии. Обновите экспортёр; текущая дата не подставляется.')
+    return datetime.date.today().isoformat()
+
 def match_project(items,meta):
     source=meta.get('dataFileId')
     if source:
@@ -24,13 +34,16 @@ def match_project(items,meta):
     explicit=meta.get('expectedExistingProjectId') or meta.get('projectId')
     if explicit:
         found=next((p for p in items if p['id']==explicit),None)
-        if found:return found
+        if found:
+            if source and found.get('fusionDataFileId') not in (None,'',source):raise ValueError('Explicit project and Fusion source identities conflict')
+            return found
         if meta.get('expectedExistingProjectId'):raise ValueError('Expected project is missing; refusing to create a duplicate')
     found=[p for p in items if p['title'].strip().casefold()==meta['title'].strip().casefold()]
     if len(found)>1:raise ValueError('Ambiguous project title; specify projectId')
+    if found and source and (found[0].get('fusionDataFileId') not in (None,'',source) or found[0].get('model')=='max'):return None
     return found[0] if found else None
 
-def write_asset(project,kind,source):
+def write_asset(project,kind,source,disk=None):
     source=Path(source);data=source.read_bytes()
     storage_file=ROOT/'data/asset-storage.json'
     storage=json.loads(storage_file.read_text(encoding='utf-8')) if storage_file.is_file() else None
@@ -49,7 +62,7 @@ def write_asset(project,kind,source):
         from yandex_disk import Disk
         from prepare_yandex_storage import descriptor
         if storage.get('version')!=1 or storage.get('provider')!='yandex-disk':raise ValueError('Unknown asset storage')
-        disk=Disk();path=target.relative_to(ROOT).as_posix()
+        disk=disk or Disk();path=target.relative_to(ROOT).as_posix()
         uploads={path:data}
         if kind=='model':uploads[path+'.gz']=gzip.compress(data,compresslevel=6,mtime=0)
         records={}
@@ -84,8 +97,9 @@ def git(*args):
     if result.returncode:raise RuntimeError(result.stderr[-1000:])
     return result.stdout.strip()
 
-def publish(meta,files,report=lambda *args:None,push=True):
+def publish(meta,files,report=lambda *args:None,push=True,disk=None):
     if push and git('status','--porcelain'):raise RuntimeError('Сначала завершите текущие изменения репозитория; публикация остановлена.')
+    source_date=creation_date(meta)
     data=read_catalog()
     furniture=[(p,item) for p in data['projects'] for item in p.get('furniture',[]) if meta.get('dataFileId') and item.get('fusionDataFileId')==meta['dataFileId']]
     if len(furniture)>1:raise ValueError('Ambiguous furniture source identity')
@@ -99,16 +113,24 @@ def publish(meta,files,report=lambda *args:None,push=True):
         pid=meta.get('projectId') or ('fusion-' if meta.get('dataFileId') else 'max-')+hashlib.sha256(source.encode()).hexdigest()
         slug=slugify(meta['title']);used={p['viewerPath'] for p in data['projects']}
         if '/'+slug in used:slug+='-'+hashlib.sha256(pid.encode()).hexdigest()[:6]
-        project={'id':pid,'title':meta['title'],'customer':'Не указан','event':'','manager':'','date':datetime.date.today().isoformat(),'status':'Не указан','source':'','viewerPath':'/'+slug,'attachments':[],'published':True}
+        project={'id':pid,'title':meta['title'],'customer':'Не указан','event':'','manager':'','date':source_date,'status':'Не указан','source':'','viewerPath':'/'+slug,'attachments':[],'published':True}
         data['projects'].insert(0,project)
     report(7,'Подготовка файлов каталога…')
     if parent is None:project['title']=meta['title']
     project['model']='fusion' if meta.get('dataFileId') else project.get('model','max')
     if meta.get('dataFileId'):project['fusionDataFileId']=meta['dataFileId'];project['fusionVersion']=str(meta.get('version',''))
+    if meta.get('dataFileId'):
+        project['sourceApp']='Fusion'
+        if 'bodyCount' in meta:project['bodyCount']=meta['bodyCount']
+        if 'sourceFolderPath' in meta:project['fusionFolderPath']=meta['sourceFolderPath']
+    if meta.get('sourceCreatedAt'):
+        project['date']=source_date
+        for key in ('sourceCreatedAt','sourceCreatedVersion','dateSource'):
+            if key in meta:project[key]=meta[key]
     for kind,source in files.items():
         if kind not in ['model','cover','f3d','source','assembly']:raise ValueError('Unexpected file type')
         destination={**project,'viewerPath':(parent or project)['viewerPath']}
-        path=write_asset(destination,kind,source);project[{'source':'sourceFileUrl'}.get(kind,kind+'Url')]=path
+        path=write_asset(destination,kind,source,disk=disk);project[{'source':'sourceFileUrl'}.get(kind,kind+'Url')]=path
         if kind=='model':project['modelGzipUrl']=destination['modelGzipUrl']
     project['updatedAt']=datetime.datetime.now(datetime.timezone.utc).isoformat();save_catalog(data)
     route=parent or project
