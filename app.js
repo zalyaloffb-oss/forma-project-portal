@@ -9,6 +9,25 @@ const fmt=date=>!date?'Не указана':new Intl.DateTimeFormat('ru-RU',{day
 const badge=s=>`<span class="badge ${s===statuses[1]?'progress':s===statuses[2]?'rejected':''}">${esc(s)}</span>`;
 function toast(s){$('#toast').textContent=s;$('#toast').classList.add('show');setTimeout(()=>$('#toast').classList.remove('show'),3500)}
 installAssetLinks(toast);
+
+function setSidebar(open){
+ const panel=$('#catalog-sidebar'),button=$('#settings-btn');
+ if(!open&&panel.contains(document.activeElement))button.focus();
+ panel.hidden=!open;
+ $('#sidebar-backdrop').hidden=!open;
+ document.body.classList.toggle('sidebar-open',open);
+ button.setAttribute('aria-expanded',String(open));
+ button.title=open?'Закрыть левую панель':'Открыть левую панель';
+ button.setAttribute('aria-label',button.title);
+}
+$('#settings-btn').onclick=()=>setSidebar($('#catalog-sidebar').hidden);
+$('#sidebar-backdrop').onclick=()=>setSidebar(false);
+document.addEventListener('keydown',event=>{
+ if(event.key==='Escape'&&!$('#catalog-sidebar').hidden&&!document.querySelector('dialog[open]')){
+  event.preventDefault();setSidebar(false);
+ }
+});
+
 function openDB(){return new Promise((resolve,reject)=>{const r=indexedDB.open('forma-project-library-github-v1',1);r.onupgradeneeded=()=>r.result.createObjectStore('projects',{keyPath:'id'});r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error)})}
 function records(){return new Promise((resolve,reject)=>{const tx=db.transaction('projects'),r=tx.objectStore('projects').getAll();r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error)})}
 function putLocal(p){return new Promise((resolve,reject)=>{const tx=db.transaction('projects','readwrite');tx.objectStore('projects').put(p);tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error);tx.onabort=()=>reject(tx.error)})}
@@ -202,7 +221,7 @@ function managerNames(){
 }
 function fillManagers(){const select=$('#project-form').elements.manager;const value=select.value;select.innerHTML='<option value="">Не указан</option>'+managerNames().map(name=>`<option value="${esc(name)}">${esc(name)}</option>`).join('');select.value=value;}
 function showManagers(){const names=managerNames();$('#manager-list').innerHTML=names.length?names.map(name=>`<li>${esc(name)}</li>`).join(''):'<li>Менеджеров пока нет.</li>';}
-$('#settings-btn').onclick=()=>{$('#manager-message').textContent='';$('#manager-form').reset();try{showManagers();}catch{$('#manager-message').textContent='Не удалось прочитать сохранённый список менеджеров.';}$('#settings-modal').showModal();};
+$('#service-settings-btn').onclick=()=>{$('#manager-message').textContent='';$('#manager-form').reset();try{showManagers();}catch{$('#manager-message').textContent='Не удалось прочитать сохранённый список менеджеров.';}$('#settings-modal').showModal();};
 $('#manager-form').onsubmit=async e=>{e.preventDefault();const name=$('#manager-name').value.trim().replace(/\s+/g,' ');if(!name){$('#manager-message').textContent='Введите имя менеджера.';return;}try{const names=managerNames();if(names.some(n=>n.toLocaleLowerCase('ru')===name.toLocaleLowerCase('ru'))){$('#manager-message').textContent='Такой менеджер уже есть в списке.';return;}localStorage.setItem('forma-managers',JSON.stringify([...names,name]));showManagers();fillManagers();$('#manager-form').reset();$('#manager-message').textContent='Менеджер добавлен.';}catch{$('#manager-message').textContent='Не удалось сохранить менеджера. Проверьте доступ к хранилищу браузера.';}};
 
 async function put(project){return putLocal({...project,localDraft:true});}

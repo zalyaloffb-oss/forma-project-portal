@@ -2,3 +2,23 @@
 .side-status .neutral{background:#94a1ab}
 
 @media(max-width:700px),(pointer:coarse) and (max-width:1024px){.side-dashboard{display:none}.sidebar{display:none}main{margin-left:0}}
+
+/* The gear stays available while the navigation panel is collapsed. */
+.sidebar{display:flex;position:fixed;inset:0 auto 0 0;width:232px;height:100dvh;padding:38px 24px 120px;z-index:30;border-right:1px solid var(--line);background:#eff2f4}
+.sidebar[hidden],.sidebar-backdrop[hidden]{display:none}
+.sidebar>.brand{display:block}
+.sidebar>.nav{display:flex}
+.sidebar .side-dashboard{display:block}
+.sidebar-bottom{position:fixed;left:16px;bottom:max(16px,env(safe-area-inset-bottom));z-index:31;margin:0;padding:8px;border-radius:30px;background:#eff2f4}
+.sidebar-bottom>.profile{display:flex;gap:10px;align-items:center;margin:0;padding:0;border:0}
+.profile-settings{width:44px;height:44px}
+.profile-settings[aria-expanded=true]{background:#dbe2e7;color:#075477}
+.sidebar-backdrop{display:none}
+main{margin-left:0;padding-bottom:100px}
+.sidebar-open main{margin-left:232px}
+@media(max-width:700px),(pointer:coarse) and (max-width:1024px){
+ .sidebar{width:min(280px,calc(100vw - 68px));padding:24px 20px 120px;box-shadow:8px 0 30px #12354720}
+ .sidebar-open main{margin-left:0}
+ .sidebar-backdrop:not([hidden]){display:block;position:fixed;inset:0;z-index:29;padding:0;border:0;border-radius:0;background:#0f283559}
+ body.sidebar-open{overflow:hidden}
+}
