@@ -1,7 +1,11 @@
 # Forma on GitHub Pages
 
 This is the active public fallback catalogue, migrated from Beget on 2026-11-04.
-Read README.md and data/catalog.json first. Public models are under assets/.
+Read README.md, data/catalog.json and data/asset-storage.json first.
+Since 2026-11-23, logical assets/ paths resolve through asset-store.js to verified
+Yandex Disk files. Keep small social previews and retainedFixtures on Pages.
+Missing local media is expected when a valid cloud descriptor exists; do not
+restore bulk media into Git. Owner publications use the encrypted local connector.
 Use site-config.js for origin and project-subdirectory-aware URLs; never hardcode
 root /catalog or Beget API URLs into the frontend. GitHub Pages serves static files.
 All browser additions are explicitly labelled local drafts, exported in settings.
