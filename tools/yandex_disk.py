@@ -97,8 +97,10 @@ class Disk:
     def _curl(self, url, *, method='GET', authenticated=False, upload=None, content=None, output=None):
         with tempfile.TemporaryDirectory(prefix='ees-disk-') as folder:
             response = Path(folder) / 'response'
+            transfer_size = len(content) if content is not None else Path(upload).stat().st_size if upload else 0
+            timeout = max(45, min(600, int(30 + transfer_size / 1024 / 1024 * 5))) if upload or content is not None else 90
             args = ['curl.exe', '-4', '--silent', '--show-error', '--connect-timeout', '20',
-                    '--max-time', '600' if upload else '90', '--retry', '2', '--retry-delay', '2',
+                    '--max-time', str(timeout), '--retry', '2', '--retry-delay', '2',
                     '--proto', '=https', '--request', method, '--output', str(output or response),
                     '--write-out', '%{http_code}']
             config = ''
@@ -149,12 +151,18 @@ class Disk:
                 if current in self._folders:
                     continue
                 try:
-                    self.api('PUT', '/resources', path=current)
+                    existing = self.api('GET', '/resources', path=current)
                 except DiskError as error:
-                    if error.status != 409:
+                    if error.status != 404:
                         raise
-                    if self.api('GET', '/resources', path=current).get('type') != 'dir':
-                        raise DiskError('Путь папки занят файлом.')
+                    try:
+                        self.api('PUT', '/resources', path=current)
+                    except DiskError as creation_error:
+                        if creation_error.status not in (409, 423):
+                            raise
+                    existing = self.api('GET', '/resources', path=current)
+                if existing.get('type') != 'dir':
+                    raise DiskError('Путь папки занят файлом.')
                 self._folders.add(current)
 
     def upload(self, local, relative, *, expected_sha256=None, overwrite=False, content=None):
@@ -177,18 +185,22 @@ class Disk:
                 return {'path': relative, 'sha256': data_hash, 'size': size, 'status': 'verified-existing'}
             if not overwrite:
                 raise DiskError('На Диске уже есть другой файл: ' + relative)
-        address = self.api('GET', '/resources/upload', path=remote_path(relative), overwrite=str(overwrite).lower())
-        try:
-            code, _ = self._curl(trusted_transfer(address['href']), method='PUT', upload=local if content is None else None, content=content)
-        except DiskError as interrupted:
-            # A dropped response does not prove a failed PUT. Check server bytes.
+        for attempt in range(3):
+            address = self.api('GET', '/resources/upload', path=remote_path(relative), overwrite=str(overwrite).lower())
             try:
-                confirmed = self.stat(relative)
-            except DiskError:
-                raise interrupted
-            if confirmed.get('size') == size and confirmed.get('sha256') == data_hash:
-                return {'path': relative, 'sha256': data_hash, 'size': size, 'status': 'uploaded-verified-after-interruption'}
-            raise interrupted
+                code, _ = self._curl(trusted_transfer(address['href']), method='PUT', upload=local if content is None else None, content=content)
+                break
+            except DiskError as interrupted:
+                # A dropped response does not prove a failed PUT. Check server bytes.
+                try:
+                    confirmed = self.stat(relative)
+                except DiskError:
+                    confirmed = {}
+                if confirmed.get('size') == size and confirmed.get('sha256') == data_hash:
+                    return {'path': relative, 'sha256': data_hash, 'size': size, 'status': 'uploaded-verified-after-interruption'}
+                if confirmed or attempt == 2:
+                    raise interrupted
+                # Refresh the signed URL instead of retrying a failing upload node.
         if code not in (200, 201, 202):
             raise DiskError('Яндекс Диск отклонил загрузку (HTTP ' + str(code) + ').', code)
         stored = self.stat(relative)

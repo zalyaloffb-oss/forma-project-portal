@@ -1,3 +1,4 @@
+import {fetchAsset} from './asset-store.js?v=1';
 function isGLB(buffer){
  if(buffer.byteLength<20)return false;
  const view=new DataView(buffer);
@@ -7,7 +8,7 @@ function isGLB(buffer){
 // GitHub Pages cannot configure Content-Encoding for individual GLBs. Fetch an
 // optional precompressed copy and use the browser's native, lossless decoder.
 // Null means the caller should use its original GLTFLoader path unchanged.
-export async function fetchModelBytes(compressedUrl,{fetcher=fetch,Decoder=globalThis.DecompressionStream}={}){
+export async function fetchModelBytes(compressedUrl,{fetcher=fetchAsset,Decoder=globalThis.DecompressionStream}={}){
  if(!compressedUrl||!Decoder)return null;
  try{
   const response=await fetcher(compressedUrl);if(!response.ok)return null;

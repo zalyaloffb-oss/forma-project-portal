@@ -28,7 +28,9 @@ jobs:
           node tests/test-banners.mjs
           node tests/test-model-transport.mjs
           node tests/test-yandex-model.mjs
+          node tests/test-asset-store.mjs
           python3 tests/test_yandex_connector.py
+          python3 tests/test_cloud_publication.py
           python3 tests/test_performance.py
           python3 tools/validate_site.py
       - uses: actions/configure-pages@v5

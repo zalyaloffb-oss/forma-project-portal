@@ -44,5 +44,9 @@ applyTexturePlacement(mapped,1500,3000,null);
 assert.equal(Math.max(...mapped.attributes.uv.array),1);
 assert.throws(()=>applyTexturePlacement(mapped,1500,3000,{width:0,height:1000}));
 assert.ok(layout.surfaces[0].imageUrl&&layout.surfaces[1].imageUrl&&layout.surfaces[3].imageUrl);
-for(const record of layout.surfaces)if(record.imageUrl)assert.ok(fs.existsSync(new URL('../'+record.imageUrl,import.meta.url)));
+const storage=JSON.parse(fs.readFileSync(new URL('../data/asset-storage.json',import.meta.url)));
+for(const record of layout.surfaces)if(record.imageUrl){
+ const cloud=storage.enabled&&storage.files[record.imageUrl];
+ assert.ok(fs.existsSync(new URL('../'+record.imageUrl,import.meta.url))||(cloud&&cloud.bytes>0&&/^[a-f0-9]{64}$/.test(cloud.sha256)));
+}
 console.log('PASS: physical artwork placement, reset and published texture files.');

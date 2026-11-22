@@ -1,5 +1,6 @@
 import * as THREE from 'three';
-import {fetchModelBytes} from './model-transport.js?v=1';
+import {fetchAsset,readAssetBytes} from './asset-store.js?v=1';
+import {fetchModelBytes} from './model-transport.js?v=yandex-assets-1';
 import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 import {loadCatalogue,projectModel,permittedModel,assetUrl,SITE_ROOT} from './site-config.js?v=performance-1';
@@ -27,7 +28,7 @@ try{
  scene.add(new THREE.AmbientLight(0xffffff,2));const sun=new THREE.DirectionalLight(0xffffff,1);sun.position.set(4,8,5);scene.add(sun);
  let dirty=true;const invalidate=()=>{dirty=true;};controls.addEventListener('change',invalidate);
  const loader=new GLTFLoader(),compressed=await fetchModelBytes(project.modelGzipUrl);view.dataset.modelTransport=compressed?'gzip':'original';
- const asset=compressed?await loader.parseAsync(compressed,new URL('.',project.modelUrl).href):await loader.loadAsync(project.modelUrl),model=asset.scene;
+ const asset=compressed?await loader.parseAsync(compressed,new URL('.',project.modelUrl).href):await loader.parseAsync(await readAssetBytes(project.modelUrl),new URL('.',project.modelUrl).href),model=asset.scene;
  model.traverse(object=>{const node=asset.parser.associations.get(object)?.nodes;if(node!==undefined)Object.assign(object.userData,asset.parser.json.nodes[node]?.extras||{});});
  model.updateMatrixWorld(true);const bounds=new THREE.Box3().setFromObject(model),center=bounds.getCenter(new THREE.Vector3()),largest=Math.max(...bounds.getSize(new THREE.Vector3()).toArray());
  if(!Number.isFinite(largest)||largest<=0)throw Error('Пустая модель');
@@ -124,7 +125,7 @@ try{
   for(const s of data.surfaces){if(!s.worldVertices&&(!Number.isInteger(s.index)||!meshes[s.index]||!Number.isInteger(s.faceIndex)||s.faceIndex<0||!planarFace(meshes[s.index],s.faceIndex)))throw Error('Поверхность схемы не найдена');if(s.imageUrl)assetUrl(s.imageUrl);if(s.image&&(!/^data:image\/(png|jpeg);base64,/.test(s.image)||s.image.length>30*1024*1024))throw Error('Некорректная текстура');}
   surfaces.slice().forEach(remove);selected=null;
   for(const record of data.surfaces){const s=record.worldVertices?addPrimitive(record):addSurface(meshes[record.index],record.faceIndex,record);if(record.image)await applyImage(s,record.image);
-   else if(record.imageUrl){const response=await fetch(assetUrl(record.imageUrl));if(!response.ok)throw Error('Не удалось загрузить текстуру');const blob=await response.blob();const data=await new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(r.result);r.onerror=reject;r.readAsDataURL(blob);});await applyImage(s,data);}}refresh();
+   else if(record.imageUrl){const response=await fetchAsset(assetUrl(record.imageUrl));if(!response.ok)throw Error('Не удалось загрузить текстуру');const blob=await response.blob();const data=await new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(r.result);r.onerror=reject;r.readAsDataURL(blob);});await applyImage(s,data);}}refresh();
  }
  $('banner-save').onclick=async()=>{try{await new Promise((resolve,reject)=>{const tx=db.transaction('layouts','readwrite');tx.objectStore('layouts').put(packet(),storageKey);tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error);});message('Схема и текстуры сохранены на этом устройстве.');}catch{message('Не удалось сохранить. Скачайте схему с текстурами в файл.');}};
  const download=(blob,name)=>{const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),10000);};
@@ -139,9 +140,9 @@ try{
  $('banner-shot').onclick=()=>{renderer.render(scene,camera);renderer.domElement.toBlob(blob=>{if(blob)download(blob,project.title+' — Баннеры 3D.png');});};
  let saved;try{saved=await new Promise((resolve,reject)=>{const r=db.transaction('layouts').objectStore('layouts').get(storageKey);r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error);});if(saved){await restore(saved);message('Восстановлена схема с текстурами, сохранённая на этом устройстве.');}}catch(e){saved=null;message(e.message);}
  $('banner-published').hidden=!project.bannerLayoutUrl;
- $('banner-published').onclick=async()=>{try{const r=await fetch(assetUrl(project.bannerLayoutUrl),{cache:'no-store'});if(!r.ok)throw Error('Не удалось загрузить схему');await restore(await r.json());message('Открыта опубликованная схема с текстурами. Сохранённая локальная копия не удалена.');}catch(e){message(e.message);}};
+ $('banner-published').onclick=async()=>{try{const r=await fetchAsset(assetUrl(project.bannerLayoutUrl),{cache:'no-store'});if(!r.ok)throw Error('Не удалось загрузить схему');await restore(await r.json());message('Открыта опубликованная схема с текстурами. Сохранённая локальная копия не удалена.');}catch(e){message(e.message);}};
  let published=false;
- if(!saved&&project.bannerLayoutUrl){try{const response=await fetch(assetUrl(project.bannerLayoutUrl),{cache:'no-store'});if(!response.ok)throw Error('Не удалось загрузить болванку');await restore(await response.json());published=true;message('Схема баннеров загружена.');}catch(e){message(e.message);}}
+ if(!saved&&project.bannerLayoutUrl){try{const response=await fetchAsset(assetUrl(project.bannerLayoutUrl),{cache:'no-store'});if(!response.ok)throw Error('Не удалось загрузить болванку');await restore(await response.json());published=true;message('Схема баннеров загружена.');}catch(e){message(e.message);}}
  // Only explicit banner body names are candidates. Never infer printing from a frame or cladding ancestor.
  if(!saved&&!published)for(const mesh of meshes.filter(m=>isNamedBanner(m.userData.bannerName))){
   const g=mesh.geometry,idx=g.index,p=g.attributes.position;let best=-1,area=0;

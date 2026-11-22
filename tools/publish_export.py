@@ -32,7 +32,11 @@ def match_project(items,meta):
 
 def write_asset(project,kind,source):
     source=Path(source);data=source.read_bytes()
-    if len(data)>99*1024*1024:raise ValueError('File exceeds the repository limit; use a GitHub Release: '+source.name)
+    storage_file=ROOT/'data/asset-storage.json'
+    storage=json.loads(storage_file.read_text(encoding='utf-8')) if storage_file.is_file() else None
+    cloud=storage and storage.get('enabled') and kind!='cover'
+    limit=(200 if cloud else 99)*1024*1024
+    if len(data)>limit:raise ValueError('File exceeds the storage limit: '+source.name)
     suffix={ 'model':'.glb','cover':('.jpg' if data.startswith(b'\xff\xd8') else '.png'),'f3d':'.f3d','assembly':'.pdf'}.get(kind,source.suffix.lower())
     if kind=='model':
         if len(data)<28 or data[:4]!=b'glTF' or struct.unpack_from('<I',data,8)[0]!=len(data):raise ValueError('Invalid GLB')
@@ -41,6 +45,23 @@ def write_asset(project,kind,source):
             if r.get('uri') and not r['uri'].startswith('data:'):raise ValueError('GLB must contain its textures and buffers')
     name=kind+'-'+hashlib.sha256(data).hexdigest()[:12]+suffix
     target=ROOT/'assets'/project['viewerPath'].strip('/')/name
+    if cloud:
+        from yandex_disk import Disk
+        from prepare_yandex_storage import descriptor
+        if storage.get('version')!=1 or storage.get('provider')!='yandex-disk':raise ValueError('Unknown asset storage')
+        disk=Disk();path=target.relative_to(ROOT).as_posix()
+        uploads={path:data}
+        if kind=='model':uploads[path+'.gz']=gzip.compress(data,compresslevel=6,mtime=0)
+        records={}
+        for remote,content in uploads.items():
+            row=descriptor(remote,content)
+            disk.upload(source,remote,expected_sha256=row['sha256'],content=content)
+            records[remote]=row
+        storage['files'].update(records)
+        temporary=storage_file.with_suffix('.json.next')
+        temporary.write_text(json.dumps(storage,ensure_ascii=False,indent=2)+'\n',encoding='utf-8');temporary.replace(storage_file)
+        if kind=='model':project['modelGzipUrl']=path+'.gz'
+        return path
     target.parent.mkdir(parents=True,exist_ok=True);target.write_bytes(data)
     if kind=='model':
         packed=target.with_suffix(target.suffix+'.gz');packed.write_bytes(gzip.compress(data,compresslevel=6,mtime=0))
@@ -80,18 +101,21 @@ def publish(meta,files,report=lambda *args:None,push=True):
         if '/'+slug in used:slug+='-'+hashlib.sha256(pid.encode()).hexdigest()[:6]
         project={'id':pid,'title':meta['title'],'customer':'Не указан','event':'','manager':'','date':datetime.date.today().isoformat(),'status':'Не указан','source':'','viewerPath':'/'+slug,'attachments':[],'published':True}
         data['projects'].insert(0,project)
-    report(7,'Подготовка файлов для GitHub…')
+    report(7,'Подготовка файлов каталога…')
     if parent is None:project['title']=meta['title']
     project['model']='fusion' if meta.get('dataFileId') else project.get('model','max')
     if meta.get('dataFileId'):project['fusionDataFileId']=meta['dataFileId'];project['fusionVersion']=str(meta.get('version',''))
     for kind,source in files.items():
         if kind not in ['model','cover','f3d','source','assembly']:raise ValueError('Unexpected file type')
-        path=write_asset(parent or project,kind,source);project[{'source':'sourceFileUrl'}.get(kind,kind+'Url')]=path
+        destination={**project,'viewerPath':(parent or project)['viewerPath']}
+        path=write_asset(destination,kind,source);project[{'source':'sourceFileUrl'}.get(kind,kind+'Url')]=path
+        if kind=='model':project['modelGzipUrl']=destination['modelGzipUrl']
     project['updatedAt']=datetime.datetime.now(datetime.timezone.utc).isoformat();save_catalog(data)
     route=parent or project
     if push:
         report(11,'Публикация каталога в GitHub…')
         git('add','--','data/catalog.json','assets',route['viewerPath'].strip('/'))
+        if (ROOT/'data/asset-storage.json').is_file():git('add','--','data/asset-storage.json')
         if git('diff','--cached','--name-only'):
             git('commit','-m','Update catalogue model: '+project['title']);git('push','origin','main')
     url=SITE+route['viewerPath'].strip('/')+'/'+(urllib.parse.quote(project['id'])+'/' if parent else '')

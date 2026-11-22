@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="ru">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<title>EES проекты — файл проекта</title>
+<style>body{font:17px system-ui;color:#25313a;max-width:620px;margin:15vh auto;padding:24px}a{color:#075477}</style>
+<h1>EES проекты</h1>
+<p id="status" role="status">Страница не найдена.</p>
+<a id="catalogue" href="./">Открыть каталог</a>
+<script type="module">
+ const at=location.pathname.indexOf('/assets/');
+ if(at>=0){
+  const base=new URL(location.pathname.slice(0,at+1),location.origin);
+  document.querySelector('#catalogue').href=base.href;
+  const status=document.querySelector('#status');status.textContent='Открываем файл с Яндекс Диска…';
+  try{
+   const {createAssetStore}=await import(new URL('asset-store.js',base));
+   const href=await createAssetStore({baseURL:base}).downloadURL(location.href);
+   if(new URL(href).origin!==location.origin)location.replace(href);
+   else status.textContent='Файл не найден в каталоге.';
+  }catch{status.textContent='Не удалось открыть файл с Диска. Попробуйте ещё раз из каталога.';}
+ }
+</script>
+</html>

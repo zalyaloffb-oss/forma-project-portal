@@ -1,6 +1,7 @@
 import {loadCatalogue,permittedModel,projectModel} from './site-config.js?v=performance-1';
 import * as THREE from 'three';
-import {fetchModelBytes} from './model-transport.js?v=1';
+import {fetchModelBytes} from './model-transport.js?v=yandex-assets-1';
+import {readAssetBytes} from './asset-store.js?v=1';
 import {partDxf,dxfFilename,flatContours} from './part-dxf.js?v=3';
 import {measurementMarkerRadius} from './measurement-markers.js?v=1';
 import {createComponentHover} from './component-hover.js?v=1';
@@ -127,7 +128,8 @@ try{
   stage.dataset.modelDownloadBytes=String(remote.size);stage.dataset.modelSHA256=remote.sha256;
  }else{
   const compressed=await fetchModelBytes(shareProject?.modelGzipUrl);stage.dataset.modelTransport=compressed?'gzip':'original';
-  asset=compressed?await loader.parseAsync(compressed,new URL('.',requested).href):await loader.loadAsync(requested||'./models/health-territory-v23.glb');
+  const url=requested||'./models/health-territory-v23.glb';
+  asset=await loader.parseAsync(compressed||await readAssetBytes(url),new URL('.',new URL(url,import.meta.url)).href);
  }
  const model=asset.scene;scene.add(model);model.updateMatrixWorld(true);
  model.traverse(object=>{const node=asset.parser.associations.get(object)?.nodes;if(node!==undefined)Object.assign(object.userData,asset.parser.json.nodes[node]?.extras||{});});
