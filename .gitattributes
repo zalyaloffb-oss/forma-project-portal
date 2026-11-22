@@ -1,0 +1,2 @@
+# Banner layout fixtures are byte-for-byte mirrors of the Disk assets.
+assets/*/banners-*.json -text
