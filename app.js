@@ -13,24 +13,9 @@ const badge=s=>`<span class="badge ${s===statuses[1]?'progress':s===statuses[2]?
 function toast(s){$('#toast').textContent=s;$('#toast').classList.add('show');setTimeout(()=>$('#toast').classList.remove('show'),3500)}
 installAssetLinks(toast);
 
-function setSidebar(open){
- const panel=$('#catalog-sidebar'),button=$('#settings-btn');
- if(!open&&panel.contains(document.activeElement))button.focus();
- panel.hidden=!open;
- $('#sidebar-backdrop').hidden=!open;
- document.body.classList.toggle('sidebar-open',open);
- button.setAttribute('aria-expanded',String(open));
- button.title=open?'Закрыть левую панель':'Открыть левую панель';
- button.setAttribute('aria-label',button.title);
-}
-$('#settings-btn').onclick=()=>setSidebar($('#catalog-sidebar').hidden);
-$('#sidebar-backdrop').onclick=()=>setSidebar(false);
 document.addEventListener('keydown',event=>{
  if(event.key==='Escape'&&selectionMode&&!document.querySelector('dialog[open]')){
   event.preventDefault();setProjectSelection(false);return;
- }
- if(event.key==='Escape'&&!$('#catalog-sidebar').hidden&&!document.querySelector('dialog[open]')){
-  event.preventDefault();setSidebar(false);
  }
 });
 
@@ -262,7 +247,7 @@ function openMergeProjects(){
  if(items.length<2)return;
  $('#merge-primary').innerHTML=items.map(project=>`<option value="${esc(project.id)}">${esc(project.title)}</option>`).join('');
  $('#merge-project-list').innerHTML=items.map(project=>`<li>${esc(project.title)}${groups.parts.has(project.id)?` · состав: ${groups.parts.get(project.id).length}`:''}</li>`).join('');
- $('#merge-error').textContent='';setSidebar(false);$('#merge-modal').showModal();
+ $('#merge-error').textContent='';$('#merge-modal').showModal();
 }
 async function submitMergeProjects(event){
  event.preventDefault();const dialog=$('#merge-modal'),button=$('#merge-submit'),primaryId=$('#merge-primary').value;
@@ -309,7 +294,7 @@ $('#merge-modal').addEventListener('cancel',event=>{if(event.currentTarget.datas
 
 function openMoveProject(id){
  const project=projects.find(project=>project.id===id);if(!project)return;
- movingId=id;setSidebar(false);
+ movingId=id;
  if($('#drawer').open)$('#drawer').close();
  const category=projectCategory(project),select=$('#move-form').elements.destination;
  select.innerHTML='<option value="stands">Стенды</option><optgroup label="Мебель"><option value="furniture">Мебель — без подраздела</option>'+furnitureTypes.map(type=>`<option value="furniture/${type.id}">${type.label}</option>`).join('')+'</optgroup><option value="archive">Архив</option>';
@@ -367,7 +352,6 @@ document.querySelectorAll('.close').forEach(b=>b.onclick=()=>b.closest('dialog')
  selectCollection(button.dataset.collection,button.dataset.furnitureType||'');
  if(button.closest('#settings-modal'))$('#settings-modal').close();
 });
-$('#clients-nav').onclick=()=>{setSidebar(false);$('#customer-filter').scrollIntoView({block:'center'});$('#customer-filter').focus();$('#customer-filter').showPicker?.()};
 try{db=await openDB();await loadPublished();}catch(e){$('#grid').innerHTML='<div class="empty"><h2>Не удалось открыть локальную библиотеку</h2><p>Разрешите хранение данных в браузере и обновите страницу.</p></div>';console.error(e)}
 
 function renderSidebar(){
@@ -386,7 +370,6 @@ function selectCollection(view,furnitureType=''){
  furnitureExpanded=view==='furniture'&&!furnitureType&&(furnitureType||collection.view!=='furniture'||collection.furnitureType?true:!furnitureExpanded);
  collection={view,furnitureType:view==='furniture'?furnitureType:''};
  render();
- if((view!=='furniture'||furnitureType)&&window.matchMedia('(max-width:700px), (pointer:coarse) and (max-width:1024px)').matches)setSidebar(false);
 }
 
 $('#batch-btn').onclick=()=>{$('#batch-target').innerHTML='<option value="new">Создать один новый проект</option>'+projects.map(p=>`<option value="${esc(p.id)}">В проект: ${esc(p.title)}</option>`).join('');$('#batch-progress').textContent='';$('#batch-errors').replaceChildren();$('#batch-files').value='';$('#batch-name').value='';$('#batch-name-label').hidden=false;$('#batch-name').required=true;$('#batch-modal').showModal();};
@@ -421,7 +404,7 @@ function managerNames(){
 }
 function fillManagers(){const select=$('#project-form').elements.manager;const value=select.value;select.innerHTML='<option value="">Не указан</option>'+managerNames().map(name=>`<option value="${esc(name)}">${esc(name)}</option>`).join('');select.value=value;}
 function showManagers(){const names=managerNames();$('#manager-list').innerHTML=names.length?names.map(name=>`<li>${esc(name)}</li>`).join(''):'<li>Менеджеров пока нет.</li>';}
-$('#service-settings-btn').onclick=()=>{$('#manager-message').textContent='';$('#manager-form').reset();try{showManagers();}catch{$('#manager-message').textContent='Не удалось прочитать сохранённый список менеджеров.';}$('#settings-modal').showModal();};
+$('#header-settings').onclick=()=>{$('#manager-message').textContent='';$('#manager-form').reset();try{showManagers();}catch{$('#manager-message').textContent='Не удалось прочитать сохранённый список менеджеров.';}$('#settings-modal').showModal();};
 $('#manager-form').onsubmit=async e=>{e.preventDefault();const name=$('#manager-name').value.trim().replace(/\s+/g,' ');if(!name){$('#manager-message').textContent='Введите имя менеджера.';return;}try{const names=managerNames();if(names.some(n=>n.toLocaleLowerCase('ru')===name.toLocaleLowerCase('ru'))){$('#manager-message').textContent='Такой менеджер уже есть в списке.';return;}localStorage.setItem('forma-managers',JSON.stringify([...names,name]));showManagers();fillManagers();$('#manager-form').reset();$('#manager-message').textContent='Менеджер добавлен.';}catch{$('#manager-message').textContent='Не удалось сохранить менеджера. Проверьте доступ к хранилищу браузера.';}};
 
 async function put(project){return putLocal({...project,localDraft:true});}
@@ -482,6 +465,5 @@ openProject=async function(id,preferredTab){
 };
 const requestedProject=decodeURIComponent(location.hash.slice(1));if(projects.some(p=>p.id===requestedProject))await openProject(requestedProject);
 
-$('#header-settings').onclick=()=>$('#service-settings-btn').click();
 document.addEventListener('click',event=>{if(furnitureExpanded&&!event.target.closest('.header-furniture')){furnitureExpanded=false;renderSidebar();}});
 document.addEventListener('keydown',event=>{if(event.key==='Escape'&&furnitureExpanded){furnitureExpanded=false;renderSidebar();}});
