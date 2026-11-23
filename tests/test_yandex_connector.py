@@ -7,6 +7,7 @@ import sys
 import tempfile
 import unittest
 from unittest.mock import patch
+from types import SimpleNamespace
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'tools'))
 from yandex_disk import Disk, DiskError, _dpapi, remote_path, trusted_transfer
@@ -41,6 +42,19 @@ class FakeDisk(Disk):
 
 
 class ConnectorChecks(unittest.TestCase):
+    def test_generated_payload_uses_seekable_file_put_without_oauth(self):
+        content=b'generated compressed model'
+        def run(args,**options):
+            self.assertNotIn('--data-binary',args)
+            self.assertEqual(Path(args[args.index('--upload-file')+1]).read_bytes(),content)
+            self.assertEqual(options['input'],b'')
+            self.assertNotIn('--config',args)
+            self.assertEqual(args[args.index('--retry')+1],'0')
+            Path(args[args.index('--output')+1]).write_bytes(b'')
+            return SimpleNamespace(returncode=0,stdout=b'201',stderr=b'')
+        with patch('yandex_disk.subprocess.run',side_effect=run):
+            self.assertEqual(Disk(token='synthetic')._curl('https://uploader.disk.yandex.net/file',method='PUT',content=content),(201,b''))
+
     def test_destination_is_bounded(self):
         self.assertTrue(remote_path('assets/test.glb').endswith('/assets/test.glb'))
         for path in ('../other', '/outside', 'C:/secret', 'assets/../../other', 'a\\b'):

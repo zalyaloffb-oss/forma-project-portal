@@ -1,6 +1,15 @@
 """Read visible native mesh instances in root context without changing the design."""
 
 
+def single_body_tessellation_match(bounds,body,mesh_name,body_count):
+    # A single named native body has no competing hierarchy/instance mapping.
+    # Curved USD tessellation may omit a true CAD extremum by a few millimetres.
+    if body_count!=1 or body['name']!=mesh_name:return False
+    span=max(body['bounds'][axis+3]-body['bounds'][axis] for axis in range(3))
+    error=max(abs(a-b) for a,b in zip(bounds,body['bounds']))
+    return error<=max(.002,span*.001)
+
+
 def appearance_metadata(body):
     appearance=body.appearance
     if appearance is None:return None

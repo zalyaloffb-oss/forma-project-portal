@@ -4,7 +4,7 @@ import sys
 import unittest
 
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'tools'))
-from FusionMeshMetadata import mesh_metadata,appearance_metadata,appearance_material
+from FusionMeshMetadata import mesh_metadata,appearance_metadata,appearance_material,single_body_tessellation_match
 
 
 def body(name,minimum,maximum,visible=True):
@@ -13,6 +13,14 @@ def body(name,minimum,maximum,visible=True):
 
 
 class MeshInstances(unittest.TestCase):
+    def test_single_curved_body_tessellation_does_not_relax_instance_matching(self):
+        body={'name':'Body1','bounds':[0,0,0,4.75,.01,2.1]}
+        tessellation=[.0024478,0,0,4.7475522,.01,2.1]
+        self.assertTrue(single_body_tessellation_match(tessellation,body,'Body1',1))
+        self.assertFalse(single_body_tessellation_match(tessellation,body,'Body1',2))
+        self.assertFalse(single_body_tessellation_match(tessellation,body,'Other',1))
+        self.assertFalse(single_body_tessellation_match([.1,0,0,4.65,.01,2.1],body,'Body1',1))
+
     def test_proxy_mesh_coordinates_are_transformed_from_native_component_space(self):
         source=body('Proxy',(0,0,0),(10,10,10))
         native=body('Native',(0,0,0),(10,20,30));source.nativeObject=native

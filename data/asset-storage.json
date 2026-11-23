@@ -2120,6 +2120,438 @@
       "mime": "application/gzip",
       "decodedSHA256": "6e44cade2d7ece7feecff38915845f670e719965654901620509eb1e49f03b4b",
       "decodedBytes": 3812268
+    },
+    "assets/barnaya-stoyka/f3d-3d18cb0c9c1d.f3d": {
+      "bytes": 172619,
+      "sha256": "3d18cb0c9c1d8b5b08dd7de581ea73aafec9f09587dc2210194e4d4317231b86",
+      "mime": "application/octet-stream"
+    },
+    "assets/barnaya-stoyka/model-9b92ec52b6cc.glb": {
+      "bytes": 19660,
+      "sha256": "9b92ec52b6cc50fe5190b8426ba1ad6867371b2eb5951b156a0e10da9d0ba9b9",
+      "mime": "model/gltf-binary",
+      "selfContainedGLB": true
+    },
+    "assets/barnaya-stoyka/model-9b92ec52b6cc.glb.gz": {
+      "bytes": 2955,
+      "sha256": "bbfef3c742b1482149143b5eece346a1bf480853ae2b3ac66c336af52afdf1fe",
+      "mime": "application/gzip",
+      "decodedSHA256": "9b92ec52b6cc50fe5190b8426ba1ad6867371b2eb5951b156a0e10da9d0ba9b9",
+      "decodedBytes": 19660
+    },
+    "assets/vertikalnaya-vr-panel/f3d-c24dad3d700b.f3d": {
+      "bytes": 81076,
+      "sha256": "c24dad3d700bb30643960d18f1f6e5ed634f8e9e4bcaf2da9f2e83196dd1f410",
+      "mime": "application/octet-stream"
+    },
+    "assets/vertikalnaya-vr-panel/model-1d8c2c549900.glb": {
+      "bytes": 10108,
+      "sha256": "1d8c2c549900d1950d967637f377ea9b75cb8dc1687112c07e8cb2e3d0a6024e",
+      "mime": "model/gltf-binary",
+      "selfContainedGLB": true
+    },
+    "assets/vertikalnaya-vr-panel/model-1d8c2c549900.glb.gz": {
+      "bytes": 1994,
+      "sha256": "5b00430806e7ae0ea6b6e51138fea5805b653faf7d45944fb1aca62c24254ce4",
+      "mime": "application/gzip",
+      "decodedSHA256": "1d8c2c549900d1950d967637f377ea9b75cb8dc1687112c07e8cb2e3d0a6024e",
+      "decodedBytes": 10108
+    },
+    "assets/vitrina-oktanorm/f3d-4946db96d641.f3d": {
+      "bytes": 1074027,
+      "sha256": "4946db96d64157e8770f38a8f131cdd432a6e71068cfbba0d19295161be37601",
+      "mime": "application/octet-stream"
+    },
+    "assets/vitrina-oktanorm/model-1263cb5983d5.glb": {
+      "bytes": 261128,
+      "sha256": "1263cb5983d5ba41c5a8031e0c80146490f22c0c37383dab9333067b6c056667",
+      "mime": "model/gltf-binary",
+      "selfContainedGLB": true
+    },
+    "assets/vitrina-oktanorm/model-1263cb5983d5.glb.gz": {
+      "bytes": 23283,
+      "sha256": "5af4827bb261ee23df2c6120d3193bdbc3433e1b2b6f3486b4a06c6070e25943",
+      "mime": "application/gzip",
+      "decodedSHA256": "1263cb5983d5ba41c5a8031e0c80146490f22c0c37383dab9333067b6c056667",
+      "decodedBytes": 261128
+    },
+    "assets/vitrina-oktanorm-500h500/f3d-c075c731751c.f3d": {
+      "bytes": 1033261,
+      "sha256": "c075c731751c15f42729ac15a3e68dad98244636488ec71dafe87ef2f655d85e",
+      "mime": "application/octet-stream"
+    },
+    "assets/vitrina-oktanorm-500h500/model-071f2d854a90.glb": {
+      "bytes": 274656,
+      "sha256": "071f2d854a90db54de205463a006637eb630344d9d425b0a561eb7227169dfce",
+      "mime": "model/gltf-binary",
+      "selfContainedGLB": true
+    },
+    "assets/vitrina-oktanorm-500h500/model-071f2d854a90.glb.gz": {
+      "bytes": 23883,
+      "sha256": "2238e7a2137af3299dee5e820b3b0ed1a11317f2d01a2d09b8b5719ebfe381a5",
+      "mime": "application/gzip",
+      "decodedSHA256": "071f2d854a90db54de205463a006637eb630344d9d425b0a561eb7227169dfce",
+      "decodedBytes": 274656
+    },
+    "assets/gidroizol/f3d-5779cf71c142.f3d": {
+      "bytes": 3225576,
+      "sha256": "5779cf71c14283e1ff1e0dbdf4b2a2a85cf80fe5df2247bff626d30c9545bd75",
+      "mime": "application/octet-stream"
+    },
+    "assets/gidroizol/model-4c9a1202e2cd.glb": {
+      "bytes": 1180520,
+      "sha256": "4c9a1202e2cddc69c647cd59a0d3fcc6ac66b96a71ad59abd763894bec3a2c19",
+      "mime": "model/gltf-binary",
+      "selfContainedGLB": true
+    },
+    "assets/gidroizol/model-4c9a1202e2cd.glb.gz": {
+      "bytes": 178994,
+      "sha256": "6e8c42465f13dba23e9dc05b9b7cb0f9f1bb01f6f799b16df88a520753d2d571",
+      "mime": "application/gzip",
+      "decodedSHA256": "4c9a1202e2cddc69c647cd59a0d3fcc6ac66b96a71ad59abd763894bec3a2c19",
+      "decodedBytes": 1180520
+    },
+    "assets/doring/f3d-ba28e0a4ae78.f3d": {
+      "bytes": 1436136,
+      "sha256": "ba28e0a4ae78ab93df3368a3211dbe274577b6c35e4ef84e861dd3d028e745cc",
+      "mime": "application/octet-stream"
+    },
+    "assets/doring/model-48ee2bd8d9a2.glb": {
+      "bytes": 116004,
+      "sha256": "48ee2bd8d9a20a54c5046f1883c11353cd283c9908c5ae7ac60d33bb981a8d51",
+      "mime": "model/gltf-binary",
+      "selfContainedGLB": true
+    },
+    "assets/doring/model-48ee2bd8d9a2.glb.gz": {
+      "bytes": 11296,
+      "sha256": "cb404cbdca3e8d8adeb4c2972d6500a7d743fb0821697f493600965ccf63a173",
+      "mime": "application/gzip",
+      "decodedSHA256": "48ee2bd8d9a20a54c5046f1883c11353cd283c9908c5ae7ac60d33bb981a8d51",
+      "decodedBytes": 116004
+    },
+    "assets/doring-2026/f3d-f16d841641f3.f3d": {
+      "bytes": 4859369,
+      "sha256": "f16d841641f3fcf7f007512031202778ae47dc6d86bb479f0e7d5cbd3e966674",
+      "mime": "application/octet-stream"
+    },
+    "assets/doring-2026/model-4273950098ed.glb": {
+      "bytes": 6112228,
+      "sha256": "4273950098ed43d4a6099b4cfebe0e2ff402172445822ad2053c9962fcc6e0cf",
+      "mime": "model/gltf-binary",
+      "selfContainedGLB": true
+    },
+    "assets/doring-2026/model-4273950098ed.glb.gz": {
+      "bytes": 532679,
+      "sha256": "451306e9ecea34b1eadf5cec3b7169272161f08a8978ebdeaf4320cbb4758e52",
+      "mime": "application/gzip",
+      "decodedSHA256": "4273950098ed43d4a6099b4cfebe0e2ff402172445822ad2053c9962fcc6e0cf",
+      "decodedBytes": 6112228
+    },
+    "assets/evrosvet/f3d-a90c0c32424a.f3d": {
+      "bytes": 4398863,
+      "sha256": "a90c0c32424a3e98fd5e7a5f33f0ea027ed89bdafaf89cf19474152bb87e3ec8",
+      "mime": "application/octet-stream"
+    },
+    "assets/evrosvet/model-17d914913a5a.glb": {
+      "bytes": 3151124,
+      "sha256": "17d914913a5a3da5f9873b8a39ad7559675de9bd06a5e398b2acd3482cf3c44a",
+      "mime": "model/gltf-binary",
+      "selfContainedGLB": true
+    },
+    "assets/evrosvet/model-17d914913a5a.glb.gz": {
+      "bytes": 248887,
+      "sha256": "70fd122e30def3160a94d06d9d7fa16ec65e200013989bbbd2e8e4d891e8ab91",
+      "mime": "application/gzip",
+      "decodedSHA256": "17d914913a5a3da5f9873b8a39ad7559675de9bd06a5e398b2acd3482cf3c44a",
+      "decodedBytes": 3151124
+    },
+    "assets/evrosvet-c3c7a1/f3d-c1c2f0be09f5.f3d": {
+      "bytes": 882792,
+      "sha256": "c1c2f0be09f5bd8ccda83b0084caa7fbec2522fc2a72b6d54fa027ec96a2d1a5",
+      "mime": "application/octet-stream"
+    },
+    "assets/evrosvet-c3c7a1/model-915a052a8c56.glb": {
+      "bytes": 391596,
+      "sha256": "915a052a8c56de8335130bd261c7342835a99bf8a4cdd28888925fa1a43f1b74",
+      "mime": "model/gltf-binary",
+      "selfContainedGLB": true
+    },
+    "assets/evrosvet-c3c7a1/model-915a052a8c56.glb.gz": {
+      "bytes": 62643,
+      "sha256": "eddfae817fd3b473c95675770c78beb796823608dac76ba32dc6b5cdc6d8a007",
+      "mime": "application/gzip",
+      "decodedSHA256": "915a052a8c56de8335130bd261c7342835a99bf8a4cdd28888925fa1a43f1b74",
+      "decodedBytes": 391596
+    },
+    "assets/infostend/f3d-1b98030fa191.f3d": {
+      "bytes": 767827,
+      "sha256": "1b98030fa1915c7d3f1a19828e16b09308c3c927376cecb39b180b133c193ffd",
+      "mime": "application/octet-stream"
+    },
+    "assets/infostend/model-27da36965c31.glb": {
+      "bytes": 306468,
+      "sha256": "27da36965c31d2db12ee13d747af872066a9b9ea62c3e23155aba1b79440aedb",
+      "mime": "model/gltf-binary",
+      "selfContainedGLB": true
+    },
+    "assets/infostend/model-27da36965c31.glb.gz": {
+      "bytes": 25267,
+      "sha256": "634779e2b3167917c10ab66661b82b7d0a9ec19ec6fbd26c01507437d0f8ee6d",
+      "mime": "application/gzip",
+      "decodedSHA256": "27da36965c31d2db12ee13d747af872066a9b9ea62c3e23155aba1b79440aedb",
+      "decodedBytes": 306468
+    },
+    "assets/istvestpart/f3d-47f4551f0efd.f3d": {
+      "bytes": 1958089,
+      "sha256": "47f4551f0efd2fa89cd00b6baaa91243630d73ad70415aaec49498226f6508e0",
+      "mime": "application/octet-stream"
+    },
+    "assets/istvestpart/model-982b897cdf18.glb": {
+      "bytes": 8461756,
+      "sha256": "982b897cdf1814c53a6c07442705f2571a9909c7a9cac2595a5eebc927f323c7",
+      "mime": "model/gltf-binary",
+      "selfContainedGLB": true
+    },
+    "assets/istvestpart/model-982b897cdf18.glb.gz": {
+      "bytes": 647413,
+      "sha256": "49846ba6161f838f6f60ae6e7972b53109771df4a28594acc20ba72932684462",
+      "mime": "application/gzip",
+      "decodedSHA256": "982b897cdf1814c53a6c07442705f2571a9909c7a9cac2595a5eebc927f323c7",
+      "decodedBytes": 8461756
+    },
+    "assets/kod-bezopasnosti/f3d-db1ed35706bd.f3d": {
+      "bytes": 1856677,
+      "sha256": "db1ed35706bd1e2477d16ab5c11ad21bae220e3bde13e8db584b1f5d72911e77",
+      "mime": "application/octet-stream"
+    },
+    "assets/kod-bezopasnosti/model-3e12e3171e8c.glb": {
+      "bytes": 3676136,
+      "sha256": "3e12e3171e8c625747fb411ffd626553948551ba1eb463825f0976453a538963",
+      "mime": "model/gltf-binary",
+      "selfContainedGLB": true
+    },
+    "assets/kod-bezopasnosti/model-3e12e3171e8c.glb.gz": {
+      "bytes": 294889,
+      "sha256": "e0d2b5a6f3ec5fba0d63efb207a7db9bccfb756b880b5c149b605f1234d9885f",
+      "mime": "application/gzip",
+      "decodedSHA256": "3e12e3171e8c625747fb411ffd626553948551ba1eb463825f0976453a538963",
+      "decodedBytes": 3676136
+    },
+    "assets/konkritek/f3d-507510775801.f3d": {
+      "bytes": 3163086,
+      "sha256": "507510775801409eace46051a9f41fe13f1e9effbb31b974960c56d569216210",
+      "mime": "application/octet-stream"
+    },
+    "assets/konkritek/model-d7f9ec36b51a.glb": {
+      "bytes": 7781412,
+      "sha256": "d7f9ec36b51a3d7916bb0a2f7fad937be46fc98e05d94907ad1ffb912e0a1cce",
+      "mime": "model/gltf-binary",
+      "selfContainedGLB": true
+    },
+    "assets/konkritek/model-d7f9ec36b51a.glb.gz": {
+      "bytes": 738007,
+      "sha256": "798a39d702ce3a86bd95599528841b3b981c3bf73179e416d716d0cec824b8bf",
+      "mime": "application/gzip",
+      "decodedSHA256": "d7f9ec36b51a3d7916bb0a2f7fad937be46fc98e05d94907ad1ffb912e0a1cce",
+      "decodedBytes": 7781412
+    },
+    "assets/konkritek-436382/f3d-088b25c504bf.f3d": {
+      "bytes": 3130655,
+      "sha256": "088b25c504bf741e41548e2f95c8e36377c0eec1704ceff91c852e0822bedcd7",
+      "mime": "application/octet-stream"
+    },
+    "assets/konkritek-436382/model-534531200880.glb": {
+      "bytes": 6122252,
+      "sha256": "534531200880305654175940f18ca5822ef64aa2b7c3a61f8a0247a22b9fb857",
+      "mime": "model/gltf-binary",
+      "selfContainedGLB": true
+    },
+    "assets/konkritek-436382/model-534531200880.glb.gz": {
+      "bytes": 484926,
+      "sha256": "3e93f6aa28efe0bf0e7561ff7755d107b556468a0a505603d38bf691b28d76ac",
+      "mime": "application/gzip",
+      "decodedSHA256": "534531200880305654175940f18ca5822ef64aa2b7c3a61f8a0247a22b9fb857",
+      "decodedBytes": 6122252
+    },
+    "assets/konkritek-rabota/f3d-bb152069574e.f3d": {
+      "bytes": 3533526,
+      "sha256": "bb152069574e1cdec28fe276244210db3913b1feec57281fee2171bd4ba134a8",
+      "mime": "application/octet-stream"
+    },
+    "assets/konkritek-rabota/model-cc4c9ae748b9.glb": {
+      "bytes": 6372308,
+      "sha256": "cc4c9ae748b90fec68aa9d7236f2a3958e00ca5917d9b4c01e244b8be31f1b70",
+      "mime": "model/gltf-binary",
+      "selfContainedGLB": true
+    },
+    "assets/konkritek-rabota/model-cc4c9ae748b9.glb.gz": {
+      "bytes": 507268,
+      "sha256": "d295f507eafb4d3aede03319cad1d44b66bc22e8ec24a8afbc859eb968073582",
+      "mime": "application/gzip",
+      "decodedSHA256": "cc4c9ae748b90fec68aa9d7236f2a3958e00ca5917d9b4c01e244b8be31f1b70",
+      "decodedBytes": 6372308
+    },
+    "assets/kontinental-montazhka/f3d-de9e2bb4dd71.f3d": {
+      "bytes": 3757418,
+      "sha256": "de9e2bb4dd7123dc6ef2b7a75abd0896e52ef1281862a1904e849d17f94a833e",
+      "mime": "application/octet-stream"
+    },
+    "assets/kontinental-montazhka/model-ac4a6d093820.glb": {
+      "bytes": 8997588,
+      "sha256": "ac4a6d093820d452f086df7fb0d78c5d27f70e5f36244f40e67f270aaa3472c0",
+      "mime": "model/gltf-binary",
+      "selfContainedGLB": true
+    },
+    "assets/kontinental-montazhka/model-ac4a6d093820.glb.gz": {
+      "bytes": 790680,
+      "sha256": "76e427122d2e424e50d53065826c43bd3e7e5d7c97d46948a36abb46bc62d110",
+      "mime": "application/gzip",
+      "decodedSHA256": "ac4a6d093820d452f086df7fb0d78c5d27f70e5f36244f40e67f270aaa3472c0",
+      "decodedBytes": 8997588
+    },
+    "assets/kopilka-albertu/f3d-b1341dff2da8.f3d": {
+      "bytes": 424649,
+      "sha256": "b1341dff2da810d650137c6cf9754c63098e9f4d2ea17134355b7f9d63d082f0",
+      "mime": "application/octet-stream"
+    },
+    "assets/kopilka-albertu/model-ddeed9f2833a.glb": {
+      "bytes": 158828,
+      "sha256": "ddeed9f2833ac7277c8b33dc7212224c0740acdd21aa1bac6e073b82d6e158e4",
+      "mime": "model/gltf-binary",
+      "selfContainedGLB": true
+    },
+    "assets/kopilka-albertu/model-ddeed9f2833a.glb.gz": {
+      "bytes": 14130,
+      "sha256": "c0f710117b9a35c08dbebc4097a6b2ea769d8c0c2d609026d96b078de3561397",
+      "mime": "application/gzip",
+      "decodedSHA256": "ddeed9f2833ac7277c8b33dc7212224c0740acdd21aa1bac6e073b82d6e158e4",
+      "decodedBytes": 158828
+    },
+    "assets/lestnitsa/f3d-80ee05637bb8.f3d": {
+      "bytes": 613366,
+      "sha256": "80ee05637bb873ae0c155d551964b62908f35aef75a7f503bb747f296201f999",
+      "mime": "application/octet-stream"
+    },
+    "assets/lestnitsa/model-9ae223142733.glb": {
+      "bytes": 1501512,
+      "sha256": "9ae223142733e965acc1d2fa2cfaa50328953ad60a955f857a509865343c449b",
+      "mime": "model/gltf-binary",
+      "selfContainedGLB": true
+    },
+    "assets/lestnitsa/model-9ae223142733.glb.gz": {
+      "bytes": 104110,
+      "sha256": "b6e10916c25752a38e39e0936e84cd31fbc086a20f7749fc9c0fcc2cc860e4a8",
+      "mime": "application/gzip",
+      "decodedSHA256": "9ae223142733e965acc1d2fa2cfaa50328953ad60a955f857a509865343c449b",
+      "decodedBytes": 1501512
+    },
+    "assets/lestnitsa-novaya/f3d-beecb413de1a.f3d": {
+      "bytes": 952966,
+      "sha256": "beecb413de1a71151696ae0d434daf29e9d31bb0d463fd70ac3fb14a5184dbc3",
+      "mime": "application/octet-stream"
+    },
+    "assets/lestnitsa-novaya/model-08c2bc7a307e.glb": {
+      "bytes": 343640,
+      "sha256": "08c2bc7a307e07176bac9293606d9fd6edeb4344eaff628008e19b560e89f5b6",
+      "mime": "model/gltf-binary",
+      "selfContainedGLB": true
+    },
+    "assets/lestnitsa-novaya/model-08c2bc7a307e.glb.gz": {
+      "bytes": 33522,
+      "sha256": "8e55b06d17d3d62f53cb38fc86e0a3a9bf388e0eaecf24f77eec2ce127e0da2b",
+      "mime": "application/gzip",
+      "decodedSHA256": "08c2bc7a307e07176bac9293606d9fd6edeb4344eaff628008e19b560e89f5b6",
+      "decodedBytes": 343640
+    },
+    "assets/lipetskaya-obl-230092025/f3d-2652751a355d.f3d": {
+      "bytes": 9894207,
+      "sha256": "2652751a355d1393095e628b3d8a60d4b465858e87244bf904476666b2f3c3b6",
+      "mime": "application/octet-stream"
+    },
+    "assets/lipetskaya-obl-230092025/model-7a65245975bc.glb": {
+      "bytes": 12198276,
+      "sha256": "7a65245975bcbed597926d6bcaa79ae91f3307e80f08bd31be0eaaa2454dcdb7",
+      "mime": "model/gltf-binary",
+      "selfContainedGLB": true
+    },
+    "assets/lipetskaya-obl-230092025/model-7a65245975bc.glb.gz": {
+      "bytes": 949436,
+      "sha256": "824f5f1b7378d7e0d140eb604f3ed7f2b0f1a89391b220549d51877936f2032c",
+      "mime": "application/gzip",
+      "decodedSHA256": "7a65245975bcbed597926d6bcaa79ae91f3307e80f08bd31be0eaaa2454dcdb7",
+      "decodedBytes": 12198276
+    },
+    "assets/logistika/f3d-8e6ead318c52.f3d": {
+      "bytes": 125634,
+      "sha256": "8e6ead318c52f73fb6009f4e05b36c4788e15b6c45737057ebd4593d72af3ca1",
+      "mime": "application/octet-stream"
+    },
+    "assets/logistika/model-2ea04352a987.glb": {
+      "bytes": 11644,
+      "sha256": "2ea04352a987cf093eb2582991577863765bc51dd1260838254b8713ef113ecc",
+      "mime": "model/gltf-binary",
+      "selfContainedGLB": true
+    },
+    "assets/logistika/model-2ea04352a987.glb.gz": {
+      "bytes": 2440,
+      "sha256": "e5157d2b81402af1bcaf5dff3fed5b13fa7c79c55919bd097fc45744e2909320",
+      "mime": "application/gzip",
+      "decodedSHA256": "2ea04352a987cf093eb2582991577863765bc51dd1260838254b8713ef113ecc",
+      "decodedBytes": 11644
+    },
+    "assets/logotip-na-resepshene/f3d-8a21ccce87b9.f3d": {
+      "bytes": 1928896,
+      "sha256": "8a21ccce87b9557bbfe9ce871089dd9ef3f323f9a047d013f9ddca1d570aef87",
+      "mime": "application/octet-stream"
+    },
+    "assets/logotip-na-resepshene/model-dc7019db6f5e.glb": {
+      "bytes": 2180380,
+      "sha256": "dc7019db6f5ef8cfc076b4303eae7fe516496c3c1c8c04bde81aae5c1f03750d",
+      "mime": "model/gltf-binary",
+      "selfContainedGLB": true
+    },
+    "assets/logotip-na-resepshene/model-dc7019db6f5e.glb.gz": {
+      "bytes": 349469,
+      "sha256": "a616fe0ccd76bcd166b8eec8780fc542e8d73c0cfc0701e959be14df74c88100",
+      "mime": "application/gzip",
+      "decodedSHA256": "dc7019db6f5ef8cfc076b4303eae7fe516496c3c1c8c04bde81aae5c1f03750d",
+      "decodedBytes": 2180380
+    },
+    "assets/mobilnyy-resepshen/f3d-c6225e4adfe0.f3d": {
+      "bytes": 134981,
+      "sha256": "c6225e4adfe04a78f94cebc088f22085e5e5c4a5ddee2bb4e3720b4c8dd905d3",
+      "mime": "application/octet-stream"
+    },
+    "assets/mobilnyy-resepshen/model-011bb9db7c3f.glb": {
+      "bytes": 199172,
+      "sha256": "011bb9db7c3f76bede23481b68f41d74d74e993776c25154729600c26cd7bb3b",
+      "mime": "model/gltf-binary",
+      "selfContainedGLB": true
+    },
+    "assets/mobilnyy-resepshen/model-011bb9db7c3f.glb.gz": {
+      "bytes": 36517,
+      "sha256": "be3115e3dcb001d107b59b4ffdbf00f148330f3cc663aa9ef5da837f9a6bb3b1",
+      "mime": "application/gzip",
+      "decodedSHA256": "011bb9db7c3f76bede23481b68f41d74d74e993776c25154729600c26cd7bb3b",
+      "decodedBytes": 199172
+    },
+    "assets/vhodnaya-arka/f3d-0abb0c1ca771.f3d": {
+      "bytes": 739403,
+      "sha256": "0abb0c1ca7716ca44ecec93ed83a819dff2545b1fbb071feabfdd3d6a90bd693",
+      "mime": "application/octet-stream"
+    },
+    "assets/vhodnaya-arka/model-b05c1e8a116d.glb": {
+      "bytes": 498364,
+      "sha256": "b05c1e8a116deb436a8a43bc7d5cff356710466e26c0b0201ed771ba4e369bc3",
+      "mime": "model/gltf-binary",
+      "selfContainedGLB": true
+    },
+    "assets/vhodnaya-arka/model-b05c1e8a116d.glb.gz": {
+      "bytes": 40408,
+      "sha256": "6e595d912f2b0066bb16e40735f3a05dd70864d98352aff3133f687b76f43a15",
+      "mime": "application/gzip",
+      "decodedSHA256": "b05c1e8a116deb436a8a43bc7d5cff356710466e26c0b0201ed771ba4e369bc3",
+      "decodedBytes": 498364
     }
   },
   "retainedFixtures": [

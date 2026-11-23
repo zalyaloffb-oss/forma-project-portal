@@ -105,9 +105,9 @@ class Disk:
         with tempfile.TemporaryDirectory(prefix='ees-disk-') as folder:
             response = Path(folder) / 'response'
             transfer_size = len(content) if content is not None else Path(upload).stat().st_size if upload else 0
-            timeout = max(45, min(600, int(30 + transfer_size / 1024 / 1024 * 5))) if upload or content is not None else 90
+            timeout = max(90,min(3600,int(90+transfer_size/(64*1024)))) if upload or content is not None else 90
             args = ['curl.exe', '-4', '--silent', '--show-error', '--connect-timeout', '20',
-                    '--max-time', str(timeout), '--retry', '2', '--retry-delay', '2',
+                    '--max-time', str(timeout), '--retry', '2' if method=='GET' else '0', '--retry-delay', '2',
                     '--proto', '=https', '--request', method, '--output', str(output or response),
                     '--write-out', '%{http_code}']
             config = ''
@@ -122,9 +122,13 @@ class Disk:
             if content is not None:
                 if authenticated:
                     raise DiskError('Передача файла с заголовком OAuth запрещена.')
-                args += ['--data-binary', '@-', '--header', 'Content-Type: application/octet-stream']
+                # A seekable body gives curl a fixed Content-Length and allows
+                # safe retries of large generated gzip payloads as a file PUT.
+                payload=Path(folder)/'upload'
+                payload.write_bytes(content)
+                args += ['--upload-file',str(payload),'--header','Content-Type: application/octet-stream']
             args += [url]
-            result = subprocess.run(args, input=content if content is not None else config.encode('utf-8'), capture_output=True)
+            result = subprocess.run(args, input=config.encode('utf-8'), capture_output=True)
             if result.returncode:
                 detail = result.stderr.decode('utf-8', errors='replace').splitlines()[0] if result.stderr else ''
                 detail = re.sub(r'https://\S+', '[адрес передачи]', detail)[:180]

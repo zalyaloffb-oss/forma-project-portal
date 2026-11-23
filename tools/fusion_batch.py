@@ -122,6 +122,12 @@ class Batch(adsk.core.CustomEventHandler):
         return candidates
 
     def export(self,row):
+        if not self.initial_document or not self.initial_document.isValid:
+            # Retain the existing empty workspace if Fusion replaced a closed
+            # initial tab, so opening/closing CAD does not close the last tab.
+            baseline=self.app.activeDocument
+            if baseline and not baseline.dataFile and not baseline.isModified:
+                self.initial_document=baseline
         self.write('opening-model',current=row['folderPath']+'/'+row['name'])
         data_file=lookup_source(self,row)
         latest=data_file.latestVersion
@@ -145,6 +151,7 @@ class Batch(adsk.core.CustomEventHandler):
                 self.state['skipped'].append({'id':row['id'],'name':row['name'],'reason':'Empty design, no bodies or components'})
                 self.write('empty-model-skipped',current=row['name']);return
             meta,files,count=self.exporter.prepare(design,str(directory),report,date_metadata=dates)
+            if doc.isModified:raise RuntimeError('Model was modified while exporting; the document is left open: '+row['name'])
             data=Path(files['model']).read_bytes()
             gltf=json.loads(data[20:20+struct.unpack_from('<I',data,12)[0]])
             meshes=len(gltf.get('meshes',[]))
@@ -158,7 +165,7 @@ class Batch(adsk.core.CustomEventHandler):
             self.state['exported'].append({'id':row['id'],'name':row['name'],'version':latest.versionNumber,'manifest':str(manifest),'bodyCount':count,'meshCount':meshes})
             self.write('model-exported',current=row['name'])
         finally:
-            if opened and doc.isValid:doc.close(False)
+            if opened and doc.isValid and not doc.isModified:doc.close(False)
             if self.initial_document and self.initial_document.isValid:self.initial_document.activate()
 
     def notify(self,args):
