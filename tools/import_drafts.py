@@ -25,6 +25,20 @@ def decode_file(value):
     if len(data)>50*1024*1024:raise ValueError('Draft file exceeds 50 MB')
     return data
 
+def apply_relationships(catalog,drafts):
+    projects={project['id']:project for project in catalog['projects']}
+    assignments={draft['id']:draft['parentProjectId'] for draft in drafts if 'parentProjectId' in draft}
+    for identity,parent in assignments.items():
+        if not isinstance(parent,str) or (parent and (parent not in projects or parent==identity)):
+            raise ValueError('Invalid parent project')
+    parents={identity:assignments.get(identity,project.get('parentProjectId','')) for identity,project in projects.items()}
+    for identity in assignments:
+        visited={identity};parent=parents[identity]
+        while parent:
+            if parent in visited:raise ValueError('Project grouping contains a cycle')
+            visited.add(parent);parent=parents.get(parent,'')
+    for identity,parent in assignments.items():projects[identity]['parentProjectId']=parent
+
 def main():
     parser=argparse.ArgumentParser();parser.add_argument('package');args=parser.parse_args()
     packet=json.loads(Path(args.package).read_text(encoding='utf-8'))
@@ -58,6 +72,7 @@ def main():
                     previous=next((x for x in project.get('attachments',[]) if x['id']==a.get('id')),None)
                     if previous:attachments.append(previous)
             project['attachments']=attachments
+        apply_relationships(catalog,packet['projects'])
         catalog['managers']=[{'name':n} for n in packet.get('managers',[]) if isinstance(n,str) and n.strip()]
         save_catalog(catalog)
     print('Imported',len(packet['projects']),'drafts. Review, commit and push to publish.')

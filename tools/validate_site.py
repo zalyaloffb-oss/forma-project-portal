@@ -23,6 +23,13 @@ def main():
         elif file.is_file():assert file.stat().st_size<100*1024*1024
         return file
     for url in cloud:check(url)
+    projects_by_id={project['id']:project for project in data['projects']}
+    for project in data['projects']:
+        visited={project['id']};parent=project.get('parentProjectId','')
+        assert isinstance(parent,str),'Invalid parent project ID'
+        while parent:
+            assert parent in projects_by_id and parent not in visited,'Missing or cyclic parent project'
+            visited.add(parent);parent=projects_by_id[parent].get('parentProjectId','')
     ids=set();slugs=set();checked=0
     for p in data['projects']:
         assert p['id'] not in ids;ids.add(p['id'])
@@ -35,6 +42,9 @@ def main():
                 if not url:continue
                 check(url);checked+=1
             for attachment in entry.get('attachments',[]):check(attachment['url']);checked+=1
+            if not entry.get('modelUrl'):
+                assert not entry.get('modelGzipUrl') and not entry.get('bannerLayoutUrl'),'Model data without a model'
+                continue
             file=ROOT/entry['modelUrl']
             if file.is_file():
                 model=file.read_bytes()

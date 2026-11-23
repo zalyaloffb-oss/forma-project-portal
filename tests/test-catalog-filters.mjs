@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import assert from 'node:assert/strict';
 const source=fs.readFileSync(new URL('../catalog-filters.js',import.meta.url),'utf8');
-const {projectCategory,matchesCollection,filterProjects,navigationCounts,collectionTitle,moveProject,furnitureTypes}=await import('data:text/javascript;base64,'+Buffer.from(source).toString('base64'));
+const {projectCategory,matchesCollection,filterProjects,navigationCounts,collectionTitle,moveProject,furnitureTypes,projectGroups,mergeProjects,separateProject}=await import('data:text/javascript;base64,'+Buffer.from(source).toString('base64'));
 const samples=[
  {id:'stand',title:'Стенд с ресепшеном',customer:'А',date:'2025-01-02',status:'Реализовано'},
  {id:'shelf',title:'Стеллаж 3 полки',customer:'А',date:'2024-01-02',status:'На стадии проекта'},
@@ -55,3 +55,35 @@ assert.equal(intoArchive.category,'furniture');assert.equal(intoArchive.furnitur
 assert.equal(moveProject(intoArchive,'furniture/receptions').archived,false);
 for(const destination of ['invalid','stands/shelves','furniture/no-such-type','furniture/shelves/extra'])assert.throws(()=>moveProject(project,destination));
 console.log('PASS: moving across every section, archive restore, source fields and file references preserved, invalid targets rejected.');
+const groupSource=[
+ {...project,id:'main',title:'Стенд выставки'},
+ {...project,id:'part',title:'Ресепшен отдельный',viewerPath:'/part',fusionDataFileId:'part-source'},
+ {...project,id:'third',title:'Стеллаж отдельный',viewerPath:'/third'},
+ {...project,id:'other',title:'Другой стенд',viewerPath:'/other'},
+];
+const originalGroup=structuredClone(groupSource);
+const changes=mergeProjects(groupSource,['main','part','third'],'main');
+const withUpdates=(rows,updates)=>rows.map(row=>updates.find(update=>update.id===row.id)||row);
+const combined=withUpdates(groupSource,changes),groups=projectGroups(combined);
+assert.deepEqual(groupSource,originalGroup);
+assert.deepEqual(groups.roots.map(p=>p.id),['main','other']);
+assert.deepEqual(groups.parts.get('main').map(p=>p.id),['part','third']);
+for(const changed of changes){
+ const old=groupSource.find(p=>p.id===changed.id);
+ for(const key of Object.keys(old))assert.deepEqual(changed[key],old[key],'Grouping preserves '+key);
+ assert.equal(changed.attachments,old.attachments);
+}
+assert.deepEqual(filterProjects(combined,{view:'all'},{query:'Ресепшен отдельный'}).map(p=>p.id),['main']);
+assert.equal(navigationCounts(combined).all,2);
+const regrouped=withUpdates(combined,mergeProjects(combined,['main','other'],'other'));
+assert.equal(projectGroups(regrouped).roots.length,1);
+assert.deepEqual(projectGroups(regrouped).parts.get('other').map(p=>p.id),['main','part','third']);
+const detached=withUpdates(combined,[separateProject(combined.find(p=>p.id==='part'))]);
+assert.deepEqual(projectGroups(detached).roots.map(p=>p.id),['main','part','other']);
+assert.equal(detached.find(p=>p.id==='part').viewerPath,'/part');
+assert.equal(projectGroups([{id:'orphan',parentProjectId:'missing'}]).roots.length,1);
+assert.equal(projectGroups([{id:'a',parentProjectId:'b'},{id:'b',parentProjectId:'a'}]).roots.length,2);
+assert.throws(()=>mergeProjects(combined,['main','part'],'main'));
+assert.throws(()=>mergeProjects(groupSource,['main'],'main'));
+assert.throws(()=>mergeProjects(groupSource,['main','part'],'other'));
+console.log('PASS: reversible grouping, regrouping existing groups, child-name search, source identity preservation and invalid selection guards.');

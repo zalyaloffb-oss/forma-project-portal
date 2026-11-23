@@ -45,10 +45,42 @@ export function matchesCollection(project,{view='all',furnitureType=''}={}){
  return category.category===view&&(!furnitureType||category.furnitureType===furnitureType);
 }
 
+export function projectGroups(projects){
+ const byId=new Map(projects.map(project=>[project.id,project])),rootIds=new Map(),parts=new Map(),roots=[];
+ for(const project of projects){
+  let root=project;const visited=new Set([project.id]);
+  while(root.parentProjectId&&byId.has(root.parentProjectId)){
+   if(visited.has(root.parentProjectId)){root=project;break;}
+   root=byId.get(root.parentProjectId);visited.add(root.id);
+  }
+  rootIds.set(project.id,root.id);
+  if(root.id===project.id)roots.push(project);
+  else {if(!parts.has(root.id))parts.set(root.id,[]);parts.get(root.id).push(project);}
+ }
+ return {byId,rootIds,roots,parts};
+}
+
+export function mergeProjects(projects,selectedIds,primaryId){
+ const ids=new Set(selectedIds),groups=projectGroups(projects);
+ if(ids.size<2||!ids.has(primaryId))throw Error('Выберите минимум два проекта и основной проект.');
+ for(const id of ids)if(!groups.byId.has(id)||groups.rootIds.get(id)!==id)
+  throw Error('Выберите самостоятельные проекты. Вложенную часть сначала отделите.');
+ const updates=[];
+ for(const project of projects){
+  const rootId=groups.rootIds.get(project.id);
+  if(project.id!==primaryId&&ids.has(rootId)&&project.parentProjectId!==primaryId)
+   updates.push({...project,parentProjectId:primaryId});
+ }
+ return updates;
+}
+
+export function separateProject(project){return {...project,parentProjectId:''};}
+
 export function filterProjects(projects,collection,filters={}){
  const query=String(filters.query||'').trim().toLocaleLowerCase('ru');
- return projects.filter(project=>matchesCollection(project,collection)&&
-  (!query||[project.title,project.customer,project.event,project.manager].some(value=>String(value||'').toLocaleLowerCase('ru').includes(query)))&&
+ const groups=projectGroups(projects);
+ return groups.roots.filter(project=>matchesCollection(project,collection)&&
+  (!query||[project,...(groups.parts.get(project.id)||[])].some(part=>[part.title,part.customer,part.event,part.manager].some(value=>String(value||'').toLocaleLowerCase('ru').includes(query))))&&
   (!filters.customer||project.customer===filters.customer)&&
   (!filters.status||project.status===filters.status)&&
   (!filters.year||String(project.date||'').startsWith(filters.year)));
@@ -56,7 +88,7 @@ export function filterProjects(projects,collection,filters={}){
 
 export function navigationCounts(projects){
  const counts={all:0,stands:0,furniture:0,archive:0,...Object.fromEntries(furnitureTypes.map(type=>[type.id,0]))};
- for(const project of projects){
+ for(const project of projectGroups(projects).roots){
   if(project.archived===true){counts.archive++;continue;}
   counts.all++;
   const category=projectCategory(project);
