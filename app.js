@@ -432,12 +432,17 @@ async function loadPublished(){
   const store=tx.objectStore('projects');
   const request=store.getAll();
   request.onsuccess=()=>{
-   const drafts=new Set(request.result.filter(project=>project.localDraft).map(project=>project.id));
+   const drafts=new Map(request.result.filter(project=>project.localDraft).map(project=>[project.id,project]));
    for(const project of request.result){
     if(project.published&&!project.localDraft&&!publishedIds.has(project.id))store.delete(project.id);
    }
    for(const project of data.projects){
-    if(!drafts.has(project.id))store.put({...project,published:true});
+    const draft=drafts.get(project.id);
+    if(!draft)store.put({...project,published:true});
+    else if(!draft.cover&&!draft.design&&project.coverUrl&&draft.modelUrl===project.modelUrl&&draft.coverUrl!==project.coverUrl){
+     // A metadata draft keeps its edits while receiving a corrected source preview.
+     store.put({...draft,coverUrl:project.coverUrl});
+    }
    }
   };
   tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error);tx.onabort=()=>reject(tx.error);

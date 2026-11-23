@@ -2552,6 +2552,16 @@
       "mime": "application/gzip",
       "decodedSHA256": "b05c1e8a116deb436a8a43bc7d5cff356710466e26c0b0201ed771ba4e369bc3",
       "decodedBytes": 498364
+    },
+    "assets/vitrina-1000-x-500-x-2500/cover-2faff621f8e5.png": {
+      "bytes": 104505,
+      "sha256": "2faff621f8e5480eebb71c78edfff1a8f91b9e5231a75e7785bfccfe77caf55d",
+      "mime": "image/png"
+    },
+    "assets/vitrina-500-x-500-x-2000/cover-d1ddd8445e82.png": {
+      "bytes": 96980,
+      "sha256": "d1ddd8445e8203dca240faf47db2330656b757d8475ec7ea7f2ecafcf796f732",
+      "mime": "image/png"
     }
   },
   "retainedFixtures": [
