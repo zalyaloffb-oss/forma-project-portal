@@ -6,3 +6,5 @@
 
 [data-theme=dark] body,[data-theme=dark] .banner-view{background:#20262c;color:#e5ebf0}
 [data-theme=dark] .banner-header,[data-theme=dark] .banner-sidebar,[data-theme=dark] .banner-status{background:#282e34;color:#e5ebf0;border-color:#45515b}
+
+:root:not([data-edit-mode=on]) [data-edit-only]{display:none!important}

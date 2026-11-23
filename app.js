@@ -1,3 +1,4 @@
+import {isEditing,setEditing,requireEditing} from './edit-mode.js?v=1';
 import {bindPdfFullscreen} from './pdf-fullscreen.js?v=1';
 import {loadCatalogue,projectModel} from './site-config.js?v=banner-preview-1';
 import {projectCategory,filterProjects,matchesCollection,navigationCounts,collectionTitle,furnitureTypes,moveProject,projectGroups,mergeProjects,separateProject} from './catalog-filters.js?v=project-groups-1';
@@ -47,7 +48,7 @@ function render(){
  $('#result-count').textContent=`Показано ${filtered.length} из ${total}`;
  const emptyTitle=collection.view==='archive'&&!total?'Архив пуст':'Проекты не найдены';
  const emptyHint=collection.view==='archive'&&!total?'Перенесите проект в архив через «Переместить в раздел».':'Измените фильтры или добавьте новый проект.';
- $('#grid').innerHTML=filtered.length?filtered.map(p=>`<article class="card-shell ${chosenProjects.has(p.id)?'is-selected':''}"><button class="card" data-id="${esc(p.id)}" aria-label="${selectionMode?'Выбрать':'Открыть'} проект ${esc(p.title)}"${selectionMode?` aria-pressed="${chosenProjects.has(p.id)}"`:''}><div class="cover">${(urls.get(p.id)||p.coverUrl)?`<img src="${esc(urls.get(p.id)||p.coverUrl)}" alt="${p.model&&!p.design?'Превью модели Fusion':'Первая страница дизайн-проекта'}" loading="lazy" decoding="async">`:'<span class="no-cover">Добавьте дизайн-проект</span>'}<span class="cover-count">${p.model?'3D · ':''}${['design','assembly','expo','electrical'].filter(key=>p[key]||p[key+'Url']).length} PDF${p.attachments?.length?` · ${p.attachments.length} файлов`:""}</span></div><div class="card-content"><div class="card-kicker"><span class="customer">${esc(p.customer)}</span>${badge(p.status)}</div><h2>${esc(p.title)}</h2>${groups.parts.has(p.id)?`<div class="card-group">Состав проекта · ${groups.parts.get(p.id).length}</div>`:''}${p.event?`<p>${esc(p.event)}</p>`:''}<div class="card-bottom"><span>${esc(p.manager)}</span><span>${fmt(p.date)}</span></div></div></button><label class="card-select"${selectionMode?'':' hidden'}><input type="checkbox" data-select-id="${esc(p.id)}" aria-label="Выбрать проект ${esc(p.title)}"${chosenProjects.has(p.id)?' checked':''}></label><button type="button" class="card-move" data-move-id="${esc(p.id)}" aria-label="Переместить проект ${esc(p.title)} в раздел" title="Переместить в раздел"${selectionMode?' hidden':''}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M10 19H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2v2M13 17h9m-4-4 4 4-4 4"/></svg></button></article>`).join(''):`<div class="empty"><h2>${emptyTitle}</h2><p>${emptyHint}</p></div>`;
+ $('#grid').innerHTML=filtered.length?filtered.map(p=>`<article class="card-shell ${chosenProjects.has(p.id)?'is-selected':''}"><button class="card" data-id="${esc(p.id)}" aria-label="${selectionMode?'Выбрать':'Открыть'} проект ${esc(p.title)}"${selectionMode?` aria-pressed="${chosenProjects.has(p.id)}"`:''}><div class="cover">${(urls.get(p.id)||p.coverUrl)?`<img src="${esc(urls.get(p.id)||p.coverUrl)}" alt="${p.model&&!p.design?'Превью модели Fusion':'Первая страница дизайн-проекта'}" loading="lazy" decoding="async">`:'<span class="no-cover">Добавьте дизайн-проект</span>'}<span class="cover-count">${p.model?'3D · ':''}${['design','assembly','expo','electrical'].filter(key=>p[key]||p[key+'Url']).length} PDF${p.attachments?.length?` · ${p.attachments.length} файлов`:""}</span></div><div class="card-content"><div class="card-kicker"><span class="customer">${esc(p.customer)}</span>${badge(p.status)}</div><h2>${esc(p.title)}</h2>${groups.parts.has(p.id)?`<div class="card-group">Состав проекта · ${groups.parts.get(p.id).length}</div>`:''}${p.event?`<p>${esc(p.event)}</p>`:''}<div class="card-bottom"><span>${esc(p.manager)}</span><span>${fmt(p.date)}</span></div></div></button><label class="card-select"${selectionMode?'':' hidden'}><input type="checkbox" data-select-id="${esc(p.id)}" aria-label="Выбрать проект ${esc(p.title)}"${chosenProjects.has(p.id)?' checked':''}></label><button type="button" class="card-move" data-edit-only data-move-id="${esc(p.id)}" aria-label="Переместить проект ${esc(p.title)} в раздел" title="Переместить в раздел"${selectionMode?' hidden':''}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M10 19H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2v2M13 17h9m-4-4 4 4-4 4"/></svg></button></article>`).join(''):`<div class="empty"><h2>${emptyTitle}</h2><p>${emptyHint}</p></div>`;
  document.querySelectorAll('.card').forEach(card=>card.onclick=()=>selectionMode?toggleProjectSelection(card.dataset.id):openProject(card.dataset.id));
  document.querySelectorAll('[data-select-id]').forEach(input=>input.onchange=()=>toggleProjectSelection(input.dataset.selectId));
  document.querySelectorAll('[data-move-id]').forEach(button=>button.onclick=()=>openMoveProject(button.dataset.moveId));
@@ -61,7 +62,7 @@ async function openProject(id,preferredTab){
  if(p.furniture?.length)tabs.push(['furniture','Мебель']);
  if(parts.length)tabs.push(['parts',`Состав проекта (${parts.length})`]);
  tab=tabs.some(([key])=>key===preferredTab)?preferredTab:p.model?'model':(p.design||p.designUrl)?'design':parts.length?'parts':p.attachments?.length?'files':'design';
- $('#drawer-content').innerHTML=`${parent?`<button class="project-parent" id="parent-project">← ${esc(parent.title)}</button>`:''}<h2>${esc(p.title)}</h2>${badge(p.status)}<dl class="details"><div><dt>Заказчик</dt><dd>${esc(p.customer)}</dd></div><div><dt>Дата создания</dt><dd>${fmt(p.date)}</dd></div><div><dt>Мероприятие</dt><dd>${esc(p.event)||'—'}</dd></div><div><dt>Менеджер компании</dt><dd>${esc(p.manager)||'—'}</dd></div></dl><div class="tabs">${tabs.map(([key,label])=>`<button class="tab ${tab===key?'selected':''}" data-tab="${key}">${label}</button>`).join('')}</div><div id="tab-loading" class="tab-loading" role="status" hidden><span class="tab-loading-track" aria-hidden="true"><i></i></span><span>Загрузка…</span></div>${p.attachments?.length?`<div class="attachments"><label>Материалы проекта (${p.attachments.length})<select id="attachment-select">${p.attachments.map((f,i)=>`<option value="${i}">${esc(f.name)}</option>`).join('')}</select></label><button id="open-attachment" class="quiet">Открыть файл</button></div>`:''}<div id="pdf-area"></div>${p.source?`<a class="source-link" href="${esc(p.source)}" target="_blank" rel="noopener noreferrer"><span><strong>Исходники проекта</strong></span></a>`:'<div class="source-link"><span><strong>Исходники проекта</strong><small>Ссылка на Яндекс Диск пока не добавлена</small></span></div>'}<div class="drawer-actions">${parent?'<button class="quiet" id="separate-btn">Отделить в самостоятельный проект</button>':'<button class="quiet" id="group-btn">Объединить с другими</button>'}<button class="quiet" id="move-btn">Переместить в раздел</button><button class="quiet" id="edit-btn">Редактировать проект</button></div>`;
+ $('#drawer-content').innerHTML=`${parent?`<button class="project-parent" id="parent-project">← ${esc(parent.title)}</button>`:''}<h2>${esc(p.title)}</h2>${badge(p.status)}<dl class="details"><div><dt>Заказчик</dt><dd>${esc(p.customer)}</dd></div><div><dt>Дата создания</dt><dd>${fmt(p.date)}</dd></div><div><dt>Мероприятие</dt><dd>${esc(p.event)||'—'}</dd></div><div><dt>Менеджер компании</dt><dd>${esc(p.manager)||'—'}</dd></div></dl><div class="tabs">${tabs.map(([key,label])=>`<button class="tab ${tab===key?'selected':''}" data-tab="${key}">${label}</button>`).join('')}</div><div id="tab-loading" class="tab-loading" role="status" hidden><span class="tab-loading-track" aria-hidden="true"><i></i></span><span>Загрузка…</span></div>${p.attachments?.length?`<div class="attachments"><label>Материалы проекта (${p.attachments.length})<select id="attachment-select">${p.attachments.map((f,i)=>`<option value="${i}">${esc(f.name)}</option>`).join('')}</select></label><button id="open-attachment" class="quiet">Открыть файл</button></div>`:''}<div id="pdf-area"></div>${p.source?`<a class="source-link" href="${esc(p.source)}" target="_blank" rel="noopener noreferrer"><span><strong>Исходники проекта</strong></span></a>`:'<div class="source-link"><span><strong>Исходники проекта</strong><small>Ссылка на Яндекс Диск пока не добавлена</small></span></div>'}<div class="drawer-actions" data-edit-only>${parent?'<button class="quiet" id="separate-btn">Отделить в самостоятельный проект</button>':'<button class="quiet" id="group-btn">Объединить с другими</button>'}<button class="quiet" id="move-btn">Переместить в раздел</button><button class="quiet" id="edit-btn">Редактировать проект</button></div>`;
  if(!$('#drawer').open)$('#drawer').showModal();
  document.querySelectorAll('.tab').forEach(button=>button.onclick=()=>{tab=button.dataset.tab;document.querySelectorAll('.tab').forEach(other=>other.classList.toggle('selected',other===button));loadPDF()});
  if(p.attachments?.length){
@@ -71,7 +72,7 @@ async function openProject(id,preferredTab){
  if(parent){$('#parent-project').onclick=()=>openProject(parent.id,'parts');$('#separate-btn').onclick=()=>detachProject(p.id);}
  else $('#group-btn').onclick=()=>setProjectSelection(true,p.id);
  $('#move-btn').onclick=()=>openMoveProject(p.id);
- $('#edit-btn').onclick=()=>{$('#drawer').close();openEditor(p.id)};
+ $('#edit-btn').onclick=()=>{if(!isEditing())return;$('#drawer').close();openEditor(p.id)};
  await loadPDF();
 }
 async function loadPDF(){
@@ -222,6 +223,7 @@ async function drawPage(){
  }
 }
 function putDrafts(updates){
+ requireEditing();
  return new Promise((resolve,reject)=>{
   const tx=db.transaction('projects','readwrite'),store=tx.objectStore('projects');
   try{for(const project of updates)store.put({...project,localDraft:true});}
@@ -237,6 +239,7 @@ function renderProjectSelection(){
  $('#merge-projects').disabled=chosenProjects.size<2;
 }
 function setProjectSelection(enabled,initialId){
+ if(enabled&&!isEditing())return;
  if($('#drawer').open)$('#drawer').close();
  selectionMode=enabled;chosenProjects.clear();if(enabled&&initialId)chosenProjects.add(initialId);
  render();
@@ -249,6 +252,7 @@ function toggleProjectSelection(id){
  control?.focus({preventScroll:true});
 }
 function openMergeProjects(){
+ if(!isEditing())return;
  const groups=projectGroups(projects),items=[...chosenProjects].map(id=>groups.byId.get(id)).filter(Boolean);
  if(items.length<2)return;
  $('#merge-primary').innerHTML=items.map(project=>`<option value="${esc(project.id)}">${esc(project.title)}</option>`).join('');
@@ -256,7 +260,7 @@ function openMergeProjects(){
  $('#merge-error').textContent='';$('#merge-modal').showModal();
 }
 async function submitMergeProjects(event){
- event.preventDefault();const dialog=$('#merge-modal'),button=$('#merge-submit'),primaryId=$('#merge-primary').value;
+ event.preventDefault();if(!isEditing())return;const dialog=$('#merge-modal'),button=$('#merge-submit'),primaryId=$('#merge-primary').value;
  const closeButtons=[...dialog.querySelectorAll('.close')];
  dialog.dataset.busy='true';button.disabled=true;closeButtons.forEach(button=>button.disabled=true);button.textContent='Объединяем…';$('#merge-error').textContent='';
  try{
@@ -281,6 +285,7 @@ function renderProjectParts(){
  document.querySelectorAll('[data-detach-part]').forEach(button=>button.onclick=()=>detachProject(button.dataset.detachPart));
 }
 async function detachProject(id){
+ if(!isEditing())return;
  const groups=projectGroups(projects),project=groups.byId.get(id),rootId=groups.rootIds.get(id);
  if(!project||rootId===id)return;
  const openedId=selected?.id;
@@ -299,6 +304,7 @@ $('#merge-form').onsubmit=submitMergeProjects;
 $('#merge-modal').addEventListener('cancel',event=>{if(event.currentTarget.dataset.busy)event.preventDefault();});
 
 function openMoveProject(id){
+ if(!isEditing())return;
  const project=projects.find(project=>project.id===id);if(!project)return;
  movingId=id;
  if($('#drawer').open)$('#drawer').close();
@@ -312,7 +318,7 @@ function openMoveProject(id){
 }
 $('#move-modal').addEventListener('close',()=>{movingId=null;});
 $('#move-form').onsubmit=async event=>{
- event.preventDefault();const button=$('#move-submit');button.disabled=true;button.textContent='Перемещаем…';$('#move-error').textContent='';
+ event.preventDefault();if(!isEditing())return;const button=$('#move-submit');button.disabled=true;button.textContent='Перемещаем…';$('#move-error').textContent='';
  try{
   const original=projects.find(project=>project.id===movingId);
   if(!original)throw Error('Проект не найден. Обновите страницу.');
@@ -331,6 +337,7 @@ $('#move-form').onsubmit=async event=>{
 };
 
 function openEditor(id){
+ if(!isEditing())return;
  editing=id?projects.find(p=>p.id===id):null;
  const form=$('#project-form');form.reset();fillManagers();
  $('#form-error').textContent='';
@@ -352,7 +359,7 @@ function updateCategoryField(){
 }
 $('#project-form').elements.category.onchange=updateCategoryField;
 
-$('#project-form').onsubmit=async e=>{e.preventDefault();const form=e.currentTarget,button=$('#save-btn');button.disabled=true;button.textContent='Сохраняем…';$('#form-error').textContent='';try{const data=new FormData(form),p={...(editing||{id:crypto.randomUUID(),demo:false})};for(const k of ['title','customer','event','manager','date','status','source'])p[k]=String(data.get(k)).trim();p.category=form.elements.category.value;p.furnitureType=p.category==='furniture'?form.elements.furnitureType.value:'';p.archived=form.elements.archived.checked;if(!p.title||!p.customer)throw Error('Укажите название проекта и заказчика.');if(p.source){const u=new URL(p.source);if(u.protocol!=='https:'||!['disk.yandex.ru','disk.yandex.com','yadi.sk'].includes(u.hostname))throw Error('Укажите HTTPS-ссылку на Яндекс Диск.');}for(const kind of ['design','assembly','expo','electrical']){const f=data.get(kind);if(f?.size){if(f.size>50*1024*1024)throw Error('PDF должен быть не больше 50 МБ.');if(await f.slice(0,5).text()!=='%PDF-')throw Error('Выберите корректный файл PDF.');const cover=await coverFor(f);p[kind]=f;if(kind==='design')p.cover=cover;}}await put(p);if(!matchesCollection(p,collection)){collection={view:p.archived?'archive':p.category,furnitureType:p.archived?'':p.furnitureType};furnitureExpanded=collection.view==='furniture';}await refresh();$('#editor').close();toast('Черновик сохранён в этом браузере. Для общего доступа скачайте изменения для публикации.');}catch(e){$('#form-error').textContent=e.name==='QuotaExceededError'?'Недостаточно места в браузере для сохранения файлов.':e.message||'Не удалось сохранить проект.';}finally{button.disabled=false;button.textContent='Сохранить проект'}};
+$('#project-form').onsubmit=async e=>{e.preventDefault();if(!isEditing())return;const form=e.currentTarget,button=$('#save-btn');button.disabled=true;button.textContent='Сохраняем…';$('#form-error').textContent='';try{const data=new FormData(form),p={...(editing||{id:crypto.randomUUID(),demo:false})};for(const k of ['title','customer','event','manager','date','status','source'])p[k]=String(data.get(k)).trim();p.category=form.elements.category.value;p.furnitureType=p.category==='furniture'?form.elements.furnitureType.value:'';p.archived=form.elements.archived.checked;if(!p.title||!p.customer)throw Error('Укажите название проекта и заказчика.');if(p.source){const u=new URL(p.source);if(u.protocol!=='https:'||!['disk.yandex.ru','disk.yandex.com','yadi.sk'].includes(u.hostname))throw Error('Укажите HTTPS-ссылку на Яндекс Диск.');}for(const kind of ['design','assembly','expo','electrical']){const f=data.get(kind);if(f?.size){if(f.size>50*1024*1024)throw Error('PDF должен быть не больше 50 МБ.');if(await f.slice(0,5).text()!=='%PDF-')throw Error('Выберите корректный файл PDF.');const cover=await coverFor(f);p[kind]=f;if(kind==='design')p.cover=cover;}}await put(p);if(!matchesCollection(p,collection)){collection={view:p.archived?'archive':p.category,furnitureType:p.archived?'':p.furnitureType};furnitureExpanded=collection.view==='furniture';}await refresh();$('#editor').close();toast('Черновик сохранён в этом браузере. Для общего доступа скачайте изменения для публикации.');}catch(e){$('#form-error').textContent=e.name==='QuotaExceededError'?'Недостаточно места в браузере для сохранения файлов.':e.message||'Не удалось сохранить проект.';}finally{button.disabled=false;button.textContent='Сохранить проект'}};
 document.querySelectorAll('.close').forEach(b=>b.onclick=()=>b.closest('dialog').close());document.querySelectorAll('dialog').forEach(d=>d.addEventListener('click',e=>{if(e.target===d&&!d.dataset.busy){const r=d.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)d.close()}}));$('#drawer').addEventListener('close',()=>{closePdfViewer();++renderVersion;++drawVersion;if(doc){doc.destroy();doc=null;}if(downloadUrl){URL.revokeObjectURL(downloadUrl);downloadUrl=null;}});$('#add-btn').onclick=()=>openEditor();$('#invite-btn').onclick=()=>$('#invite-modal').showModal();['search','customer-filter','status-filter','year-filter'].forEach(id=>$('#'+id).addEventListener(id==='search'?'input':'change',render));document.querySelectorAll('[data-collection]').forEach(button=>button.onclick=()=>{
  if(button.dataset.collection==='all'){$('#search').value='';['customer-filter','status-filter','year-filter'].forEach(id=>$('#'+id).value='');}
  selectCollection(button.dataset.collection,button.dataset.furnitureType||'');
@@ -378,7 +385,7 @@ function selectCollection(view,furnitureType=''){
  render();
 }
 
-$('#batch-btn').onclick=()=>{$('#batch-target').innerHTML='<option value="new">Создать один новый проект</option>'+projects.map(p=>`<option value="${esc(p.id)}">В проект: ${esc(p.title)}</option>`).join('');$('#batch-progress').textContent='';$('#batch-errors').replaceChildren();$('#batch-files').value='';$('#batch-name').value='';$('#batch-name-label').hidden=false;$('#batch-name').required=true;$('#batch-modal').showModal();};
+$('#batch-btn').onclick=()=>{if(!isEditing())return;$('#batch-target').innerHTML='<option value="new">Создать один новый проект</option>'+projects.map(p=>`<option value="${esc(p.id)}">В проект: ${esc(p.title)}</option>`).join('');$('#batch-progress').textContent='';$('#batch-errors').replaceChildren();$('#batch-files').value='';$('#batch-name').value='';$('#batch-name-label').hidden=false;$('#batch-name').required=true;$('#batch-modal').showModal();};
 async function prepareImport(file){
  if(file.size>50*1024*1024)throw Error('Размер больше 50 МБ');
  const bytes=new Uint8Array(await file.slice(0,5).arrayBuffer());let kind,cover;
@@ -387,7 +394,7 @@ async function prepareImport(file){
  else throw Error('Поддерживаются только PDF и JPG');
  return {kind,cover,blob:file,name:file.name,id:crypto.randomUUID()};
 }
-$('#batch-form').onsubmit=async e=>{e.preventDefault();const files=[...$('#batch-files').files];if(!files.length)return;const target=$('#batch-target').value;const dialog=$('#batch-modal');dialog.dataset.busy='true';const failures=[];let busy=true;const cancel=e=>{if(busy)e.preventDefault();};dialog.addEventListener('cancel',cancel);const buttons=[...dialog.querySelectorAll('button,input,select')];buttons.forEach(b=>b.disabled=true);$('#batch-errors').replaceChildren();let count=0;let project=target==='new'?{id:crypto.randomUUID(),title:$('#batch-name').value.trim(),customer:'Не указан',event:'',manager:'',date:'',status:'Не указан',source:'',attachments:[],demo:false}:{...projects.find(p=>p.id===target)};
+$('#batch-form').onsubmit=async e=>{e.preventDefault();if(!isEditing())return;const files=[...$('#batch-files').files];if(!files.length)return;const target=$('#batch-target').value;const dialog=$('#batch-modal');dialog.dataset.busy='true';const failures=[];let busy=true;const cancel=e=>{if(busy)e.preventDefault();};dialog.addEventListener('cancel',cancel);const buttons=[...dialog.querySelectorAll('button,input,select')];buttons.forEach(b=>b.disabled=true);$('#batch-errors').replaceChildren();let count=0;let project=target==='new'?{id:crypto.randomUUID(),title:$('#batch-name').value.trim(),customer:'Не указан',event:'',manager:'',date:'',status:'Не указан',source:'',attachments:[],demo:false}:{...projects.find(p=>p.id===target)};
  try{for(let i=0;i<files.length;i++){const file=files[i];$('#batch-progress').textContent=`Обработка ${i+1} из ${files.length}: ${file.name}`;try{const attachment=await prepareImport(file);const next={...project,attachments:[...(project.attachments||[]),attachment],cover:project.cover||attachment.cover};await put(next);project=next;count++;}catch(error){failures.push(file);const li=document.createElement('li');li.textContent=file.name+': '+(error.name==='QuotaExceededError'?'Недостаточно места в браузере':error.message);$('#batch-errors').append(li);}}
  await refresh();if(count&&target==='new'){$('#batch-target').add(new Option('В проект: '+project.title,project.id));$('#batch-target').value=project.id;$('#batch-name-label').hidden=true;$('#batch-name').required=false;}$('#batch-progress').textContent=`Загружено ${count} из ${files.length}.`;
  // Keep only failed files for retry, avoiding duplicate successful imports.
@@ -411,9 +418,9 @@ function managerNames(){
 function fillManagers(){const select=$('#project-form').elements.manager;const value=select.value;select.innerHTML='<option value="">Не указан</option>'+managerNames().map(name=>`<option value="${esc(name)}">${esc(name)}</option>`).join('');select.value=value;}
 function showManagers(){const names=managerNames();$('#manager-list').innerHTML=names.length?names.map(name=>`<li>${esc(name)}</li>`).join(''):'<li>Менеджеров пока нет.</li>';}
 $('#header-settings').onclick=()=>{$('#manager-message').textContent='';$('#manager-form').reset();try{showManagers();}catch{$('#manager-message').textContent='Не удалось прочитать сохранённый список менеджеров.';}$('#settings-modal').showModal();};
-$('#manager-form').onsubmit=async e=>{e.preventDefault();const name=$('#manager-name').value.trim().replace(/\s+/g,' ');if(!name){$('#manager-message').textContent='Введите имя менеджера.';return;}try{const names=managerNames();if(names.some(n=>n.toLocaleLowerCase('ru')===name.toLocaleLowerCase('ru'))){$('#manager-message').textContent='Такой менеджер уже есть в списке.';return;}localStorage.setItem('forma-managers',JSON.stringify([...names,name]));showManagers();fillManagers();$('#manager-form').reset();$('#manager-message').textContent='Менеджер добавлен.';}catch{$('#manager-message').textContent='Не удалось сохранить менеджера. Проверьте доступ к хранилищу браузера.';}};
+$('#manager-form').onsubmit=async e=>{e.preventDefault();if(!isEditing())return;const name=$('#manager-name').value.trim().replace(/\s+/g,' ');if(!name){$('#manager-message').textContent='Введите имя менеджера.';return;}try{const names=managerNames();if(names.some(n=>n.toLocaleLowerCase('ru')===name.toLocaleLowerCase('ru'))){$('#manager-message').textContent='Такой менеджер уже есть в списке.';return;}localStorage.setItem('forma-managers',JSON.stringify([...names,name]));showManagers();fillManagers();$('#manager-form').reset();$('#manager-message').textContent='Менеджер добавлен.';}catch{$('#manager-message').textContent='Не удалось сохранить менеджера. Проверьте доступ к хранилищу браузера.';}};
 
-async function put(project){return putLocal({...project,localDraft:true});}
+async function put(project){requireEditing();return putLocal({...project,localDraft:true});}
 async function loadPublished(){
  const data=await loadCatalogue();
  const publishedIds=new Set(data.projects.map(project=>project.id));
@@ -446,7 +453,7 @@ $('#settings-modal > p').textContent='Список менеджеров хран
 const notice=document.createElement('p');notice.className='github-notice';
 notice.textContent='Каталог открыт для всех. Правки хранятся в этом браузере до публикации.';
 $('#settings-modal').append(notice);
-const backupSection=document.createElement('section');backupSection.className='publish-settings';
+const backupSection=document.createElement('section');backupSection.className='publish-settings';backupSection.dataset.editOnly='';
 backupSection.innerHTML='<h3>Публикация изменений</h3><p>Скачайте черновики с файлами и передайте владельцу каталога для публикации. До публикации они видны только на этом устройстве.</p><button id="export-drafts" class="quiet">Скачать изменения для публикации</button><p id="backup-message" role="status"></p>';
 $('#settings-modal').append(backupSection);
 async function portable(value){
@@ -454,7 +461,7 @@ async function portable(value){
  if(Array.isArray(value))return Promise.all(value.map(portable));
  if(value&&typeof value==='object'){const out={};for(const [k,v] of Object.entries(value))out[k]=await portable(v);return out;}return value;
 }
-$('#export-drafts').onclick=async()=>{
+$('#export-drafts').onclick=async()=>{if(!isEditing())return;
  const button=$('#export-drafts');button.disabled=true;
  try{const drafts=(await records()).filter(p=>p.localDraft);if(!drafts.length){$('#backup-message').textContent='Нет новых черновиков для публикации.';return;}
  const data=await portable({format:'forma-catalog-drafts-v1',projects:drafts,managers:managerNames()});
@@ -473,3 +480,15 @@ const requestedProject=decodeURIComponent(location.hash.slice(1));if(projects.so
 
 document.addEventListener('click',event=>{if(furnitureExpanded&&!event.target.closest('.header-furniture')){furnitureExpanded=false;renderSidebar();}});
 document.addEventListener('keydown',event=>{if(event.key==='Escape'&&furnitureExpanded){furnitureExpanded=false;renderSidebar();}});
+
+function updateEditModeButton(){const enabled=isEditing();$('#edit-mode-toggle').textContent=enabled?'Выключить редактирование':'Включить редактирование';$('#edit-mode-toggle').setAttribute('aria-pressed',String(enabled));$('#edit-mode-status').textContent=enabled?'Редактирование включено в этой вкладке.':'Режим просмотра. Изменение проектов отключено.';}
+$('#edit-mode-toggle').onclick=()=>{
+ if(document.querySelector('dialog[data-busy=true]')||$('#save-btn').disabled){toast('Дождитесь завершения сохранения.');return;}
+ if(!setEditing(!isEditing())){toast('Не удалось включить редактирование: хранилище браузера недоступно.');return;}
+ if(!isEditing()){
+  for(const id of ['editor','move-modal','merge-modal','batch-modal'])if($('#'+id).open)$('#'+id).close();
+  selectionMode=false;chosenProjects.clear();
+ }
+ render();updateEditModeButton();
+};
+updateEditModeButton();
