@@ -30,7 +30,7 @@ export function createViewCube({host,onNavigate,onHome,onDrag,onEnd,onRoll}){
  }
  host.append(rolls);
  const compass=document.createElement('div');compass.className='cube-compass';compass.setAttribute('aria-hidden','true');
- compass.innerHTML='<svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="49"/><circle class="compass-inner" cx="60" cy="60" r="43"/><path d="M60 7v12M60 101v12M7 60h12M101 60h12"/><text x="60" y="15">N</text><text x="60" y="114">S</text><text x="11" y="63">W</text><text x="109" y="63">E</text></svg>';solid.append(compass);
+ compass.innerHTML='<svg viewBox="0 0 120 120"><circle class="compass-rim" cx="60" cy="60" r="48"/><circle class="compass-ticks" cx="60" cy="60" r="49"/><circle class="compass-inner" cx="60" cy="60" r="43"/><path d="M60 7v12M60 101v12M7 60h12M101 60h12"/><text x="60" y="8">N</text><text x="60" y="120">S</text><text x="3" y="63">W</text><text x="117" y="63">E</text></svg>';solid.append(compass);
  for(const face of cubeFaces){
   const plane=document.createElement('div');plane.className='cube-face cube-'+face.side;
   for(let row=-1;row<=1;row++)for(let column=-1;column<=1;column++){

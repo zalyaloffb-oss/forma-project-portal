@@ -38,23 +38,25 @@
 .orientation-cube .cube-home:hover{background:#e3f0f9}
 .orientation-cube .cube-home svg{width:17px;height:17px;fill:none;stroke:#486071;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
 @media(max-width:620px){.viewcube.orientation-cube{width:120px;height:124px;right:6px;top:8px}}
-/* Pale beveled faces, compass and roll controls echo Fusion's ViewCube. */
-.viewcube.orientation-cube{width:160px;height:174px;right:10px;top:8px;opacity:.88;transition:opacity .15s}
+/* Light ViewCube faces and a graduated compass, following 3ds Max. */
+.viewcube.orientation-cube{width:160px;height:174px;right:10px;top:8px;opacity:1;transition:opacity .15s}
 .viewcube.orientation-cube:hover,.viewcube.orientation-cube:focus-within{opacity:1}
 .orientation-cube .cube-space{top:46%}
-.orientation-cube .cube-face{background:linear-gradient(140deg,#fff,#e5e8ec);border-color:#78838d;border-radius:3px;box-shadow:inset 0 0 0 3px #ced3d9,inset 0 0 0 4px #ffffffcc}
-.orientation-cube .cube-top{background:linear-gradient(135deg,#fff,#f2f4f6)}
-.orientation-cube .cube-left,.orientation-cube .cube-right{background:linear-gradient(135deg,#f4f5f7,#d7dce2)}
-.orientation-cube .cube-label{font-size:11px;font-weight:500;letter-spacing:.025em;color:#303942}
+.orientation-cube .cube-face{background:linear-gradient(140deg,#f5f5f5,#d2d5d7);border-color:#a8adb1;border-radius:2px;box-shadow:inset 0 0 0 1px #ffffffb3}
+.orientation-cube .cube-top{background:linear-gradient(135deg,#fafafa,#e9ebec)}
+.orientation-cube .cube-left,.orientation-cube .cube-right{background:linear-gradient(135deg,#e6e8e9,#c6cbce)}
+.orientation-cube .cube-label{font-size:10px;font-weight:400;letter-spacing:.025em;color:#343c43;text-shadow:none}
 .orientation-cube .cube-target:hover,.orientation-cube .cube-hovered{background:#6bb6efc4}
 .orientation-cube .cube-home{background:transparent;border-color:transparent;box-shadow:none;top:0;left:0}
 .orientation-cube .cube-rolls{position:absolute;right:0;top:0;display:flex;gap:3px}
 .orientation-cube .cube-rolls button{display:grid;place-items:center;width:25px;height:25px;min-height:0;padding:3px;background:#ffffffb0;border-color:transparent;box-shadow:none}
 .orientation-cube .cube-rolls button:hover{background:#d9eafa;border-color:#b5c8da}
 .orientation-cube .cube-rolls svg{width:19px;height:19px;fill:none;stroke:#55616d;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
-.orientation-cube .cube-compass{position:absolute;left:-24px;top:-24px;width:120px;height:120px;transform:rotateX(90deg) translateZ(-46px);pointer-events:none}
+.orientation-cube .cube-compass{position:absolute;left:-24px;top:-24px;width:120px;height:120px;transform:rotateX(90deg) translateZ(-49px);pointer-events:none}
 .orientation-cube .cube-compass svg{width:100%;height:100%;overflow:visible;fill:none;stroke:#939da6;stroke-width:1.3}
-.orientation-cube .cube-compass .compass-inner{stroke:#c6ccd2;stroke-width:1}
+.orientation-cube .cube-compass .compass-rim{stroke:#c5cbd0;stroke-width:7}
+.orientation-cube .cube-compass .compass-ticks{stroke:#707b84;stroke-width:5;stroke-dasharray:.7 2.72}
+.orientation-cube .cube-compass .compass-inner{stroke:#f1f3f4;stroke-width:2}
 .orientation-cube .cube-compass text{stroke:none;fill:#69747f;text-anchor:middle;font:10px Arial,sans-serif}
 .component-hover{position:absolute;z-index:7;width:310px;max-width:calc(100% - 24px);padding:0;background:rgba(34,40,46,.95);color:#f2f5f7;border:1px solid #ffffff28;border-radius:8px;box-shadow:0 5px 20px #0003;backdrop-filter:blur(8px)}
 .component-hover-main{display:flex;align-items:center;gap:10px;width:100%;padding:11px 13px;border:0;border-radius:7px;background:transparent;color:inherit;text-align:left}
@@ -102,7 +104,7 @@ body{background:#fff}.statusbar{background:#fff}.toolbar{background:rgba(38,44,5
 .selection-modes{display:none}
 #tree-panel{position:absolute;left:auto;right:14px;top:160px;bottom:auto;z-index:8;width:min(340px,calc(100% - 28px));height:min(500px,calc(100% - 175px));min-height:0;background:rgba(38,44,50,.92);color:#f0f4f6;border:1px solid #56616a;border-radius:12px;box-shadow:0 8px 24px #17212c40;backdrop-filter:blur(12px);overflow:hidden}
 #tree-panel header{padding:12px 14px}#tree-panel header button{background:#3e454c;color:#edf2f5;border-color:#66717a}#tree-search{background:#3d454d;border-color:#66717a;color:#fff}#tree-search::placeholder{color:#c0c9cf}#tree{color:#edf2f5}#tree .group-select,#tree .tree-row button{color:#edf2f5}#tree .tree-row.selected{background:#566b72}#tree input[type=checkbox]{accent-color:#8aa8aa}
-.viewcube.orientation-cube{transform:scale(.8);transform-origin:top right}.orientation-cube .cube-face,.orientation-cube .cube-top,.orientation-cube .cube-left,.orientation-cube .cube-right,.orientation-cube .cube-bottom{background:#3d464d;border-color:#82929c;box-shadow:inset 0 0 0 2px #65737c}.orientation-cube .cube-label{color:#f2f5f7;text-shadow:none}.orientation-cube .cube-target:hover,.orientation-cube .cube-hovered{background:#829ba6a0}.orientation-cube .cube-home svg,.orientation-cube .cube-rolls svg{stroke:#51616a}
+.viewcube.orientation-cube{transform:scale(.8);transform-origin:top right}.orientation-cube .cube-target:hover,.orientation-cube .cube-hovered{background:#829ba6a0}.orientation-cube .cube-home svg,.orientation-cube .cube-rolls svg{stroke:#51616a}
 @media(max-width:620px){#tree-panel{right:8px;top:140px;width:min(300px,calc(100% - 16px));height:min(450px,calc(100% - 150px))}}
 .topline{background:transparent;border:0;flex-wrap:nowrap;min-height:48px}.topline>span{width:auto;flex:1}.topline>div{flex-wrap:nowrap}.topline>div>button#share-model{display:inline-flex;width:42px;height:42px;min-height:42px;align-items:center;justify-content:center;padding:9px;border:0;background:transparent;color:#41553c}.topline #share-model svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.topline #full{background:transparent;border-color:transparent}.topline #full:hover,.topline #share-model:hover{background:#e7eddf}
 .statusbar{display:none}.toolbar #joints-toggle,.toolbar [data-mode=face],.toolbar [data-mode=edge]{display:none!important}
