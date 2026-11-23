@@ -3,6 +3,22 @@ from pathlib import Path
 import argparse,base64,json,urllib.parse
 from publish_export import ROOT,read_catalog,save_catalog,write_asset,slugify
 
+FURNITURE_TYPES={'','shelves','receptions','octanorm','promo','entrances'}
+
+def apply_classification(project,draft):
+    category=draft.get('category',project.get('category'))
+    subtype=draft.get('furnitureType',project.get('furnitureType',''))
+    if 'category' in draft and category not in ('stands','furniture'):
+        raise ValueError('Invalid project category')
+    if 'furnitureType' in draft and subtype not in FURNITURE_TYPES:
+        raise ValueError('Invalid furniture type')
+    if 'archived' in draft and not isinstance(draft['archived'],bool):
+        raise ValueError('Archive flag must be a boolean')
+    if 'category' in draft:project['category']=category
+    if 'furnitureType' in draft:project['furnitureType']=subtype if category=='furniture' else ''
+    elif 'category' in draft and category=='stands':project['furnitureType']=''
+    if 'archived' in draft:project['archived']=draft['archived']
+
 def decode_file(value):
     if not isinstance(value,dict) or value.get('$file') is not True:raise ValueError('Not a draft file')
     data=base64.b64decode(value['data'],validate=True)
@@ -31,6 +47,7 @@ def main():
                 project={'id':draft['id'],'viewerPath':'/'+slug,'published':True,'attachments':[]};catalog['projects'].insert(0,project)
             for key in ['title','customer','event','manager','date','status','source']:
                 if isinstance(draft.get(key),str):project[key]=draft[key]
+            apply_classification(project,draft)
             for key in ['design','assembly','expo','electrical','cover']:
                 value=draft.get(key)
                 if isinstance(value,dict) and value.get('$file'):project[key+'Url']=file_path(project,value,key)

@@ -25,6 +25,7 @@ jobs:
       - name: Validate catalogue and performance contracts
         run: |
           node tests/test-routing.mjs
+          node tests/test-catalog-filters.mjs
           node tests/test-banners.mjs
           node tests/test-model-transport.mjs
           node tests/test-yandex-model.mjs
@@ -32,6 +33,7 @@ jobs:
           python3 tests/test_yandex_connector.py
           python3 tests/test_cloud_publication.py
           python3 tests/test_fusion_dates.py
+          python3 tests/test_catalog_classification.py
           python3 tests/test_performance.py
           python3 tools/validate_site.py
       - uses: actions/configure-pages@v5
