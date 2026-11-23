@@ -382,7 +382,7 @@ function renderSidebar(){
  $('#catalog-section').textContent=collectionTitle(collection);
 }
 function selectCollection(view,furnitureType=''){
- furnitureExpanded=view==='furniture'&&(furnitureType||collection.view!=='furniture'||collection.furnitureType?true:!furnitureExpanded);
+ furnitureExpanded=view==='furniture'&&!furnitureType&&(furnitureType||collection.view!=='furniture'||collection.furnitureType?true:!furnitureExpanded);
  collection={view,furnitureType:view==='furniture'?furnitureType:''};
  render();
  if((view!=='furniture'||furnitureType)&&window.matchMedia('(max-width:700px), (pointer:coarse) and (max-width:1024px)').matches)setSidebar(false);
@@ -455,7 +455,7 @@ $('#invite-btn').hidden=true;
 $('#settings-modal > p').textContent='Список менеджеров хранится в этом браузере.';
 const notice=document.createElement('p');notice.className='github-notice';
 notice.textContent='Каталог открыт для всех. Правки хранятся в этом браузере до публикации.';
-$('main .intro').after(notice);
+$('#settings-modal').append(notice);
 const backupSection=document.createElement('section');backupSection.className='publish-settings';
 backupSection.innerHTML='<h3>Публикация изменений</h3><p>Скачайте черновики с файлами и передайте владельцу каталога для публикации. До публикации они видны только на этом устройстве.</p><button id="export-drafts" class="quiet">Скачать изменения для публикации</button><p id="backup-message" role="status"></p>';
 $('#settings-modal').append(backupSection);
@@ -480,3 +480,7 @@ openProject=async function(id,preferredTab){
  if(source){const a=document.createElement('a');a.className='source-link';a.href=source;a.textContent=selected.sourceFileUrl?'Скачать исходник 3ds Max (.max)':'Скачать исходник Fusion (.f3d)';a.setAttribute('download','');$('#drawer-content').append(a);}
 };
 const requestedProject=decodeURIComponent(location.hash.slice(1));if(projects.some(p=>p.id===requestedProject))await openProject(requestedProject);
+
+$('#header-settings').onclick=()=>$('#service-settings-btn').click();
+document.addEventListener('click',event=>{if(furnitureExpanded&&!event.target.closest('.header-furniture')){furnitureExpanded=false;renderSidebar();}});
+document.addEventListener('keydown',event=>{if(event.key==='Escape'&&furnitureExpanded){furnitureExpanded=false;renderSidebar();}});
