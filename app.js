@@ -249,7 +249,7 @@ function selectCollection(view,furnitureType=''){
  furnitureExpanded=view==='furniture'&&(furnitureType||collection.view!=='furniture'||collection.furnitureType?true:!furnitureExpanded);
  collection={view,furnitureType:view==='furniture'?furnitureType:''};
  render();
- if(window.matchMedia('(max-width:700px), (pointer:coarse) and (max-width:1024px)').matches)setSidebar(false);
+ if((view!=='furniture'||furnitureType)&&window.matchMedia('(max-width:700px), (pointer:coarse) and (max-width:1024px)').matches)setSidebar(false);
 }
 
 $('#batch-btn').onclick=()=>{$('#batch-target').innerHTML='<option value="new">Создать один новый проект</option>'+projects.map(p=>`<option value="${esc(p.id)}">В проект: ${esc(p.title)}</option>`).join('');$('#batch-progress').textContent='';$('#batch-errors').replaceChildren();$('#batch-files').value='';$('#batch-name').value='';$('#batch-name-label').hidden=false;$('#batch-name').required=true;$('#batch-modal').showModal();};
