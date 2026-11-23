@@ -27,6 +27,15 @@ export function projectCategory(project){
  return {category:furniture?'furniture':'stands',furnitureType};
 }
 
+export function moveProject(project,destination){
+ if(destination==='archive')return {...project,...projectCategory(project),archived:true};
+ const [category,furnitureType='',...extra]=String(destination).split('/');
+ if(extra.length||!['stands','furniture'].includes(category)||
+  (category==='stands'&&furnitureType)||(furnitureType&&!typeIds.has(furnitureType)))
+  throw Error('Выберите раздел из списка.');
+ return {...project,category,furnitureType,archived:false};
+}
+
 export function matchesCollection(project,{view='all',furnitureType=''}={}){
  const archived=project.archived===true;
  if(view==='archive')return archived;

@@ -23,6 +23,16 @@ main{margin-left:0;padding-bottom:100px}
 .modal .project-archive{display:flex;align-items:flex-start;gap:10px;padding-top:15px;border-top:1px solid var(--line)}
 .project-archive input{width:16px;height:16px;flex:none;margin:1px 0 0;accent-color:#075477}
 .project-archive span{line-height:1.5}
+.card-shell{position:relative;min-width:0}
+.card-shell>.card{display:block;width:100%;height:100%}
+.card-move{position:absolute;top:10px;right:10px;display:grid;place-items:center;width:40px;height:40px;border:1px solid var(--line);border-radius:5px;background:#fffffff0;color:#075477}
+.card-move:hover{background:#e3eef5}
+.card-move:focus-visible{outline:2px solid #0074a8}
+.card-move svg{width:21px;height:21px}
+.drawer-actions{flex-wrap:wrap;gap:10px}
+.move-modal{width:460px}
+.move-project-title{overflow-wrap:anywhere;line-height:1.5}
+.move-draft-note{font-size:12px;color:var(--muted);line-height:1.6}
 @media(max-width:700px),(pointer:coarse) and (max-width:1024px){
  .sidebar{width:min(280px,calc(100vw - 68px));padding:20px 16px 120px;box-shadow:8px 0 30px #12354720}
  .sidebar-open main{margin-left:0}

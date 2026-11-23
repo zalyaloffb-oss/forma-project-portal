@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import assert from 'node:assert/strict';
 const source=fs.readFileSync(new URL('../catalog-filters.js',import.meta.url),'utf8');
-const {projectCategory,matchesCollection,filterProjects,navigationCounts,collectionTitle}=await import('data:text/javascript;base64,'+Buffer.from(source).toString('base64'));
+const {projectCategory,matchesCollection,filterProjects,navigationCounts,collectionTitle,moveProject,furnitureTypes}=await import('data:text/javascript;base64,'+Buffer.from(source).toString('base64'));
 const samples=[
  {id:'stand',title:'Стенд с ресепшеном',customer:'А',date:'2025-01-02',status:'Реализовано'},
  {id:'shelf',title:'Стеллаж 3 полки',customer:'А',date:'2024-01-02',status:'На стадии проекта'},
@@ -36,3 +36,22 @@ const archived={...samples[2],category:'furniture',furnitureType:'receptions',ar
 assert.equal(matchesCollection(archived,{view:'furniture'}),false);
 assert.equal(matchesCollection({...archived,archived:false},{view:'furniture',furnitureType:'receptions'}),true);
 console.log('PASS: catalogue sections, all furniture types, combined filters, explicit overrides, archive and restore.');
+const project={...samples[0],viewerPath:'/fixed-route',fusionDataFileId:'source-id',modelUrl:'assets/model.glb',designUrl:'assets/design.pdf',attachments:[{id:'original-file'}]};
+const before=structuredClone(project);
+for(const destination of ['stands','furniture',...furnitureTypes.map(type=>'furniture/'+type.id),'archive']){
+ const moved=moveProject(project,destination);
+ assert.notEqual(moved,project);
+ assert.deepEqual(project,before,'Moving does not mutate the source record');
+ for(const key of Object.keys(before))assert.deepEqual(moved[key],before[key],'Moving preserves '+key);
+ assert.equal(moved.attachments,project.attachments,'File references stay intact');
+ assert.equal(moved.archived,destination==='archive');
+ if(destination!=='archive'){
+  const [category,type='']=destination.split('/');
+  assert.deepEqual(projectCategory(moved),{category,furnitureType:type});
+ }
+}
+const intoArchive=moveProject(moveProject(project,'furniture/receptions'),'archive');
+assert.equal(intoArchive.category,'furniture');assert.equal(intoArchive.furnitureType,'receptions');
+assert.equal(moveProject(intoArchive,'furniture/receptions').archived,false);
+for(const destination of ['invalid','stands/shelves','furniture/no-such-type','furniture/shelves/extra'])assert.throws(()=>moveProject(project,destination));
+console.log('PASS: moving across every section, archive restore, source fields and file references preserved, invalid targets rejected.');

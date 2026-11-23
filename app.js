@@ -1,11 +1,11 @@
 import {loadCatalogue,projectModel} from './site-config.js?v=banner-preview-1';
-import {projectCategory,filterProjects,matchesCollection,navigationCounts,collectionTitle} from './catalog-filters.js?v=1';
+import {projectCategory,filterProjects,matchesCollection,navigationCounts,collectionTitle,furnitureTypes,moveProject} from './catalog-filters.js?v=project-move-1';
 import {openPdf} from './pdf-engine.js?v=lazy-pdf-1';
 import {viewerLink} from './viewer-share.js?v=performance-1';
 import {fetchAsset,installAssetLinks} from './asset-store.js?v=large-source-1';
 const $=s=>document.querySelector(s), esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let db, projects=[], selected=null, editing=null, doc=null, page=1, renderVersion=0, drawVersion=0, tab='design', downloadUrl=null;
-let collection={view:'all',furnitureType:''},furnitureExpanded=false;
+let collection={view:'all',furnitureType:''},furnitureExpanded=false,movingId=null;
 const urls=new Map(), statuses=['Реализовано','На стадии проекта','Не согласовано'];
 const fmt=date=>!date?'Не указана':new Intl.DateTimeFormat('ru-RU',{day:'2-digit',month:'2-digit',year:'numeric'}).format(new Date(date+'T12:00:00'));
 const badge=s=>`<span class="badge ${s===statuses[1]?'progress':s===statuses[2]?'rejected':''}">${esc(s)}</span>`;
@@ -56,11 +56,12 @@ function render(){
  $('#result-count').textContent=`Показано ${filtered.length} из ${total}`;
  const emptyTitle=collection.view==='archive'&&!total?'Архив пуст':'Проекты не найдены';
  const emptyHint=collection.view==='archive'&&!total?'Перенесите проект в архив в его редакторе.':'Измените фильтры или добавьте новый проект.';
- $('#grid').innerHTML=filtered.length?filtered.map(p=>`<button class="card" data-id="${esc(p.id)}" aria-label="Открыть проект ${esc(p.title)}"><div class="cover">${(urls.get(p.id)||p.coverUrl)?`<img src="${esc(urls.get(p.id)||p.coverUrl)}" alt="${p.model&&!p.design?'Превью модели Fusion':'Первая страница дизайн-проекта'}" loading="lazy" decoding="async">`:'<span class="no-cover">Добавьте дизайн-проект</span>'}<span class="cover-count">${p.model?'3D · ':''}${['design','assembly','expo','electrical'].filter(key=>p[key]||p[key+'Url']).length} PDF${p.attachments?.length?` · ${p.attachments.length} файлов`:""}</span></div><div class="card-content"><div class="card-kicker"><span class="customer">${esc(p.customer)}</span>${badge(p.status)}</div><h2>${esc(p.title)}</h2>${p.event?`<p>${esc(p.event)}</p>`:''}<div class="card-bottom"><span>${esc(p.manager)}</span><span>${fmt(p.date)}</span></div></div></button>`).join(''):`<div class="empty"><h2>${emptyTitle}</h2><p>${emptyHint}</p></div>`;
+ $('#grid').innerHTML=filtered.length?filtered.map(p=>`<article class="card-shell"><button class="card" data-id="${esc(p.id)}" aria-label="Открыть проект ${esc(p.title)}"><div class="cover">${(urls.get(p.id)||p.coverUrl)?`<img src="${esc(urls.get(p.id)||p.coverUrl)}" alt="${p.model&&!p.design?'Превью модели Fusion':'Первая страница дизайн-проекта'}" loading="lazy" decoding="async">`:'<span class="no-cover">Добавьте дизайн-проект</span>'}<span class="cover-count">${p.model?'3D · ':''}${['design','assembly','expo','electrical'].filter(key=>p[key]||p[key+'Url']).length} PDF${p.attachments?.length?` · ${p.attachments.length} файлов`:""}</span></div><div class="card-content"><div class="card-kicker"><span class="customer">${esc(p.customer)}</span>${badge(p.status)}</div><h2>${esc(p.title)}</h2>${p.event?`<p>${esc(p.event)}</p>`:''}<div class="card-bottom"><span>${esc(p.manager)}</span><span>${fmt(p.date)}</span></div></div></button><button type="button" class="card-move" data-move-id="${esc(p.id)}" aria-label="Переместить проект ${esc(p.title)} в раздел" title="Переместить в раздел"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M10 19H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2v2M13 17h9m-4-4 4 4-4 4"/></svg></button></article>`).join(''):`<div class="empty"><h2>${emptyTitle}</h2><p>${emptyHint}</p></div>`;
  document.querySelectorAll('.card').forEach(card=>card.onclick=()=>openProject(card.dataset.id));
+ document.querySelectorAll('[data-move-id]').forEach(button=>button.onclick=()=>openMoveProject(button.dataset.moveId));
 }
 
-async function openProject(id){selected=projects.find(p=>p.id===id);tab=selected.model?'model':(selected.design||selected.designUrl)?'design':selected.attachments?.length?'files':'design';const p=selected;$('#drawer-content').innerHTML=`<h2>${esc(p.title)}</h2>${badge(p.status)}<dl class="details"><div><dt>Заказчик</dt><dd>${esc(p.customer)}</dd></div><div><dt>Дата создания</dt><dd>${fmt(p.date)}</dd></div><div><dt>Мероприятие</dt><dd>${esc(p.event)||'—'}</dd></div><div><dt>Менеджер компании</dt><dd>${esc(p.manager)||'—'}</dd></div></dl><div class="tabs"><button class="tab ${tab==='design'?'selected':''}" data-tab="design">Дизайн-проект</button><button class="tab" data-tab="assembly">Монтажная схема</button><button class="tab" data-tab="expo">Экспоплан</button><button class="tab" data-tab="electrical">Электросхема</button><button class="tab" data-tab="banners">Баннеры 3D</button>${p.model?'<button class="tab selected" data-tab="model">3D-модель</button>':''}${p.furniture?.length?'<button class="tab" data-tab="furniture">Мебель</button>':''}</div><div id="tab-loading" class="tab-loading" role="status" hidden><span class="tab-loading-track" aria-hidden="true"><i></i></span><span>Загрузка…</span></div>${p.attachments?.length?`<div class="attachments"><label>Материалы проекта (${p.attachments.length})<select id="attachment-select">${p.attachments.map((f,i)=>`<option value="${i}">${esc(f.name)}</option>`).join('')}</select></label><button id="open-attachment" class="quiet">Открыть файл</button></div>`:''}<div id="pdf-area"></div>${p.source?`<a class="source-link" href="${esc(p.source)}" target="_blank" rel="noopener noreferrer"><span><strong>Исходники проекта</strong></span></a>`:'<div class="source-link"><span><strong>Исходники проекта</strong><small>Ссылка на Яндекс Диск пока не добавлена</small></span></div>'}<div class="drawer-actions"><button class="quiet" id="edit-btn">Редактировать проект</button></div>`;if(!$('#drawer').open)$('#drawer').showModal();document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{tab=t.dataset.tab;document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('selected',x===t));loadPDF()});if(p.attachments?.length){$('#open-attachment').onclick=()=>{tab='files';document.querySelectorAll('.tab').forEach(x=>x.classList.remove('selected'));loadPDF();};$('#attachment-select').onchange=()=>$('#open-attachment').click();}$('#edit-btn').onclick=()=>{$('#drawer').close();openEditor(p.id)};await loadPDF()}
+async function openProject(id){selected=projects.find(p=>p.id===id);tab=selected.model?'model':(selected.design||selected.designUrl)?'design':selected.attachments?.length?'files':'design';const p=selected;$('#drawer-content').innerHTML=`<h2>${esc(p.title)}</h2>${badge(p.status)}<dl class="details"><div><dt>Заказчик</dt><dd>${esc(p.customer)}</dd></div><div><dt>Дата создания</dt><dd>${fmt(p.date)}</dd></div><div><dt>Мероприятие</dt><dd>${esc(p.event)||'—'}</dd></div><div><dt>Менеджер компании</dt><dd>${esc(p.manager)||'—'}</dd></div></dl><div class="tabs"><button class="tab ${tab==='design'?'selected':''}" data-tab="design">Дизайн-проект</button><button class="tab" data-tab="assembly">Монтажная схема</button><button class="tab" data-tab="expo">Экспоплан</button><button class="tab" data-tab="electrical">Электросхема</button><button class="tab" data-tab="banners">Баннеры 3D</button>${p.model?'<button class="tab selected" data-tab="model">3D-модель</button>':''}${p.furniture?.length?'<button class="tab" data-tab="furniture">Мебель</button>':''}</div><div id="tab-loading" class="tab-loading" role="status" hidden><span class="tab-loading-track" aria-hidden="true"><i></i></span><span>Загрузка…</span></div>${p.attachments?.length?`<div class="attachments"><label>Материалы проекта (${p.attachments.length})<select id="attachment-select">${p.attachments.map((f,i)=>`<option value="${i}">${esc(f.name)}</option>`).join('')}</select></label><button id="open-attachment" class="quiet">Открыть файл</button></div>`:''}<div id="pdf-area"></div>${p.source?`<a class="source-link" href="${esc(p.source)}" target="_blank" rel="noopener noreferrer"><span><strong>Исходники проекта</strong></span></a>`:'<div class="source-link"><span><strong>Исходники проекта</strong><small>Ссылка на Яндекс Диск пока не добавлена</small></span></div>'}<div class="drawer-actions"><button class="quiet" id="move-btn">Переместить в раздел</button><button class="quiet" id="edit-btn">Редактировать проект</button></div>`;if(!$('#drawer').open)$('#drawer').showModal();document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{tab=t.dataset.tab;document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('selected',x===t));loadPDF()});if(p.attachments?.length){$('#open-attachment').onclick=()=>{tab='files';document.querySelectorAll('.tab').forEach(x=>x.classList.remove('selected'));loadPDF();};$('#attachment-select').onchange=()=>$('#open-attachment').click();}$('#move-btn').onclick=()=>openMoveProject(p.id);$('#edit-btn').onclick=()=>{$('#drawer').close();openEditor(p.id)};await loadPDF()}
 async function loadPDF(){
  closePdfViewer();const version=++renderVersion;++drawVersion;
  const indicator=$('#tab-loading'),area=$('#pdf-area');
@@ -203,6 +204,36 @@ async function drawPage(){
   if(version===drawVersion)console.error('Не удалось отрисовать страницу PDF',error);
  }
 }
+function openMoveProject(id){
+ const project=projects.find(project=>project.id===id);if(!project)return;
+ movingId=id;setSidebar(false);
+ if($('#drawer').open)$('#drawer').close();
+ const category=projectCategory(project),select=$('#move-form').elements.destination;
+ select.innerHTML='<option value="stands">Стенды</option><optgroup label="Мебель"><option value="furniture">Мебель — без подраздела</option>'+furnitureTypes.map(type=>`<option value="furniture/${type.id}">${type.label}</option>`).join('')+'</optgroup><option value="archive">Архив</option>';
+ select.value=project.archived===true?'archive':category.category+(category.furnitureType?'/'+category.furnitureType:'');
+ $('#move-project-name').textContent=project.title;
+ $('#move-error').textContent='';
+ $('#move-modal').showModal();
+}
+$('#move-modal').addEventListener('close',()=>{movingId=null;});
+$('#move-form').onsubmit=async event=>{
+ event.preventDefault();const button=$('#move-submit');button.disabled=true;button.textContent='Перемещаем…';$('#move-error').textContent='';
+ try{
+  const original=projects.find(project=>project.id===movingId);
+  if(!original)throw Error('Проект не найден. Обновите страницу.');
+  const project=moveProject(original,event.currentTarget.elements.destination.value);
+  await put(project);
+  collection={view:project.archived?'archive':project.category,furnitureType:project.archived?'':project.furnitureType};
+  furnitureExpanded=collection.view==='furniture';
+  $('#search').value='';['customer-filter','status-filter','year-filter'].forEach(id=>$('#'+id).value='');
+  await refresh();$('#move-modal').close();
+  const card=[...document.querySelectorAll('.card')].find(card=>card.dataset.id===project.id);
+  card?.focus({preventScroll:true});card?.scrollIntoView({block:'nearest'});
+  toast('Перемещено: '+collectionTitle(collection)+'. Черновик сохранён в этом браузере.');
+ }catch(error){$('#move-error').textContent=error.name==='QuotaExceededError'?'Недостаточно места в браузере.':error.message||'Не удалось переместить проект.';}
+ finally{button.disabled=false;button.textContent='Переместить';}
+};
+
 function openEditor(id){
  editing=id?projects.find(p=>p.id===id):null;
  const form=$('#project-form');form.reset();fillManagers();
