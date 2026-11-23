@@ -17,8 +17,8 @@
 .profile-settings{width:44px;height:44px}
 .profile-settings[aria-expanded=true]{background:#dbe2e7;color:#075477}
 .sidebar-backdrop{display:none}
-main{margin-left:0;padding-bottom:100px}
-.sidebar-open main{margin-left:232px}
+main{margin:0 auto;padding-bottom:100px}
+.sidebar-open main{margin-left:max(232px,calc((100% + 232px - 1900px)/2))}
 #catalog-section{font-weight:400}
 .modal .project-archive{display:flex;align-items:flex-start;gap:10px;padding-top:15px;border-top:1px solid var(--line)}
 .project-archive input{width:16px;height:16px;flex:none;margin:1px 0 0;accent-color:#075477}
