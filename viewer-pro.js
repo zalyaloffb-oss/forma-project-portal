@@ -27,6 +27,8 @@ import {FXAAShader} from 'three/addons/shaders/FXAAShader.js';
 const $=s=>document.querySelector(s),escape=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let renderer,controls,resizeObserver,raf,environment;
 const stage=$('#stage'),loading=$('#loading');
+let catalogueDark=false;try{catalogueDark=localStorage.getItem('ees-catalog-theme')==='dark';}catch{}
+document.documentElement.dataset.theme=catalogueDark?'dark':'light';
 const sliderPanels=document.createElement('div');sliderPanels.className='slider-panels';sliderPanels.setAttribute('aria-label','Настройки инструментов');document.body.append(sliderPanels);
 for(const selector of ['#section-panel','#explode-panel','#joints-panel'])sliderPanels.append($(selector));
 const faceOffsetRange=document.createElement('input');faceOffsetRange.type='range';faceOffsetRange.id='section-face-range';faceOffsetRange.hidden=true;faceOffsetRange.step='1';faceOffsetRange.setAttribute('aria-label','Смещение сечения от грани, мм');$('#section-position').after(faceOffsetRange);
@@ -47,9 +49,9 @@ function closeNavigation(){navigationMenu.hidden=true;navigationButton.setAttrib
 navigationButton.onclick=()=>{if(!navigationMenu.hidden){closeNavigation();return;}const rect=navigationButton.getBoundingClientRect();navigationMenu.style.left=Math.max(8,Math.min(innerWidth-58,rect.left))+'px';navigationMenu.style.bottom=(innerHeight-rect.top+8)+'px';navigationMenu.hidden=false;navigationButton.setAttribute('aria-expanded','true');};
 navigationMenu.addEventListener('click',e=>{if(e.target.closest('button'))closeNavigation();});document.addEventListener('pointerdown',e=>{if(!navigationMenu.contains(e.target)&&!navigationButton.contains(e.target))closeNavigation();});document.addEventListener('keydown',e=>{if(e.key==='Escape')closeNavigation();});
 try{
- renderer=new THREE.WebGLRenderer({antialias:false,logarithmicDepthBuffer:true,preserveDrawingBuffer:true});renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.setClearColor(0xffffff);renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=.85;renderer.localClippingEnabled=true;
- let darkBackground=false;
- $('#background').onclick=()=>{darkBackground=!darkBackground;renderer.setClearColor(darkBackground?0x20242a:0xffffff);iconButton($('#background'),'background',darkBackground?'Сменить тёмный фон на белый':'Сменить белый фон на тёмный');};
+ renderer=new THREE.WebGLRenderer({antialias:false,logarithmicDepthBuffer:true,preserveDrawingBuffer:true});renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.setClearColor(catalogueDark?0x20262c:0xffffff);renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=.85;renderer.localClippingEnabled=true;
+ let darkBackground=catalogueDark;
+ $('#background').onclick=()=>{darkBackground=!darkBackground;renderer.setClearColor(darkBackground?0x20262c:0xffffff);iconButton($('#background'),'background',darkBackground?'Сменить тёмный фон на белый':'Сменить белый фон на тёмный');};
  stage.appendChild(renderer.domElement);renderer.domElement.tabIndex=0;renderer.domElement.setAttribute('aria-label','3D-модель: выберите деталь щелчком');
  const scene=new THREE.Scene();let camera=new THREE.PerspectiveCamera(40,1,.001,1000);
  const composer=new EffectComposer(renderer);

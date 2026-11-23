@@ -38,3 +38,19 @@
 main>.stats{display:none}
 
 .banner-preview img{transform:scale(1.45)}
+
+/* Fullscreen PDF controls float over the page without changing its fit. */
+.pdf-fullscreen-content{position:relative}
+.pdf-fullscreen-content .pdf-toolbar{position:absolute;inset:0 0 auto;z-index:2;min-height:58px;padding:8px 12px;background:#282e34;color:#edf2f6;border:0;box-shadow:0 3px 12px #0003;transition:transform .16s,visibility .16s;gap:8px}
+.pdf-fullscreen-content .pdf-toolbar button{background:#3b434c;color:#f1f4f7;border:1px solid #59636d;min-width:38px;min-height:38px}
+.pdf-fullscreen-content .pdf-toolbar button:hover{background:#4b5864}
+.pdf-fullscreen-content .pdf-toolbar a{color:#d3e6f6}
+.pdf-fullscreen-content.pdf-header-hidden .pdf-toolbar{transform:translateY(-110%);visibility:hidden;pointer-events:none}
+.pdf-fullscreen-content .pdf-viewer{position:absolute;inset:0;display:block;overflow:auto;padding:16px;touch-action:none;overscroll-behavior:contain;background:#20262c;scrollbar-width:thin}
+.pdf-fullscreen-content .pdf-zoom-sheet{display:flex;align-items:center;justify-content:center;min-width:100%;min-height:100%}
+.pdf-fullscreen-content canvas{flex:none;max-width:none;object-fit:fill;pointer-events:auto;box-shadow:0 3px 18px #0004}
+.pdf-zoom-controls{display:flex;align-items:center;gap:5px}
+.pdf-zoom-controls output{min-width:40px;text-align:center;font-variant-numeric:tabular-nums}
+@media(max-width:620px){.pdf-fullscreen-content .pdf-toolbar{flex-wrap:wrap;gap:5px;padding:6px 8px}.pdf-fullscreen-content .pdf-toolbar button{padding:5px 8px;min-width:34px;min-height:36px}.pdf-fullscreen-content .pdf-toolbar a{font-size:10px}.pdf-zoom-controls{gap:3px}}
+
+.pdf-fullscreen-content #canvas-host{touch-action:none}

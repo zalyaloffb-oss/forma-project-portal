@@ -131,3 +131,9 @@ body{background:#fff}.statusbar{background:#fff}.toolbar{background:rgba(38,44,5
 .sheet-parts{list-style:none;padding:0;max-height:160px;overflow:auto}
 .sheet-parts li{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:5px 0}
 .sheet-parts button{flex:none}
+
+[data-theme=dark] body,[data-theme=dark] .workspace,[data-theme=dark] #stage{background:#20262c;color:#e5ebf0}
+[data-theme=dark] #loading{background:#20262cf5;color:#e5ebf0}
+[data-theme=dark] .topline,[data-theme=dark] .topline #viewer-close,[data-theme=dark] .topline #full,[data-theme=dark] .topline #share-model{color:#d5dfe7}
+[data-theme=dark] .orientation-cube .cube-home svg,[data-theme=dark] .orientation-cube .cube-rolls svg{stroke:#c4ced6}
+[data-theme=dark] .orientation-cube .cube-rolls button{background:transparent}

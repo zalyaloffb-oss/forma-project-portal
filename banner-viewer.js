@@ -1,3 +1,5 @@
+let catalogueDark=false;try{catalogueDark=localStorage.getItem('ees-catalog-theme')==='dark';}catch{}
+document.documentElement.dataset.theme=catalogueDark?'dark':'light';
 import * as THREE from 'three';
 import {fetchAsset,readAssetBytes} from './asset-store.js?v=large-source-1';
 import {fetchModelBytes} from './model-transport.js?v=large-source-1';
@@ -22,7 +24,7 @@ try{
  if(!project||!permittedModel(project.modelUrl))throw Error('Модель проекта не найдена');
  $('banner-project').textContent=project.title;document.title=project.title+' — Баннеры 3D';
  $('banner-share').onclick=async()=>{const url=new URL(viewerLink(project));url.searchParams.set('view','banners');if(await copyViewerLink(url.href))message('Ссылка на Баннеры 3D скопирована. Локальные текстуры не публикуются автоматически.');};
- const renderer=new THREE.WebGLRenderer({antialias:true,preserveDrawingBuffer:true});renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));renderer.setClearColor(0xffffff);renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.NoToneMapping;
+ const renderer=new THREE.WebGLRenderer({antialias:true,preserveDrawingBuffer:true});renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));renderer.setClearColor(catalogueDark?0x20262c:0xffffff);renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.NoToneMapping;
  renderer.domElement.setAttribute('aria-label','Выберите плоскую поверхность для баннера');view.prepend(renderer.domElement);
  const scene=new THREE.Scene(),camera=new THREE.PerspectiveCamera(40,1,.01,5000),controls=new OrbitControls(camera,renderer.domElement);controls.mouseButtons.MIDDLE=THREE.MOUSE.PAN;controls.enableDamping=false;
  scene.add(new THREE.AmbientLight(0xffffff,2));const sun=new THREE.DirectionalLight(0xffffff,1);sun.position.set(4,8,5);scene.add(sun);

@@ -3,3 +3,6 @@
 .banner-sidebar input[type=number]{display:block;width:100%;padding:8px;margin-top:5px;border:1px solid #c9d4d0;border-radius:6px}
 
 @media(max-width:700px),(pointer:coarse) and (max-width:1024px){.banner-sidebar,.banner-status,.banner-view-tools{display:none}.banner-header{position:absolute;top:env(safe-area-inset-top,0px);right:env(safe-area-inset-right,0px);z-index:5;display:flex;padding:10px;border:0;background:transparent}.banner-header>div:first-child{display:none}.banner-workspace{flex-direction:row}.banner-view{width:100%;height:100%;min-height:0}.banner-app{height:100dvh;overflow:hidden}}
+
+[data-theme=dark] body,[data-theme=dark] .banner-view{background:#20262c;color:#e5ebf0}
+[data-theme=dark] .banner-header,[data-theme=dark] .banner-sidebar,[data-theme=dark] .banner-status{background:#282e34;color:#e5ebf0;border-color:#45515b}

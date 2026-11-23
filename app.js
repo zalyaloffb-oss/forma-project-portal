@@ -1,3 +1,4 @@
+import {bindPdfFullscreen} from './pdf-fullscreen.js?v=1';
 import {loadCatalogue,projectModel} from './site-config.js?v=banner-preview-1';
 import {projectCategory,filterProjects,matchesCollection,navigationCounts,collectionTitle,furnitureTypes,moveProject,projectGroups,mergeProjects,separateProject} from './catalog-filters.js?v=project-groups-1';
 import {openPdf} from './pdf-engine.js?v=lazy-pdf-1';
@@ -136,6 +137,7 @@ function bindPdfSwipe(host){
  let start=null;
  host.addEventListener('touchstart',event=>{
   const touch=event.touches[0];
+  if(pdfViewerDialog){start=null;return;}
   start=event.touches.length===1&&(window.visualViewport?.scale??1)<1.02
    ?{id:touch.identifier,x:touch.clientX,y:touch.clientY}:null;
  },{passive:true});
@@ -150,7 +152,7 @@ function bindPdfSwipe(host){
  },{passive:true});
  host.addEventListener('touchcancel',()=>{start=null;},{passive:true});
 }
-let pdfViewerDialog=null;
+let pdfViewerDialog=null,pdfFullscreenControls=null;
 function closePdfViewer(){
  if(pdfViewerDialog?.open)pdfViewerDialog.close();
 }
@@ -182,6 +184,7 @@ function openPdfViewer(){
   if(fullscreenRequest)fullscreenRequest.then(()=>{
    if(document.fullscreenElement===root)return document.exitFullscreen();
   }).catch(()=>{});
+  pdfFullscreenControls?.dispose();pdfFullscreenControls=null;
   close.remove();
   area.append(...content.childNodes);
   fullscreenButton.hidden=false;
@@ -190,6 +193,7 @@ function openPdfViewer(){
   if($('#drawer').open)fullscreenButton.focus();
  },{once:true});
  modal.showModal();
+ pdfFullscreenControls=bindPdfFullscreen({modal,content,host:content.querySelector('#canvas-host'),toolbar:content.querySelector('.pdf-toolbar'),onZoom:drawPage});
  if(!document.fullscreenElement&&root.requestFullscreen){
   fullscreenRequest=root.requestFullscreen();
   fullscreenRequest.catch(()=>{});
@@ -205,12 +209,14 @@ async function drawPage(){
  try{
   const pdfPage=await current.getPage(number);
   if(version!==drawVersion)return;
-  const viewport=pdfPage.getViewport({scale:1.8});
+  const base=pdfPage.getViewport({scale:1});
+  const scale=Math.min(1.8*(pdfFullscreenControls?.zoom||1),Math.sqrt(16000000/(base.width*base.height)));
+  const viewport=pdfPage.getViewport({scale});
   const canvas=document.createElement('canvas');
   canvas.width=viewport.width;
   canvas.height=viewport.height;
   await pdfPage.render({canvasContext:canvas.getContext('2d'),viewport}).promise;
-  if(version===drawVersion)$('#canvas-host')?.replaceChildren(canvas);
+  if(version===drawVersion){if(pdfFullscreenControls)pdfFullscreenControls.replaceCanvas(canvas);else $('#canvas-host')?.replaceChildren(canvas);}
  }catch(error){
   if(version===drawVersion)console.error('Не удалось отрисовать страницу PDF',error);
  }

@@ -3,7 +3,7 @@
 .theme-toggle{display:grid;place-items:center;width:42px;height:44px;padding:10px}
 .theme-toggle svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
 @media(max-width:1000px){.header-actions{grid-column:2;grid-row:1;justify-self:end}}
-:root[data-theme=dark]{color-scheme:dark;--bg:#101820;--paper:#1c2731;--ink:#e3ebf3;--muted:#a7b8c7;--line:#354552;--accent:#63bdf1}
+:root[data-theme=dark]{color-scheme:dark;--bg:#000000;--paper:#1c2731;--ink:#e3ebf3;--muted:#a7b8c7;--line:#354552;--accent:#63bdf1}
 [data-theme=dark] body,[data-theme=dark] .catalog-header{background:var(--bg);color:var(--ink)}
 [data-theme=dark] .header-brand img{filter:grayscale(1) brightness(1.05) invert(1) brightness(8);mix-blend-mode:screen}
 [data-theme=dark] .card,[data-theme=dark] .modal,[data-theme=dark] .drawer,[data-theme=dark] .project-part,[data-theme=dark] .source-link,[data-theme=dark] .selection-toolbar,[data-theme=dark] .catalog-nav .furniture-subnav,[data-theme=dark] .card-select{background:var(--paper);color:var(--ink);border-color:var(--line)}
@@ -21,3 +21,5 @@
 [data-theme=dark] .card-move{background:#203645;color:#c8e8fc;border-color:var(--line)}
 [data-theme=dark] .error{color:#ffb5a4}
 [data-theme=dark] .empty-file,[data-theme=dark] .empty,[data-theme=dark] footer{color:var(--muted)}
+
+[data-theme=dark] .pdf-viewer,[data-theme=dark] .pdf-fullscreen-dialog{background:#20262c}
