@@ -5,7 +5,7 @@ import {viewerLink} from './viewer-share.js?v=performance-1';
 import {fetchAsset,installAssetLinks} from './asset-store.js?v=large-source-1';
 const $=s=>document.querySelector(s), esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let db, projects=[], selected=null, editing=null, doc=null, page=1, renderVersion=0, drawVersion=0, tab='design', downloadUrl=null;
-let collection={view:'all',furnitureType:''},furnitureExpanded=false,movingId=null,selectionMode=false;
+let collection={view:'stands',furnitureType:''},furnitureExpanded=false,movingId=null,selectionMode=false;
 const chosenProjects=new Set();
 const urls=new Map(), statuses=['Реализовано','На стадии проекта','Не согласовано'];
 const fmt=date=>!date?'Не указана':new Intl.DateTimeFormat('ru-RU',{day:'2-digit',month:'2-digit',year:'numeric'}).format(new Date(date+'T12:00:00'));
