@@ -86,6 +86,18 @@ class ConnectorChecks(unittest.TestCase):
             with self.assertRaises(DiskError):
                 FakeDisk().upload(file, 'assets/file.pdf', expected_sha256='wrong')
 
+    def test_expired_upload_node_is_replaced_without_losing_verification(self):
+        with tempfile.TemporaryDirectory() as folder:
+            file=Path(folder)/'source.f3d';file.write_bytes(b'current CAD source')
+            disk=FakeDisk();transfer=disk._curl
+            def upload(url,**options):
+                if not hasattr(disk,'expired'):disk.expired=True;return 404,b''
+                return transfer(url,**options)
+            with patch.object(disk,'_curl',side_effect=upload),patch('yandex_disk.time.sleep'):
+                result=disk.upload(file,'assets/source.f3d')
+            self.assertEqual(result['sha256'],hashlib.sha256(file.read_bytes()).hexdigest())
+            self.assertEqual(len([call for call in disk.calls if call[0]=='GET']),2)
+
     def test_inventory_uses_only_committed_public_content(self):
         with tempfile.TemporaryDirectory() as folder:
             root = Path(folder)

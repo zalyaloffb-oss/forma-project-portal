@@ -962,6 +962,917 @@
       "mime": "application/gzip",
       "decodedSHA256": "703de303c4fd945b65579fa445eabaf7c0e5e3d32da51564ffcd12e2f80d8edd",
       "decodedBytes": 3694204
+    },
+    "assets/avg/f3d-27ba0ac67965.f3d": {
+      "bytes": 10479689,
+      "sha256": "27ba0ac6796565d900034d3acb8647529c7d15c40be7680cd0e902ac7cd6099b",
+      "mime": "application/octet-stream"
+    },
+    "assets/avg/model-25d115bf3c43.glb": {
+      "bytes": 397072,
+      "sha256": "25d115bf3c432cfe1e379afbb72449e305643cf2011a2cad390dfcd4e40f5c9c",
+      "mime": "model/gltf-binary",
+      "selfContainedGLB": true
+    },
+    "assets/avg/model-25d115bf3c43.glb.gz": {
+      "bytes": 44947,
+      "sha256": "726840d8e913151ca40042758c3040ea2db44a1c1d9a87e4aac9f57b95dae775",
+      "mime": "application/gzip",
+      "decodedSHA256": "25d115bf3c432cfe1e379afbb72449e305643cf2011a2cad390dfcd4e40f5c9c",
+      "decodedBytes": 397072
+    },
+    "assets/avg-prosmotr/f3d-3eee41abcdeb.f3d": {
+      "bytes": 10536396,
+      "sha256": "3eee41abcdebf87e9ed8447b3fb13c06fb146f328a9c295f8268383e3981686d",
+      "mime": "application/octet-stream"
+    },
+    "assets/avg-prosmotr/model-460541c7ef79.glb": {
+      "bytes": 806452,
+      "sha256": "460541c7ef796f09931e4b83725d6148fffee1e47008ecfc34d96f8faf4a91bb",
+      "mime": "model/gltf-binary",
+      "selfContainedGLB": true
+    },
+    "assets/avg-prosmotr/model-460541c7ef79.glb.gz": {
+      "bytes": 76766,
+      "sha256": "fc0a964cc15f89c716437a42c3ff7c6920e20c212b578dfdb8d0defb5c94ca38",
+      "mime": "application/gzip",
+      "decodedSHA256": "460541c7ef796f09931e4b83725d6148fffee1e47008ecfc34d96f8faf4a91bb",
+      "decodedBytes": 806452
+    },
+    "assets/avtopribor-dlya-prosmotra-20022015/f3d-987077ad4122.f3d": {
+      "bytes": 5344548,
+      "sha256": "987077ad41221120a9487ca3f868fd367473307d4dfa32331ef421456a16a231",
+      "mime": "application/octet-stream"
+    },
+    "assets/avtopribor-dlya-prosmotra-20022015/model-64f582bb6e6c.glb": {
+      "bytes": 6068204,
+      "sha256": "64f582bb6e6c85422e4a9428a8fd6c944c9f6619db68ae9edcd93ba8a083b0fa",
+      "mime": "model/gltf-binary",
+      "selfContainedGLB": true
+    },
+    "assets/avtopribor-dlya-prosmotra-20022015/model-64f582bb6e6c.glb.gz": {
+      "bytes": 595103,
+      "sha256": "b5c42faf742fd726fd1be24a303da5f5a45217a5e5b74eaec2bb0c9947d3b739",
+      "mime": "application/gzip",
+      "decodedSHA256": "64f582bb6e6c85422e4a9428a8fd6c944c9f6619db68ae9edcd93ba8a083b0fa",
+      "decodedBytes": 6068204
+    },
+    "assets/beltur/f3d-f65fa3a2a0f0.f3d": {
+      "bytes": 631363,
+      "sha256": "f65fa3a2a0f0427044e0540ff146fc13ccdfe27c5cf32e0b788910dcc9adb4d7",
+      "mime": "application/octet-stream"
+    },
+    "assets/beltur/model-beffa0ba429d.glb": {
+      "bytes": 182108,
+      "sha256": "beffa0ba429d41c81a9b7388908b35659e32c4dd9666883a84204c37d1950b33",
+      "mime": "model/gltf-binary",
+      "selfContainedGLB": true
+    },
+    "assets/beltur/model-beffa0ba429d.glb.gz": {
+      "bytes": 17041,
+      "sha256": "92bda21c74b024c571194a7e93e9dfe1fbc80cab73cb87ccfcd83a3537591013",
+      "mime": "application/gzip",
+      "decodedSHA256": "beffa0ba429d41c81a9b7388908b35659e32c4dd9666883a84204c37d1950b33",
+      "decodedBytes": 182108
+    },
+    "assets/business-stendup/f3d-612e20722bca.f3d": {
+      "bytes": 143338,
+      "sha256": "612e20722bca598ee4ede08b0ef01174601592fc5daefb3af6c97a34dd158c6e",
+      "mime": "application/octet-stream"
+    },
+    "assets/business-stendup/model-cde169395f05.glb": {
+      "bytes": 35172,
+      "sha256": "cde169395f0575f27bbd4f295d9dfc1fa169b317d42cc5e045d9ea26c9097785",
+      "mime": "model/gltf-binary",
+      "selfContainedGLB": true
+    },
+    "assets/business-stendup/model-cde169395f05.glb.gz": {
+      "bytes": 4055,
+      "sha256": "c779e23c777fed3a4809cafd5e6cc3dd54df0884f5939b9c8288720819132b8e",
+      "mime": "application/gzip",
+      "decodedSHA256": "cde169395f0575f27bbd4f295d9dfc1fa169b317d42cc5e045d9ea26c9097785",
+      "decodedBytes": 35172
+    },
+    "assets/chint/f3d-c7bbb0c423be.f3d": {
+      "bytes": 6149453,
+      "sha256": "c7bbb0c423bed7d21475528d52cdb2fb3d6d7df7604d6e9f6698c89e9434ae21",
+      "mime": "application/octet-stream"
+    },
+    "assets/chint/model-634f34083664.glb": {
+      "bytes": 69108,
+      "sha256": "634f3408366473146eb737e998052acde0e83e7aff63864a7184e6f99c43ea4d",
+      "mime": "model/gltf-binary",
+      "selfContainedGLB": true
+    },
+    "assets/chint/model-634f34083664.glb.gz": {
+      "bytes": 7314,
+      "sha256": "7b1b1699c8a1068608efce22e14384fd6292177561113fa13ea24804dee71af2",
+      "mime": "application/gzip",
+      "decodedSHA256": "634f3408366473146eb737e998052acde0e83e7aff63864a7184e6f99c43ea4d",
+      "decodedBytes": 69108
+    },
+    "assets/chint-2/f3d-748aafea3406.f3d": {
+      "bytes": 6199429,
+      "sha256": "748aafea3406769967ce2f587b007cde6af36c4dd3221d9c4c10ad375b4ffc2c",
+      "mime": "application/octet-stream"
+    },
+    "assets/chint-2/model-f827c24ac7bf.glb": {
+      "bytes": 487412,
+      "sha256": "f827c24ac7bf93d5a4121dfb149e918d2b887a2edc3c758820cd7fe3d8b26d0b",
+      "mime": "model/gltf-binary",
+      "selfContainedGLB": true
+    },
+    "assets/chint-2/model-f827c24ac7bf.glb.gz": {
+      "bytes": 62150,
+      "sha256": "fbee46ae64d76a170921cc74d6c835d9be309bedc1f607813acacb3b7089f2be",
+      "mime": "application/gzip",
+      "decodedSHA256": "f827c24ac7bf93d5a4121dfb149e918d2b887a2edc3c758820cd7fe3d8b26d0b",
+      "decodedBytes": 487412
+    },
+    "assets/chint-3/f3d-aba37eb5b6cb.f3d": {
+      "bytes": 6266833,
+      "sha256": "aba37eb5b6cb46ea0faba6fe0c0acb34a637c9eb37067dccf47003d46234f959",
+      "mime": "application/octet-stream"
+    },
+    "assets/chint-3/model-1086d8235017.glb": {
+      "bytes": 165560,
+      "sha256": "1086d823501781a97363cb009628f75c6f7f456f62bbcdb52bcc64f90c266b83",
+      "mime": "model/gltf-binary",
+      "selfContainedGLB": true
+    },
+    "assets/chint-3/model-1086d8235017.glb.gz": {
+      "bytes": 19335,
+      "sha256": "f9f9b8fff5e541c409dd3b1f7822097a1e356199bdd09b9395e722abdb5fef22",
+      "mime": "application/gzip",
+      "decodedSHA256": "1086d823501781a97363cb009628f75c6f7f456f62bbcdb52bcc64f90c266b83",
+      "decodedBytes": 165560
+    },
+    "assets/doring-montazhka/f3d-8a72cdc565d7.f3d": {
+      "bytes": 8271645,
+      "sha256": "8a72cdc565d7faa7d3bef74decf3370fef53088b2a0d90515cb73c961b4c251a",
+      "mime": "application/octet-stream"
+    },
+    "assets/doring-montazhka/model-e0aac9d9e098.glb": {
+      "bytes": 537452,
+      "sha256": "e0aac9d9e0984dcd69f8e5889272050b038ee95b571188c2d83342a7a9b473e0",
+      "mime": "model/gltf-binary",
+      "selfContainedGLB": true
+    },
+    "assets/doring-montazhka/model-e0aac9d9e098.glb.gz": {
+      "bytes": 105620,
+      "sha256": "8b3b2542091c9df6c33be4950da428e690e05c5b0a2cc6a6225801d932adb99f",
+      "mime": "application/gzip",
+      "decodedSHA256": "e0aac9d9e0984dcd69f8e5889272050b038ee95b571188c2d83342a7a9b473e0",
+      "decodedBytes": 537452
+    },
+    "assets/doring-preview/f3d-0edae2c3aaa1.f3d": {
+      "bytes": 5029716,
+      "sha256": "0edae2c3aaa1b0a85979e5a5e47bbdb3304e4cd0cea152ab20900a67d1359682",
+      "mime": "application/octet-stream"
+    },
+    "assets/doring-dlya-prosmotra/f3d-9704020134cc.f3d": {
+      "bytes": 4453250,
+      "sha256": "9704020134cc44d73d8f0b4dbeb6b814917df2d1580401df68cb35f9d32b536f",
+      "mime": "application/octet-stream"
+    },
+    "assets/doring-dlya-prosmotra/model-d33be1a414a8.glb": {
+      "bytes": 605292,
+      "sha256": "d33be1a414a8d88e91c238fefbdeb53ce01a2e94bffa3186a59c14fa1ba80634",
+      "mime": "model/gltf-binary",
+      "selfContainedGLB": true
+    },
+    "assets/doring-dlya-prosmotra/model-d33be1a414a8.glb.gz": {
+      "bytes": 80552,
+      "sha256": "4757ba6912d1c439d389ef06dd8294c3cae068183ddbcea8c3d457664485fffc",
+      "mime": "application/gzip",
+      "decodedSHA256": "d33be1a414a8d88e91c238fefbdeb53ce01a2e94bffa3186a59c14fa1ba80634",
+      "decodedBytes": 605292
+    },
+    "assets/indonesia/f3d-a0d92911058c.f3d": {
+      "bytes": 3378800,
+      "sha256": "a0d92911058c0153640d5822879ea5b1f298126bb4c3645a1e3a7a4a2c9d17a1",
+      "mime": "application/octet-stream"
+    },
+    "assets/indonesia/model-b76bbe98a01e.glb": {
+      "bytes": 7755080,
+      "sha256": "b76bbe98a01ec39c9842b138727d79fa3da094f1bed07b4803c004b5c2c43f56",
+      "mime": "model/gltf-binary",
+      "selfContainedGLB": true
+    },
+    "assets/indonesia/model-b76bbe98a01e.glb.gz": {
+      "bytes": 582721,
+      "sha256": "4f5b1abc01449b185af7b89ea830ef8088809cd94fff1828261cb7a1e3ea3475",
+      "mime": "application/gzip",
+      "decodedSHA256": "b76bbe98a01ec39c9842b138727d79fa3da094f1bed07b4803c004b5c2c43f56",
+      "decodedBytes": 7755080
+    },
+    "assets/market-dji/f3d-bcb2c09d2823.f3d": {
+      "bytes": 1714536,
+      "sha256": "bcb2c09d2823b6c6ef7542bd330a10a95e1403132bedeab65cc3fc4b6cbee0a3",
+      "mime": "application/octet-stream"
+    },
+    "assets/market-dji/model-032d1498da12.glb": {
+      "bytes": 3729120,
+      "sha256": "032d1498da12c0cda03fba5cb1768295861b757aa90600b814adb79648a77d66",
+      "mime": "model/gltf-binary",
+      "selfContainedGLB": true
+    },
+    "assets/market-dji/model-032d1498da12.glb.gz": {
+      "bytes": 283155,
+      "sha256": "8cd50a1c524b5ed414455250f2b01118703bba5749d5db5d9ceac38c13533d87",
+      "mime": "application/gzip",
+      "decodedSHA256": "032d1498da12c0cda03fba5cb1768295861b757aa90600b814adb79648a77d66",
+      "decodedBytes": 3729120
+    },
+    "assets/mgc/f3d-f40219efc2f9.f3d": {
+      "bytes": 249693,
+      "sha256": "f40219efc2f9f986604a1978bf78af0454f9553bae1fb74d6b958db3ab17eb4b",
+      "mime": "application/octet-stream"
+    },
+    "assets/mgc/model-9038d0034cdf.glb": {
+      "bytes": 32808,
+      "sha256": "9038d0034cdfcc89913db704340fef115b256ad9b2bbfda3315a7596c7a587f4",
+      "mime": "model/gltf-binary",
+      "selfContainedGLB": true
+    },
+    "assets/mgc/model-9038d0034cdf.glb.gz": {
+      "bytes": 5043,
+      "sha256": "5f52f1cde217aeeb0ef42e85640a7f1f6d3b8f1d326b06e19b865d1d0375173d",
+      "mime": "application/gzip",
+      "decodedSHA256": "9038d0034cdfcc89913db704340fef115b256ad9b2bbfda3315a7596c7a587f4",
+      "decodedBytes": 32808
+    },
+    "assets/mgc2/f3d-8cfdf9090d61.f3d": {
+      "bytes": 367853,
+      "sha256": "8cfdf9090d619fde655c346bc2371c25076dea5262884c058b8f8ae1d2fef40a",
+      "mime": "application/octet-stream"
+    },
+    "assets/mgc2/model-30dd583bb0fd.glb": {
+      "bytes": 38300,
+      "sha256": "30dd583bb0fd990cdbdabab94c22721b4837f649a99411e4fcfafd80f6aa4569",
+      "mime": "model/gltf-binary",
+      "selfContainedGLB": true
+    },
+    "assets/mgc2/model-30dd583bb0fd.glb.gz": {
+      "bytes": 5469,
+      "sha256": "02a45b6e3c6d03e724760839bed24282175c02cbfce017fefd5ccbb65bf59d8e",
+      "mime": "application/gzip",
+      "decodedSHA256": "30dd583bb0fd990cdbdabab94c22721b4837f649a99411e4fcfafd80f6aa4569",
+      "decodedBytes": 38300
+    },
+    "assets/pskgeodor/f3d-149dd7de0011.f3d": {
+      "bytes": 2025973,
+      "sha256": "149dd7de0011b05eddf29ab754c910703deaba6e9b98ece35e0463718df6e14c",
+      "mime": "application/octet-stream"
+    },
+    "assets/pskgeodor/model-091ec94cf0ac.glb": {
+      "bytes": 6677212,
+      "sha256": "091ec94cf0ac02e29e2ebcf8b196d22227a172566321101f7cb6c7097b835908",
+      "mime": "model/gltf-binary",
+      "selfContainedGLB": true
+    },
+    "assets/pskgeodor/model-091ec94cf0ac.glb.gz": {
+      "bytes": 530492,
+      "sha256": "be7fc6f740cbb6866942f02f5eca2380d276335329f33d5450162ee267606007",
+      "mime": "application/gzip",
+      "decodedSHA256": "091ec94cf0ac02e29e2ebcf8b196d22227a172566321101f7cb6c7097b835908",
+      "decodedBytes": 6677212
+    },
+    "assets/rais-kashe-ekrana/f3d-347ab8b9814a.f3d": {
+      "bytes": 1880949,
+      "sha256": "347ab8b9814a028018388cf7d97de57a31759573c19eb4b98583b24026a22fd8",
+      "mime": "application/octet-stream"
+    },
+    "assets/rais-kashe-ekrana/model-90c88d772ffb.glb": {
+      "bytes": 6408000,
+      "sha256": "90c88d772ffb9793f45db8db66b5466608f8e0bfe8cbead841bd55d5412bbcf8",
+      "mime": "model/gltf-binary",
+      "selfContainedGLB": true
+    },
+    "assets/rais-kashe-ekrana/model-90c88d772ffb.glb.gz": {
+      "bytes": 511093,
+      "sha256": "0c961062eefa7c08ebad416e9a481104a95f22f19124f1332c145b7c9d95da12",
+      "mime": "application/gzip",
+      "decodedSHA256": "90c88d772ffb9793f45db8db66b5466608f8e0bfe8cbead841bd55d5412bbcf8",
+      "decodedBytes": 6408000
+    },
+    "assets/sbfilarmoniya-stl/model-dd2ed62d83b0.glb": {
+      "bytes": 37037640,
+      "sha256": "dd2ed62d83b051438e6cc3f8ce283262dd69f0e00828499ecb1a50fbef326cda",
+      "mime": "model/gltf-binary",
+      "selfContainedGLB": true
+    },
+    "assets/sbfilarmoniya-stl/model-dd2ed62d83b0.glb.gz": {
+      "bytes": 5596487,
+      "sha256": "f2bf3853993581c2163930772d2d12b1f906a9a2eac303d60715c1793c49e589",
+      "mime": "application/gzip",
+      "decodedSHA256": "dd2ed62d83b051438e6cc3f8ce283262dd69f0e00828499ecb1a50fbef326cda",
+      "decodedBytes": 37037640
+    },
+    "assets/sbr-cheboksary/f3d-230bb122a6ed.f3d": {
+      "bytes": 52419929,
+      "sha256": "230bb122a6ed44df41c1f78100d14a228061708346f1068a6089d0cd9ffa51fb",
+      "mime": "application/octet-stream"
+    },
+    "assets/sbr-cheboksary/model-d6244509c389.glb": {
+      "bytes": 21415108,
+      "sha256": "d6244509c3896edc3160fd5bc35a307f5bd849ed12b0d411534ad20d756a11a7",
+      "mime": "model/gltf-binary",
+      "selfContainedGLB": true
+    },
+    "assets/sbr-cheboksary/model-d6244509c389.glb.gz": {
+      "bytes": 2147096,
+      "sha256": "bb6750c830d7c5b6cde194827823cbf1f3ccf64f81a61baadd68517cc4161055",
+      "mime": "application/gzip",
+      "decodedSHA256": "d6244509c3896edc3160fd5bc35a307f5bd849ed12b0d411534ad20d756a11a7",
+      "decodedBytes": 21415108
+    },
+    "assets/exact-farm/f3d-db377d3e21d3.f3d": {
+      "bytes": 6202519,
+      "sha256": "db377d3e21d371d6825ac56146e7ea65e4ec0db341b87a45be46e04f91583715",
+      "mime": "application/octet-stream"
+    },
+    "assets/exact-farm/model-e886f4786b46.glb": {
+      "bytes": 5462220,
+      "sha256": "e886f4786b4622f8590517594f9b7f1930cee645de12ede2bd81eccc619987e3",
+      "mime": "model/gltf-binary",
+      "selfContainedGLB": true
+    },
+    "assets/exact-farm/model-e886f4786b46.glb.gz": {
+      "bytes": 490770,
+      "sha256": "6d2e7418550d0f8c595c8e8e229449dfdd005a0637ce45a38bd8f700d55d0ba5",
+      "mime": "application/gzip",
+      "decodedSHA256": "e886f4786b4622f8590517594f9b7f1930cee645de12ede2bd81eccc619987e3",
+      "decodedBytes": 5462220
+    },
+    "assets/rais-fotozona/f3d-ce5786881b37.f3d": {
+      "bytes": 2034117,
+      "sha256": "ce5786881b374e42bfc61a4d4ea55176b89bddd78ab449ec8fa54f054b4848ae",
+      "mime": "application/octet-stream"
+    },
+    "assets/rais-fotozona/model-5fac33d0baea.glb": {
+      "bytes": 2580572,
+      "sha256": "5fac33d0baea3e39c6b9ee18ebef948416ae775863c5843c9fdf8f99e1a5a557",
+      "mime": "model/gltf-binary",
+      "selfContainedGLB": true
+    },
+    "assets/rais-fotozona/model-5fac33d0baea.glb.gz": {
+      "bytes": 219997,
+      "sha256": "f8a26e5ea1b69418aaaf7772d86b8c6569cb8ce80e2b08b541e77bb1b99d1a9c",
+      "mime": "application/gzip",
+      "decodedSHA256": "5fac33d0baea3e39c6b9ee18ebef948416ae775863c5843c9fdf8f99e1a5a557",
+      "decodedBytes": 2580572
+    },
+    "assets/sb-kovorking/f3d-b8f36f458362.f3d": {
+      "bytes": 4857625,
+      "sha256": "b8f36f4583620beaa306da2e0560f8e38520bf0e38376990c04e70051776e80d",
+      "mime": "application/octet-stream"
+    },
+    "assets/sb-kovorking/model-e2c28bbdca13.glb": {
+      "bytes": 4656016,
+      "sha256": "e2c28bbdca1374cd54cc68a0c41a9ef90d4901ba52a966fc39f0e2896c2c2386",
+      "mime": "model/gltf-binary",
+      "selfContainedGLB": true
+    },
+    "assets/sb-kovorking/model-e2c28bbdca13.glb.gz": {
+      "bytes": 478777,
+      "sha256": "1e64dec212bc17a06532081c134d3d5e51151e78d08d3ce6a7de91c68c755b46",
+      "mime": "application/gzip",
+      "decodedSHA256": "e2c28bbdca1374cd54cc68a0c41a9ef90d4901ba52a966fc39f0e2896c2c2386",
+      "decodedBytes": 4656016
+    },
+    "assets/sb-kovorking-2/f3d-da03a0eba2f8.f3d": {
+      "bytes": 931113,
+      "sha256": "da03a0eba2f8bfaa73cf13cfec2dff9631ff8fea68601e73bcac70a057269dc3",
+      "mime": "application/octet-stream"
+    },
+    "assets/sb-kovorking-2/model-902e688aec28.glb": {
+      "bytes": 2420624,
+      "sha256": "902e688aec28623f12f5ff08e18ce2ba516430768c2c2a0f4b96c72e67cde3a3",
+      "mime": "model/gltf-binary",
+      "selfContainedGLB": true
+    },
+    "assets/sb-kovorking-2/model-902e688aec28.glb.gz": {
+      "bytes": 316189,
+      "sha256": "2e4f09b40f5a88773a084cc8cb72356bf46d27e5209e53b1a6b360074eff6acd",
+      "mime": "application/gzip",
+      "decodedSHA256": "902e688aec28623f12f5ff08e18ce2ba516430768c2c2a0f4b96c72e67cde3a3",
+      "decodedBytes": 2420624
+    },
+    "assets/sense/f3d-925a25a7e104.f3d": {
+      "bytes": 3919048,
+      "sha256": "925a25a7e104c597e6b51781c00f214761d1930831072ded23ad4d051b476e6a",
+      "mime": "application/octet-stream"
+    },
+    "assets/sense/model-34103c0fa1ab.glb": {
+      "bytes": 3925344,
+      "sha256": "34103c0fa1aba420f1a470110d2e5d5b2eeb01b8577b7013f55dc01dabd7eb25",
+      "mime": "model/gltf-binary",
+      "selfContainedGLB": true
+    },
+    "assets/sense/model-34103c0fa1ab.glb.gz": {
+      "bytes": 429960,
+      "sha256": "4c88cec976b6667153bdeed9baa341144d2323432510096d654615c7ce836c20",
+      "mime": "application/gzip",
+      "decodedSHA256": "34103c0fa1aba420f1a470110d2e5d5b2eeb01b8577b7013f55dc01dabd7eb25",
+      "decodedBytes": 3925344
+    },
+    "assets/smeg/f3d-644c6beadeae.f3d": {
+      "bytes": 379113,
+      "sha256": "644c6beadeaec01bb60659ceb7eff80d37dc5bc1fb5cd1c81584bc5e0a7669d0",
+      "mime": "application/octet-stream"
+    },
+    "assets/smeg/model-0717138f743f.glb": {
+      "bytes": 513540,
+      "sha256": "0717138f743f95aa5634d1c26507e1d52ee979ddcec56d7093e2a5c8d2e3492d",
+      "mime": "model/gltf-binary",
+      "selfContainedGLB": true
+    },
+    "assets/smeg/model-0717138f743f.glb.gz": {
+      "bytes": 57149,
+      "sha256": "70a18235615004dac4e9200a0be7a73c6d8a71657fa6bfc2fc4ed74262b373a1",
+      "mime": "application/gzip",
+      "decodedSHA256": "0717138f743f95aa5634d1c26507e1d52ee979ddcec56d7093e2a5c8d2e3492d",
+      "decodedBytes": 513540
+    },
+    "assets/abs-elektro-montazhka/f3d-57017d6b530a.f3d": {
+      "bytes": 5325321,
+      "sha256": "57017d6b530a0287573d8479919f9bab87fb072457e90124455ae6d42023f83a",
+      "mime": "application/octet-stream"
+    },
+    "assets/abs-elektro-montazhka/model-21048d7c26bc.glb": {
+      "bytes": 37020,
+      "sha256": "21048d7c26bc02cbf251c5ff0ee4d9a3c443203e633ceb338e68ec598fa46d41",
+      "mime": "model/gltf-binary",
+      "selfContainedGLB": true
+    },
+    "assets/abs-elektro-montazhka/model-21048d7c26bc.glb.gz": {
+      "bytes": 5392,
+      "sha256": "4fde4aab9457d92a73f3bc67d58435091657b4d6b66c5fbb03d45c6da02e9e17",
+      "mime": "application/gzip",
+      "decodedSHA256": "21048d7c26bc02cbf251c5ff0ee4d9a3c443203e633ceb338e68ec598fa46d41",
+      "decodedBytes": 37020
+    },
+    "assets/avito/f3d-b49c4c621b2a.f3d": {
+      "bytes": 2181416,
+      "sha256": "b49c4c621b2a95e6a29648fcbc710b9d52000c1dbe66c19111bfdeed3886f0dd",
+      "mime": "application/octet-stream"
+    },
+    "assets/avito/model-08827486ec64.glb": {
+      "bytes": 55272,
+      "sha256": "08827486ec64d272a708fca2ab4555e59d2e5e81cb3f99909e42fa843d499ac9",
+      "mime": "model/gltf-binary",
+      "selfContainedGLB": true
+    },
+    "assets/avito/model-08827486ec64.glb.gz": {
+      "bytes": 6185,
+      "sha256": "8b1df5cf385444817ddfdc2f696f2ab2f9be690ad00e714b522aa9193b00c79f",
+      "mime": "application/gzip",
+      "decodedSHA256": "08827486ec64d272a708fca2ab4555e59d2e5e81cb3f99909e42fa843d499ac9",
+      "decodedBytes": 55272
+    },
+    "assets/bereketle/f3d-8ef73542ab85.f3d": {
+      "bytes": 7780804,
+      "sha256": "8ef73542ab855459ab8f7a9c47c3e07c477f2e7750b2f27e2c4d53591b1a1142",
+      "mime": "application/octet-stream"
+    },
+    "assets/bereketle/model-78aa2082a734.glb": {
+      "bytes": 12308736,
+      "sha256": "78aa2082a734a28fbaa395a12ea8691dca3151f8ecc088ba0ba69f1936c864c0",
+      "mime": "model/gltf-binary",
+      "selfContainedGLB": true
+    },
+    "assets/bereketle/model-78aa2082a734.glb.gz": {
+      "bytes": 1495931,
+      "sha256": "edcbf935908ae3468f8e97536016acfaeff2bf6f70c84b2faf005bb6a4c1d35c",
+      "mime": "application/gzip",
+      "decodedSHA256": "78aa2082a734a28fbaa395a12ea8691dca3151f8ecc088ba0ba69f1936c864c0",
+      "decodedBytes": 12308736
+    },
+    "assets/vitrina-1000-x-500-x-2500/f3d-66a6b86cb3f8.f3d": {
+      "bytes": 897424,
+      "sha256": "66a6b86cb3f839bdd15cd92ff6cd2d26371f58d9fee55544545e2e2233c2f117",
+      "mime": "application/octet-stream"
+    },
+    "assets/vitrina-1000-x-500-x-2500/model-83bcae7a182b.glb": {
+      "bytes": 311732,
+      "sha256": "83bcae7a182ba545f11c716aafdcf4e1ad755c85059f62d6e40c9ea1fbe403a6",
+      "mime": "model/gltf-binary",
+      "selfContainedGLB": true
+    },
+    "assets/vitrina-1000-x-500-x-2500/model-83bcae7a182b.glb.gz": {
+      "bytes": 25770,
+      "sha256": "ef463a64e45a8f1715ea211f73e37a1b70402f7a5a76a114e1dbf54bced83df9",
+      "mime": "application/gzip",
+      "decodedSHA256": "83bcae7a182ba545f11c716aafdcf4e1ad755c85059f62d6e40c9ea1fbe403a6",
+      "decodedBytes": 311732
+    },
+    "assets/lignogumat/f3d-5ce0bc9a2f38.f3d": {
+      "bytes": 2282312,
+      "sha256": "5ce0bc9a2f38b0b5674d3b2516e232e716643aa0f29fd29668581bdfffedc669",
+      "mime": "application/octet-stream"
+    },
+    "assets/lignogumat/model-ef065c7371d2.glb": {
+      "bytes": 5989172,
+      "sha256": "ef065c7371d224153cf2c6337a5560dee488af4f9eba4d769ef4d965c08776b7",
+      "mime": "model/gltf-binary",
+      "selfContainedGLB": true
+    },
+    "assets/lignogumat/model-ef065c7371d2.glb.gz": {
+      "bytes": 460467,
+      "sha256": "68cf8a0cd65f60dee3d97a7df5cd5fb4d4c96bf104f0289fa6227f59ee767302",
+      "mime": "application/gzip",
+      "decodedSHA256": "ef065c7371d224153cf2c6337a5560dee488af4f9eba4d769ef4d965c08776b7",
+      "decodedBytes": 5989172
+    },
+    "assets/ovk-elektro/f3d-f69caf2983e6.f3d": {
+      "bytes": 352678,
+      "sha256": "f69caf2983e6d41a6ff649344f9179157ca4282fa90f78916c14718ece96e0ea",
+      "mime": "application/octet-stream"
+    },
+    "assets/ovk-elektro/model-b7dd1a692c9b.glb": {
+      "bytes": 425008,
+      "sha256": "b7dd1a692c9b4cecda0dafe850b3b491915fb0ac32146569504edbf179ebe04c",
+      "mime": "model/gltf-binary",
+      "selfContainedGLB": true
+    },
+    "assets/ovk-elektro/model-b7dd1a692c9b.glb.gz": {
+      "bytes": 67657,
+      "sha256": "b6f3fe34519f9994e81f2533710a2c31d44ef44b8e4ef3e9f2e0ef6b5e94e434",
+      "mime": "application/gzip",
+      "decodedSHA256": "b7dd1a692c9b4cecda0dafe850b3b491915fb0ac32146569504edbf179ebe04c",
+      "decodedBytes": 425008
+    },
+    "assets/ovk-elektro-montazhka/f3d-271b14ccaa1d.f3d": {
+      "bytes": 22070639,
+      "sha256": "271b14ccaa1d28b08c6b874b15a86f68857abe53417d1988b028906f60383373",
+      "mime": "application/octet-stream"
+    },
+    "assets/ovk-elektro-montazhka-v-rezhime-prosmotra/f3d-a6fe25f87c64.f3d": {
+      "bytes": 21327368,
+      "sha256": "a6fe25f87c645e1a6d8d82be39f35ca9d642887e33751a386d4a7702fde1a763",
+      "mime": "application/octet-stream"
+    },
+    "assets/ovk-elektro-montazhka-v-rezhime-prosmotra/model-230ea49938a7.glb": {
+      "bytes": 38159952,
+      "sha256": "230ea49938a74da6830be6fdbc7c786039b4db29aacbe950eac272d2ece76bdd",
+      "mime": "model/gltf-binary",
+      "selfContainedGLB": true
+    },
+    "assets/ovk-elektro-montazhka-v-rezhime-prosmotra/model-230ea49938a7.glb.gz": {
+      "bytes": 3867721,
+      "sha256": "71b909c737025677fd13630c519859638d6ed21cd306d15e272d5143abd70313",
+      "mime": "application/gzip",
+      "decodedSHA256": "230ea49938a74da6830be6fdbc7c786039b4db29aacbe950eac272d2ece76bdd",
+      "decodedBytes": 38159952
+    },
+    "assets/pilon/f3d-789a514c8a72.f3d": {
+      "bytes": 1588579,
+      "sha256": "789a514c8a72ee9cdd3fee10d486ed203c91ea2ea0cdda158468e740953440d8",
+      "mime": "application/octet-stream"
+    },
+    "assets/pilon/model-ecd2472e9ef9.glb": {
+      "bytes": 343724,
+      "sha256": "ecd2472e9ef9d7d5a482861e7a29ff6b36615a76ef9ae0ed5346a845f1522782",
+      "mime": "model/gltf-binary",
+      "selfContainedGLB": true
+    },
+    "assets/pilon/model-ecd2472e9ef9.glb.gz": {
+      "bytes": 25132,
+      "sha256": "504202654b436d5705ff1a6e2e347035eed7fae40d6c72ce727b50d8003a50e0",
+      "mime": "application/gzip",
+      "decodedSHA256": "ecd2472e9ef9d7d5a482861e7a29ff6b36615a76ef9ae0ed5346a845f1522782",
+      "decodedBytes": 343724
+    },
+    "assets/resepshen/f3d-1bba5549d0a7.f3d": {
+      "bytes": 254576,
+      "sha256": "1bba5549d0a710330dd07b7465d70fc5505cce1e10f38c74b2192ddb09897a86",
+      "mime": "application/octet-stream"
+    },
+    "assets/resepshen/model-232f151cf554.glb": {
+      "bytes": 26740,
+      "sha256": "232f151cf554664a3f9967335cce64915f9c88793b8dbde0cb50857439cf9fc5",
+      "mime": "model/gltf-binary",
+      "selfContainedGLB": true
+    },
+    "assets/resepshen/model-232f151cf554.glb.gz": {
+      "bytes": 3354,
+      "sha256": "e617483257bf21e0343588e81581c222f4e1c4fd6a3905c8d1d3b44d4ebce6ef",
+      "mime": "application/gzip",
+      "decodedSHA256": "232f151cf554664a3f9967335cce64915f9c88793b8dbde0cb50857439cf9fc5",
+      "decodedBytes": 26740
+    },
+    "assets/resepshen-3-dlya-prosmotra/f3d-e99ac6897cea.f3d": {
+      "bytes": 1751635,
+      "sha256": "e99ac6897ceaf3e45d2199802f5afefec611087043abfaff90f9335e50305df4",
+      "mime": "application/octet-stream"
+    },
+    "assets/resepshen-3-dlya-prosmotra/model-5af34fe322c4.glb": {
+      "bytes": 1299496,
+      "sha256": "5af34fe322c412b383542a967d2d971e3405262b5a91e04e7cbc68ab45fb25ff",
+      "mime": "model/gltf-binary",
+      "selfContainedGLB": true
+    },
+    "assets/resepshen-3-dlya-prosmotra/model-5af34fe322c4.glb.gz": {
+      "bytes": 178519,
+      "sha256": "2a24c8a618ea98e1f814d00bd2b8cd5349d8b3204b51c20187065f9826893485",
+      "mime": "application/gzip",
+      "decodedSHA256": "5af34fe322c412b383542a967d2d971e3405262b5a91e04e7cbc68ab45fb25ff",
+      "decodedBytes": 1299496
+    },
+    "assets/resepshen-1-dlya-prosmotra/f3d-2878378174a1.f3d": {
+      "bytes": 2236181,
+      "sha256": "2878378174a1652ce6db3ecfb3c67d0880bc97f5ee6e2aaea7ae2412112676b8",
+      "mime": "application/octet-stream"
+    },
+    "assets/resepshen-1-dlya-prosmotra/model-259726cb9d0e.glb": {
+      "bytes": 2164800,
+      "sha256": "259726cb9d0e67dc714916d216b3e2e26dc8cc397350defb217c44c7eb5ac6ca",
+      "mime": "model/gltf-binary",
+      "selfContainedGLB": true
+    },
+    "assets/resepshen-1-dlya-prosmotra/model-259726cb9d0e.glb.gz": {
+      "bytes": 294678,
+      "sha256": "fe59199881d810857e2850be27440a1adb7975cab207d53bfb8184d366699072",
+      "mime": "application/gzip",
+      "decodedSHA256": "259726cb9d0e67dc714916d216b3e2e26dc8cc397350defb217c44c7eb5ac6ca",
+      "decodedBytes": 2164800
+    },
+    "assets/resepshen-2-dlya-prosmotra/f3d-9db8f37796db.f3d": {
+      "bytes": 3496586,
+      "sha256": "9db8f37796dbfa9d8e66fef0ff75b22eec26dea329bb0bc83f581f99d89e002c",
+      "mime": "application/octet-stream"
+    },
+    "assets/resepshen-2-dlya-prosmotra/model-5ec58a414cbd.glb": {
+      "bytes": 2391564,
+      "sha256": "5ec58a414cbde2efcf3cb26814e7594792cadeba631d9ae94963bb925bb76daa",
+      "mime": "model/gltf-binary",
+      "selfContainedGLB": true
+    },
+    "assets/resepshen-2-dlya-prosmotra/model-5ec58a414cbd.glb.gz": {
+      "bytes": 311391,
+      "sha256": "419b66067b6d9983acc074568b0646408605c4fbdce7bfdf86457a44d974a615",
+      "mime": "application/gzip",
+      "decodedSHA256": "5ec58a414cbde2efcf3cb26814e7594792cadeba631d9ae94963bb925bb76daa",
+      "decodedBytes": 2391564
+    },
+    "assets/rshb-agrovolga/f3d-8d769bf700d5.f3d": {
+      "bytes": 4201421,
+      "sha256": "8d769bf700d5088023fcdd3f02aadb94903348317998c19559498ed050ec0412",
+      "mime": "application/octet-stream"
+    },
+    "assets/rshb-agrovolga/model-b3b64535a036.glb": {
+      "bytes": 9562760,
+      "sha256": "b3b64535a0364f9d03262e0282b83941e83fc9c685b6b4b7e0b09135aebfdff7",
+      "mime": "model/gltf-binary",
+      "selfContainedGLB": true
+    },
+    "assets/rshb-agrovolga/model-b3b64535a036.glb.gz": {
+      "bytes": 857726,
+      "sha256": "53b93777c0db4626b3b8e5fa85bcfaa0f95d629555e10c11ce9159f4f85fc291",
+      "mime": "application/gzip",
+      "decodedSHA256": "b3b64535a0364f9d03262e0282b83941e83fc9c685b6b4b7e0b09135aebfdff7",
+      "decodedBytes": 9562760
+    },
+    "assets/svetovoy-most-v-rezhime-prosmotra/f3d-2bdf55cff87d.f3d": {
+      "bytes": 1343881,
+      "sha256": "2bdf55cff87d04a69f4832ef015fafb87590c0681d6bea2683598b27ed720a57",
+      "mime": "application/octet-stream"
+    },
+    "assets/smeg-75bcfe/f3d-d2f264f786f6.f3d": {
+      "bytes": 3348442,
+      "sha256": "d2f264f786f62c023ef850c357d1431646ef2233969f8243190cc471ea0a437b",
+      "mime": "application/octet-stream"
+    },
+    "assets/smeg-75bcfe/model-343d1699dbdb.glb": {
+      "bytes": 8583692,
+      "sha256": "343d1699dbdbfe21679792082e0ee64670feb335dcaa17157a9afdfda7754558",
+      "mime": "model/gltf-binary",
+      "selfContainedGLB": true
+    },
+    "assets/smeg-75bcfe/model-343d1699dbdb.glb.gz": {
+      "bytes": 686463,
+      "sha256": "507c113ee9756ea16afee0ac30009ea239ce0a05a79b017dc6c726635a1f423d",
+      "mime": "application/gzip",
+      "decodedSHA256": "343d1699dbdbfe21679792082e0ee64670feb335dcaa17157a9afdfda7754558",
+      "decodedBytes": 8583692
+    },
+    "assets/stellazh/f3d-9df8725d2c79.f3d": {
+      "bytes": 805879,
+      "sha256": "9df8725d2c7911ca2a3a00abb689a10ea41a73dac798c6d81916f6fbc36d5be4",
+      "mime": "application/octet-stream"
+    },
+    "assets/stellazh/model-10eeb34a8d47.glb": {
+      "bytes": 14960,
+      "sha256": "10eeb34a8d47c89da7679be73fa611df45d8b13ef5538dff9da89c2892e2bed5",
+      "mime": "model/gltf-binary",
+      "selfContainedGLB": true
+    },
+    "assets/stellazh/model-10eeb34a8d47.glb.gz": {
+      "bytes": 2382,
+      "sha256": "6f625e19b24d140e9532293506619210df08e355e516d829ee4d1e32953d5ce5",
+      "mime": "application/gzip",
+      "decodedSHA256": "10eeb34a8d47c89da7679be73fa611df45d8b13ef5538dff9da89c2892e2bed5",
+      "decodedBytes": 14960
+    },
+    "assets/timer-t/f3d-fe73b2f2233f.f3d": {
+      "bytes": 2320569,
+      "sha256": "fe73b2f2233f04859a62f057b0c2f52997f94df6cfe86f6e63751192e3f6b468",
+      "mime": "application/octet-stream"
+    },
+    "assets/timer-t/model-34794757fc88.glb": {
+      "bytes": 74924,
+      "sha256": "34794757fc88af08e0b71447f5730f38a2ec52ca282ee01ce9275564999a364e",
+      "mime": "model/gltf-binary",
+      "selfContainedGLB": true
+    },
+    "assets/timer-t/model-34794757fc88.glb.gz": {
+      "bytes": 8147,
+      "sha256": "c6920e71f6f0aacae52a121d30e7dc6632288db659bf2755f74b089b2d4a051d",
+      "mime": "application/gzip",
+      "decodedSHA256": "34794757fc88af08e0b71447f5730f38a2ec52ca282ee01ce9275564999a364e",
+      "decodedBytes": 74924
+    },
+    "assets/ferma-1-1135h350-pod-lestnitsey/f3d-aa95109c2007.f3d": {
+      "bytes": 227326,
+      "sha256": "aa95109c2007f65a37f228334d5ba965bc5af21bb391fd525f18e68a75f5656f",
+      "mime": "application/octet-stream"
+    },
+    "assets/ferma-1-1135h350-pod-lestnitsey/model-d59cf6c0cab1.glb": {
+      "bytes": 209892,
+      "sha256": "d59cf6c0cab1e8b48cb71a61dabd9d200352d48ea28f7e813b3bfd8250d20996",
+      "mime": "model/gltf-binary",
+      "selfContainedGLB": true
+    },
+    "assets/ferma-1-1135h350-pod-lestnitsey/model-d59cf6c0cab1.glb.gz": {
+      "bytes": 17427,
+      "sha256": "52010df6f6ac245866cde05c4f536af05c5111e5f1b1045a66983ae51b38a3d1",
+      "mime": "application/gzip",
+      "decodedSHA256": "d59cf6c0cab1e8b48cb71a61dabd9d200352d48ea28f7e813b3bfd8250d20996",
+      "decodedBytes": 209892
+    },
+    "assets/ferma-2-1135h350/f3d-d68fcd658b6c.f3d": {
+      "bytes": 203174,
+      "sha256": "d68fcd658b6c2bdf49a9a7aefa5f57d7f6375d6a123b0782ed7d90947c1aeee1",
+      "mime": "application/octet-stream"
+    },
+    "assets/ferma-2-1135h350/model-9cf9cbdb2b52.glb": {
+      "bytes": 124176,
+      "sha256": "9cf9cbdb2b521994bb24d4ed3e737cfc330306a64f03f47b123633cb5d9deeb2",
+      "mime": "model/gltf-binary",
+      "selfContainedGLB": true
+    },
+    "assets/ferma-2-1135h350/model-9cf9cbdb2b52.glb.gz": {
+      "bytes": 11226,
+      "sha256": "2a196cb67b236d1e2f43e0f04985362cd980608cefc5878db5f5917c404fecbb",
+      "mime": "application/gzip",
+      "decodedSHA256": "9cf9cbdb2b521994bb24d4ed3e737cfc330306a64f03f47b123633cb5d9deeb2",
+      "decodedBytes": 124176
+    },
+    "assets/ferma-3-1735h350/f3d-51b45f832994.f3d": {
+      "bytes": 202027,
+      "sha256": "51b45f8329944f81b7836816d1fea60bc069b4a4371471654544d72366649e0a",
+      "mime": "application/octet-stream"
+    },
+    "assets/ferma-3-1735h350/model-0a234c500dda.glb": {
+      "bytes": 144956,
+      "sha256": "0a234c500ddac0e9e5c09907e73cefc93da6f4ac98cb9ead949edc1b4c1c28da",
+      "mime": "model/gltf-binary",
+      "selfContainedGLB": true
+    },
+    "assets/ferma-3-1735h350/model-0a234c500dda.glb.gz": {
+      "bytes": 13255,
+      "sha256": "5976643a646988e6fc2d8ac4e68d119eeb3df6f08b9ea253e496bb961528989a",
+      "mime": "application/gzip",
+      "decodedSHA256": "0a234c500ddac0e9e5c09907e73cefc93da6f4ac98cb9ead949edc1b4c1c28da",
+      "decodedBytes": 144956
+    },
+    "assets/ferma-4-1405h350/f3d-ecaadde94cf9.f3d": {
+      "bytes": 193032,
+      "sha256": "ecaadde94cf907a9126f4a2d176f1f84a7e895e4db2d81ea57165ac14d9a91ad",
+      "mime": "application/octet-stream"
+    },
+    "assets/ferma-4-1405h350/model-1c587fc5b99e.glb": {
+      "bytes": 139160,
+      "sha256": "1c587fc5b99e5f4c8ed96eeeabd69607258e3476fd9d9782f96beb7e66588a40",
+      "mime": "model/gltf-binary",
+      "selfContainedGLB": true
+    },
+    "assets/ferma-4-1405h350/model-1c587fc5b99e.glb.gz": {
+      "bytes": 12739,
+      "sha256": "308eea0ae8675b4c24de005c2f4f8310f7cb108ccf5b160499820ea9cbfb35d1",
+      "mime": "application/gzip",
+      "decodedSHA256": "1c587fc5b99e5f4c8ed96eeeabd69607258e3476fd9d9782f96beb7e66588a40",
+      "decodedBytes": 139160
+    },
+    "assets/ferma-4-2305h350/f3d-14bc7388691f.f3d": {
+      "bytes": 211329,
+      "sha256": "14bc7388691ff9c9c2b808cb39042443d0ec8ae7784321cd769fc7545a10d751",
+      "mime": "application/octet-stream"
+    },
+    "assets/ferma-4-2305h350/model-f201af8b1b00.glb": {
+      "bytes": 155660,
+      "sha256": "f201af8b1b00e07af86d9455bfab5b464cca473709dbcba351f7e0a1f44ce5e2",
+      "mime": "model/gltf-binary",
+      "selfContainedGLB": true
+    },
+    "assets/ferma-4-2305h350/model-f201af8b1b00.glb.gz": {
+      "bytes": 14197,
+      "sha256": "b9f782dbcb7fbcf36ce08759e9fb5e4f9a71234d849082fc8046528f78d5b3f4",
+      "mime": "application/gzip",
+      "decodedSHA256": "f201af8b1b00e07af86d9455bfab5b464cca473709dbcba351f7e0a1f44ce5e2",
+      "decodedBytes": 155660
+    },
+    "assets/ferma-5-3050h350/f3d-f3802b333180.f3d": {
+      "bytes": 268326,
+      "sha256": "f3802b333180f319e788979f828296ec36b73fc0d371a1db789e30e6383d4d9c",
+      "mime": "application/octet-stream"
+    },
+    "assets/ferma-5-3050h350/model-d4a18ed041c6.glb": {
+      "bytes": 388828,
+      "sha256": "d4a18ed041c652852e35997aa31baeb88c33cd3a4fb758f2bee213363464c608",
+      "mime": "model/gltf-binary",
+      "selfContainedGLB": true
+    },
+    "assets/ferma-5-3050h350/model-d4a18ed041c6.glb.gz": {
+      "bytes": 35094,
+      "sha256": "a567888ac6fce68bd46ee245265760e972d14e7a9c234ac731096af34882c9cc",
+      "mime": "application/gzip",
+      "decodedSHA256": "d4a18ed041c652852e35997aa31baeb88c33cd3a4fb758f2bee213363464c608",
+      "decodedBytes": 388828
+    },
+    "assets/ferma-6-2075h350mm/f3d-450077d29034.f3d": {
+      "bytes": 232648,
+      "sha256": "450077d29034cdd807b7d9560f30943cb78d6baf7452e3aae7879f2c01cce640",
+      "mime": "application/octet-stream"
+    },
+    "assets/ferma-6-2075h350mm/model-a4b5bcef6793.glb": {
+      "bytes": 302212,
+      "sha256": "a4b5bcef6793e2a145d9db122ff30da4df04411606651b3d1296798f97f5c5f3",
+      "mime": "model/gltf-binary",
+      "selfContainedGLB": true
+    },
+    "assets/ferma-6-2075h350mm/model-a4b5bcef6793.glb.gz": {
+      "bytes": 27914,
+      "sha256": "50e59b86dcdcb4ae12a3fa5bef6380eb78266d3ddcc721788f8a84b8119672b5",
+      "mime": "application/gzip",
+      "decodedSHA256": "a4b5bcef6793e2a145d9db122ff30da4df04411606651b3d1296798f97f5c5f3",
+      "decodedBytes": 302212
+    },
+    "assets/ferma-7-815h350/f3d-9d5ce887bb7c.f3d": {
+      "bytes": 201058,
+      "sha256": "9d5ce887bb7c2c52118dd90a9355d30af1ff451835b9960a08bbf9cf62191578",
+      "mime": "application/octet-stream"
+    },
+    "assets/doring-preview/model-f952ef5dfa39.glb": {
+      "bytes": 930640,
+      "sha256": "f952ef5dfa3983514e18b2806ec788b9fd725e0307491a7f9e6a9473e28cebb0",
+      "mime": "model/gltf-binary",
+      "selfContainedGLB": true
+    },
+    "assets/doring-preview/model-f952ef5dfa39.glb.gz": {
+      "bytes": 99594,
+      "sha256": "75106451928f61df65dc956f1e888b217998d3c3c2a03313311e24c662ff5b61",
+      "mime": "application/gzip",
+      "decodedSHA256": "f952ef5dfa3983514e18b2806ec788b9fd725e0307491a7f9e6a9473e28cebb0",
+      "decodedBytes": 930640
+    },
+    "assets/sbfilarmoniya-stl/f3d-71daaf2587a7.f3d": {
+      "bytes": 422406444,
+      "sha256": "71daaf2587a780c3d58c504c60381abb91c78bec93a8b11a9efd6e2c13e73e8f",
+      "mime": "application/octet-stream",
+      "downloadOnly": true
+    },
+    "assets/bella-sistek/f3d-c08d1be9fbf9.f3d": {
+      "bytes": 4611877,
+      "sha256": "c08d1be9fbf941d25902519d4013b754fcce5554204874e28b76e0c7ba5ee030",
+      "mime": "application/octet-stream"
+    },
+    "assets/bella-sistek/model-d5e3686c84be.glb": {
+      "bytes": 1517196,
+      "sha256": "d5e3686c84be206a5d9b5ab84c5977f462c7e02531a8312dcf152c99266c7693",
+      "mime": "model/gltf-binary",
+      "selfContainedGLB": true
+    },
+    "assets/bella-sistek/model-d5e3686c84be.glb.gz": {
+      "bytes": 193280,
+      "sha256": "32e1419fb4ec694b1788fa5f722b106d44c0a742fc2256ab7c2877e5a5f144dd",
+      "mime": "application/gzip",
+      "decodedSHA256": "d5e3686c84be206a5d9b5ab84c5977f462c7e02531a8312dcf152c99266c7693",
+      "decodedBytes": 1517196
+    },
+    "assets/ovk-elektro-montazhka/model-387e14b69047.glb": {
+      "bytes": 10960,
+      "sha256": "387e14b69047e76f0937f7f257e779cce1472abfb050c713dfa7b0e37ba963a7",
+      "mime": "model/gltf-binary",
+      "selfContainedGLB": true
+    },
+    "assets/ovk-elektro-montazhka/model-387e14b69047.glb.gz": {
+      "bytes": 2342,
+      "sha256": "374b597bf040cd533dd597f5f3fa37b6109e82aea90e236c39d509f856a2b7b4",
+      "mime": "application/gzip",
+      "decodedSHA256": "387e14b69047e76f0937f7f257e779cce1472abfb050c713dfa7b0e37ba963a7",
+      "decodedBytes": 10960
     }
   },
   "retainedFixtures": [

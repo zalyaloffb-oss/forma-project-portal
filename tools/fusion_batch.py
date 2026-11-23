@@ -22,6 +22,20 @@ from FusionMetadata import creation_metadata
 EVENT='EESCatalogueBatchExport'
 controller=None
 
+
+def lookup_source(runner,row):
+    try:
+        file=runner.app.data.findFileById(row['id'])
+    except RuntimeError as error:
+        print('Direct Fusion lookup failed; checking the original folder:',row['name'],error)
+        file=None
+    if file is None:
+        folder=runner.app.data.findFolderById(row['folderId'])
+        if folder:file=folder.dataFiles.itemById(row['id'])
+    if file is None or file.id!=row['id']:
+        raise RuntimeError('Fusion model is unavailable in its original folder: '+row['name'])
+    return file
+
 def audit_existing_dates(runner,catalog_file):
     if runner.state.get('existingDatesAudited'):return
     catalog=json.loads(Path(catalog_file).read_text(encoding='utf-8'))
@@ -109,8 +123,7 @@ class Batch(adsk.core.CustomEventHandler):
 
     def export(self,row):
         self.write('opening-model',current=row['folderPath']+'/'+row['name'])
-        data_file=self.app.data.findFileById(row['id'])
-        if not data_file:raise RuntimeError('Fusion model is unavailable: '+row['name'])
+        data_file=lookup_source(self,row)
         latest=data_file.latestVersion
         dates=creation_metadata(latest,self.app.data.findFileById)
         self.state['dateRecords']=[r for r in self.state['dateRecords'] if r['id']!=row['id']]+[{'id':row['id'],**dates}]

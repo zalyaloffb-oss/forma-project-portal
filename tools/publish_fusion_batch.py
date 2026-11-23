@@ -53,8 +53,9 @@ def main():
         known={row['id'] for key in ('published','failed') for row in report[key]}
         pending=[row for row in job['exported'] if row['id'] not in known]
         for row in pending:
-            if args.job.with_name('stop.request').exists():break
+            if any(args.job.with_name(name).exists() for name in ('stop.request','pause-publication.request')):break
             packet=read(Path(row['manifest']))
+            report.update(phase='uploading',current=row['name']);save(target,report)
             try:
                 result=publish_export.publish(packet['meta'],packet['files'],push=False,disk=disk)
                 report['published'].append({'id':row['id'],'name':row['name'],**result,'date':publish_export.creation_date(packet['meta'])})

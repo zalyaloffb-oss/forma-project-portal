@@ -16,6 +16,7 @@ import subprocess
 import sys
 import tempfile
 import threading
+import time
 from urllib.parse import parse_qs, urlencode, urlsplit
 
 API = 'https://cloud-api.yandex.net/v1/disk'
@@ -110,6 +111,7 @@ class Disk:
                     '--proto', '=https', '--request', method, '--output', str(output or response),
                     '--write-out', '%{http_code}']
             config = ''
+            if method=='GET':args += ['--retry-all-errors']
             if authenticated:
                 if not url.startswith(API + '/') and url != API:
                     raise DiskError('Токен разрешён только для API Яндекс Диска.')
@@ -195,6 +197,9 @@ class Disk:
             address = self.api('GET', '/resources/upload', path=remote_path(relative), overwrite=str(overwrite).lower())
             try:
                 code, _ = self._curl(trusted_transfer(address['href']), method='PUT', upload=local if content is None else None, content=content)
+                if code in (404,408,410,429,500,502,503,504) and attempt<2:
+                    time.sleep(2**attempt)
+                    continue
                 break
             except DiskError as interrupted:
                 # A dropped response does not prove a failed PUT. Check server bytes.
