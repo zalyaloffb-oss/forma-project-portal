@@ -38,6 +38,10 @@ class FusionDates(unittest.TestCase):
         self.assertIsNone(match_project(records,{'title':'Stand','dataFileId':'second'}))
         self.assertIs(match_project(records,{'title':'Renamed','dataFileId':'first'}),records[0])
         with self.assertRaises(ValueError):match_project(records,{'title':'Stand','dataFileId':'second','projectId':'old'})
+        records.append({'id':'other','title':'Stand','fusionDataFileId':'second','model':'fusion'})
+        self.assertIsNone(match_project(records,{'title':'Stand','dataFileId':'third'}))
+        records.append({'id':'unknown','title':'Stand','model':'fusion'})
+        with self.assertRaises(ValueError):match_project(records,{'title':'Stand','dataFileId':'third'})
 
     def test_existing_project_date_is_corrected_without_losing_documents_or_route(self):
         project={'id':'kept','title':'Stand','viewerPath':'/same-link','fusionDataFileId':'same','date':'2026-11-23',

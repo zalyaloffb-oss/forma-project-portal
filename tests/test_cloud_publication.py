@@ -24,7 +24,9 @@ class PublicationChecks(unittest.TestCase):
             path=publish_export.write_asset(project,'model',source)
             self.assertEqual(disk.return_value.upload.call_count,2)
             calls=disk.return_value.upload.call_args_list
-            raw=calls[0].kwargs['content'];packed=calls[1].kwargs['content']
+            self.assertNotIn('content',calls[0].kwargs)
+            self.assertEqual(Path(calls[0].args[0]),source)
+            raw=source.read_bytes();packed=calls[1].kwargs['content']
             self.assertEqual(raw,source.read_bytes());self.assertEqual(gzip.decompress(packed),raw)
             storage=json.loads(config.read_text())
             self.assertEqual(storage['files'][path]['sha256'],hashlib.sha256(raw).hexdigest())

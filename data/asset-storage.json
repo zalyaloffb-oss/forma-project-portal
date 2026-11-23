@@ -1873,6 +1873,253 @@
       "mime": "application/gzip",
       "decodedSHA256": "387e14b69047e76f0937f7f257e779cce1472abfb050c713dfa7b0e37ba963a7",
       "decodedBytes": 10960
+    },
+    "assets/rosagrolizing/f3d-16fa28da6a57.f3d": {
+      "bytes": 2817178,
+      "sha256": "16fa28da6a5783c20fbebf95b2226ce51144710d9a90d9df6273753eb6b2fefa",
+      "mime": "application/octet-stream"
+    },
+    "assets/rosagrolizing/model-cda130f34649.glb": {
+      "bytes": 2068836,
+      "sha256": "cda130f346499b4fac2a34782839bd0cb4d03189795add7b863f522e740469ae",
+      "mime": "model/gltf-binary",
+      "selfContainedGLB": true
+    },
+    "assets/rosagrolizing/model-cda130f34649.glb.gz": {
+      "bytes": 160498,
+      "sha256": "88e7cea72df0e0a00d7e4aaaf823d27eaf489fd1fdac57ca47e19b1e8e133d72",
+      "mime": "application/gzip",
+      "decodedSHA256": "cda130f346499b4fac2a34782839bd0cb4d03189795add7b863f522e740469ae",
+      "decodedBytes": 2068836
+    },
+    "assets/svetovoy-most-v-rezhime-prosmotra/model-afbdd3de154c.glb": {
+      "bytes": 461944,
+      "sha256": "afbdd3de154ce2dae13a2ed32bb8b6ea271f1b47c7d0df805ddaf8a08ed339a7",
+      "mime": "model/gltf-binary",
+      "selfContainedGLB": true
+    },
+    "assets/svetovoy-most-v-rezhime-prosmotra/model-afbdd3de154c.glb.gz": {
+      "bytes": 36454,
+      "sha256": "27f62fec9f63b3ae12401a68df6dc7e9147ebfb5e21f9c58551c0152e478ebde",
+      "mime": "application/gzip",
+      "decodedSHA256": "afbdd3de154ce2dae13a2ed32bb8b6ea271f1b47c7d0df805ddaf8a08ed339a7",
+      "decodedBytes": 461944
+    },
+    "assets/ferma-7-815h350/model-e1339f72642c.glb": {
+      "bytes": 186372,
+      "sha256": "e1339f72642c9180ee324afc31d4f7768480e733de64281034c9b3e463965e34",
+      "mime": "model/gltf-binary",
+      "selfContainedGLB": true
+    },
+    "assets/ferma-7-815h350/model-e1339f72642c.glb.gz": {
+      "bytes": 17271,
+      "sha256": "6f1d4864cf2e3089e92dd8171fc331868a62eff4b71f88b197440695ac58fd35",
+      "mime": "application/gzip",
+      "decodedSHA256": "e1339f72642c9180ee324afc31d4f7768480e733de64281034c9b3e463965e34",
+      "decodedBytes": 186372
+    },
+    "assets/avtopribor/f3d-f58987ae07b0.f3d": {
+      "bytes": 5632210,
+      "sha256": "f58987ae07b0d991d5c8ac10be472c56a44ddb71d55e26a230ef6c4187c07e4d",
+      "mime": "application/octet-stream"
+    },
+    "assets/avtopribor/model-f0718f4a890e.glb": {
+      "bytes": 6162988,
+      "sha256": "f0718f4a890ee5d2e023a0fce8bad7554bd8a3baff47d7bc5c2ed599d28feedd",
+      "mime": "model/gltf-binary",
+      "selfContainedGLB": true
+    },
+    "assets/avtopribor/model-f0718f4a890e.glb.gz": {
+      "bytes": 603371,
+      "sha256": "3343226dc605b20294e214f68fde99ce50fd2e0665cb57889c8fdbc9b252ae56",
+      "mime": "application/gzip",
+      "decodedSHA256": "f0718f4a890ee5d2e023a0fce8bad7554bd8a3baff47d7bc5c2ed599d28feedd",
+      "decodedBytes": 6162988
+    },
+    "assets/avtopribor-dlya-prosmotra/f3d-c0a7e55ab28e.f3d": {
+      "bytes": 4721408,
+      "sha256": "c0a7e55ab28e3206f66345d9cf800e52b16d9e425046ebb2f4813d48d07b99e4",
+      "mime": "application/octet-stream"
+    },
+    "assets/avtopribor-dlya-prosmotra/model-1184158a85c4.glb": {
+      "bytes": 6930928,
+      "sha256": "1184158a85c43e8bd5ed82f47d8d229e836a37e5aab5ff203cadd8c3011381e9",
+      "mime": "model/gltf-binary",
+      "selfContainedGLB": true
+    },
+    "assets/avtopribor-dlya-prosmotra/model-1184158a85c4.glb.gz": {
+      "bytes": 660169,
+      "sha256": "d3bcee74e974af23047c9ed01669c05059bc002d3c007a0ca4601f77ca7c05c6",
+      "mime": "application/gzip",
+      "decodedSHA256": "1184158a85c43e8bd5ed82f47d8d229e836a37e5aab5ff203cadd8c3011381e9",
+      "decodedBytes": 6930928
+    },
+    "assets/rais-model-fotozona-16-08/f3d-f42299324ce7.f3d": {
+      "bytes": 1230276,
+      "sha256": "f42299324ce7a021c592af2e888782e0e5931615b953a2feafa3177f24031efe",
+      "mime": "application/octet-stream"
+    },
+    "assets/rais-model-fotozona-16-08/model-e86c2be6a0d4.glb": {
+      "bytes": 3929532,
+      "sha256": "e86c2be6a0d410fd942d6413aff6be266522091f48754215e87b94cdc4a66975",
+      "mime": "model/gltf-binary",
+      "selfContainedGLB": true
+    },
+    "assets/rais-model-fotozona-16-08/model-e86c2be6a0d4.glb.gz": {
+      "bytes": 773655,
+      "sha256": "0e364e66f8f0d8f05e0a03593069d48a5c1050ff04b60b594b52ee00aad86ad4",
+      "mime": "application/gzip",
+      "decodedSHA256": "e86c2be6a0d410fd942d6413aff6be266522091f48754215e87b94cdc4a66975",
+      "decodedBytes": 3929532
+    },
+    "assets/ammoni/f3d-4a8878df0412.f3d": {
+      "bytes": 10064249,
+      "sha256": "4a8878df04121fbf58bdc276b16cbec719eeab08f7c5937116c5beea18489c26",
+      "mime": "application/octet-stream"
+    },
+    "assets/ammoni/model-e9cb62bab790.glb": {
+      "bytes": 461436,
+      "sha256": "e9cb62bab79044dba8f862f8fd995be61b25be4a9aaa8bd22576bd5a44f9a25c",
+      "mime": "model/gltf-binary",
+      "selfContainedGLB": true
+    },
+    "assets/ammoni/model-e9cb62bab790.glb.gz": {
+      "bytes": 37170,
+      "sha256": "dd39faf467c18504659506a09997d2bdfdf2bc9df515850811038adf59edca97",
+      "mime": "application/gzip",
+      "decodedSHA256": "e9cb62bab79044dba8f862f8fd995be61b25be4a9aaa8bd22576bd5a44f9a25c",
+      "decodedBytes": 461436
+    },
+    "assets/ammoniy-prosmotr/f3d-4294e63172a2.f3d": {
+      "bytes": 10276443,
+      "sha256": "4294e63172a2a01e94c1737befa59abfb08f639c6e80aff241833d054a187cf3",
+      "mime": "application/octet-stream"
+    },
+    "assets/ammoniy-prosmotr/model-8140f5561a5c.glb": {
+      "bytes": 677356,
+      "sha256": "8140f5561a5cd0fb8b13ac6d99d0bec4b672ff56d7f90f3b18df9f21812d0e11",
+      "mime": "model/gltf-binary",
+      "selfContainedGLB": true
+    },
+    "assets/ammoniy-prosmotr/model-8140f5561a5c.glb.gz": {
+      "bytes": 73580,
+      "sha256": "4519d6303e5c8f3ee1ca0d6ccd323f589622988bab0268557a276660c24e49a7",
+      "mime": "application/gzip",
+      "decodedSHA256": "8140f5561a5cd0fb8b13ac6d99d0bec4b672ff56d7f90f3b18df9f21812d0e11",
+      "decodedBytes": 677356
+    },
+    "assets/avtopribor-msk/f3d-a09f4cee9e88.f3d": {
+      "bytes": 292703,
+      "sha256": "a09f4cee9e88e214f5b38cf352ff2f2f27a87516383989d2c6d4fbb8cd62fa14",
+      "mime": "application/octet-stream"
+    },
+    "assets/avtopribor-msk/model-9b3f5e3d8e72.glb": {
+      "bytes": 47212,
+      "sha256": "9b3f5e3d8e723ad10d0585edaac0c47d787ec41f030f7de24aeb789d391110c5",
+      "mime": "model/gltf-binary",
+      "selfContainedGLB": true
+    },
+    "assets/avtopribor-msk/model-9b3f5e3d8e72.glb.gz": {
+      "bytes": 6542,
+      "sha256": "249b46bb99127fb496510c0e776669dcaf3d837a51b708f4fb07bfc43d639e9b",
+      "mime": "application/gzip",
+      "decodedSHA256": "9b3f5e3d8e723ad10d0585edaac0c47d787ec41f030f7de24aeb789d391110c5",
+      "decodedBytes": 47212
+    },
+    "assets/agroterra/f3d-f7bb4890ad1c.f3d": {
+      "bytes": 2049551,
+      "sha256": "f7bb4890ad1c0965d10a0f14cddfdcf3834c193868f2986f969477518f5c2f29",
+      "mime": "application/octet-stream"
+    },
+    "assets/agroterra/model-aa0edbf9676f.glb": {
+      "bytes": 23963352,
+      "sha256": "aa0edbf9676f108cf00402e3e5bac7cd48db9a347f5f6bb7ce2f01da05c07f17",
+      "mime": "model/gltf-binary",
+      "selfContainedGLB": true
+    },
+    "assets/agroterra/model-aa0edbf9676f.glb.gz": {
+      "bytes": 1894272,
+      "sha256": "37752a63c370dde4747645d93feaf5365c1820e1a58ba93c9d1a31b7de069e83",
+      "mime": "application/gzip",
+      "decodedSHA256": "aa0edbf9676f108cf00402e3e5bac7cd48db9a347f5f6bb7ce2f01da05c07f17",
+      "decodedBytes": 23963352
+    },
+    "assets/allyur-tits/f3d-4be1134657f9.f3d": {
+      "bytes": 24885625,
+      "sha256": "4be1134657f92285b46bdaa6585b9e3d6c10bead68ed77741ca0c3174059fd6a",
+      "mime": "application/octet-stream"
+    },
+    "assets/allyur-tits/model-55f862f16001.glb": {
+      "bytes": 51994984,
+      "sha256": "55f862f160018be6de07b21184fd6b5fca4cb3e35bb65fc2c770ba3a4d8ba759",
+      "mime": "model/gltf-binary",
+      "selfContainedGLB": true
+    },
+    "assets/allyur-tits/model-55f862f16001.glb.gz": {
+      "bytes": 6685241,
+      "sha256": "d2956b30da75a04a826fc130e2ceb5ded1af5b3acaff44da288b70644e2bdeb9",
+      "mime": "application/gzip",
+      "decodedSHA256": "55f862f160018be6de07b21184fd6b5fca4cb3e35bb65fc2c770ba3a4d8ba759",
+      "decodedBytes": 51994984
+    },
+    "assets/rais-model-16-08/f3d-24b27c3efff9.f3d": {
+      "bytes": 51453258,
+      "sha256": "24b27c3efff9d2b280b377d5d7ecad8cc2a55552afd52fe503e5b3fb496802f1",
+      "mime": "application/octet-stream"
+    },
+    "assets/allyur-tits-prosmotr/f3d-01013174a623.f3d": {
+      "bytes": 24887493,
+      "sha256": "01013174a623732063879782bd20fa257616058eb20cdef07ac31256b3b8fa8a",
+      "mime": "application/octet-stream"
+    },
+    "assets/allyur-tits-prosmotr/model-9d423693af13.glb": {
+      "bytes": 51995000,
+      "sha256": "9d423693af13b95ef1965079c2ae16bf0ae82a81372cb34cd48d424297c4118c",
+      "mime": "model/gltf-binary",
+      "selfContainedGLB": true
+    },
+    "assets/allyur-tits-prosmotr/model-9d423693af13.glb.gz": {
+      "bytes": 6685262,
+      "sha256": "7ec2b73c98b8af5b5244b083f3abd1d030ab80598236275d3406d18b25e8b5e9",
+      "mime": "application/gzip",
+      "decodedSHA256": "9d423693af13b95ef1965079c2ae16bf0ae82a81372cb34cd48d424297c4118c",
+      "decodedBytes": 51995000
+    },
+    "assets/telematika/f3d-48a17a44a017.f3d": {
+      "bytes": 1872848,
+      "sha256": "48a17a44a01773e34fa683908f36798803a95c1f8b7b2411207123a6bab6e469",
+      "mime": "application/octet-stream"
+    },
+    "assets/telematika/model-422d169b3ecc.glb": {
+      "bytes": 308708,
+      "sha256": "422d169b3ecc363e4a7eeee9fbe5236a46ab03139a26a311aa0dbfe3366fc751",
+      "mime": "model/gltf-binary",
+      "selfContainedGLB": true
+    },
+    "assets/telematika/model-422d169b3ecc.glb.gz": {
+      "bytes": 37673,
+      "sha256": "23fcee95f6054a5167fa71461743063004a7d0da0e9bb6399838377237f7ba3d",
+      "mime": "application/gzip",
+      "decodedSHA256": "422d169b3ecc363e4a7eeee9fbe5236a46ab03139a26a311aa0dbfe3366fc751",
+      "decodedBytes": 308708
+    },
+    "assets/uralhim/f3d-0a02188ecc5b.f3d": {
+      "bytes": 1398173,
+      "sha256": "0a02188ecc5b7d9cdd3cc9301b434ffd7ced5e44dbb10b8ae7dee13dff6f063e",
+      "mime": "application/octet-stream"
+    },
+    "assets/uralhim/model-6e44cade2d7e.glb": {
+      "bytes": 3812268,
+      "sha256": "6e44cade2d7ece7feecff38915845f670e719965654901620509eb1e49f03b4b",
+      "mime": "model/gltf-binary",
+      "selfContainedGLB": true
+    },
+    "assets/uralhim/model-6e44cade2d7e.glb.gz": {
+      "bytes": 659568,
+      "sha256": "053b9231123582a3e840d5a4a3ce014e8134b7eafcbcd2a06509fbd255f0c799",
+      "mime": "application/gzip",
+      "decodedSHA256": "6e44cade2d7ece7feecff38915845f670e719965654901620509eb1e49f03b4b",
+      "decodedBytes": 3812268
     }
   },
   "retainedFixtures": [

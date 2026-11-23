@@ -8,11 +8,19 @@ from FusionMeshMetadata import mesh_metadata,appearance_metadata,appearance_mate
 
 
 def body(name,minimum,maximum,visible=True):
-    return NS(name=name,isVisible=visible,appearance=None,displayMesh=NS(nodeCoordinatesAsDouble=list(minimum)+list(maximum)),boundingBox=NS(
+    return NS(name=name,isVisible=visible,appearance=None,nativeObject=None,displayMesh=NS(nodeCoordinatesAsDouble=list(minimum)+list(maximum)),boundingBox=NS(
         minPoint=NS(asArray=lambda:list(minimum)),maxPoint=NS(asArray=lambda:list(maximum))))
 
 
 class MeshInstances(unittest.TestCase):
+    def test_proxy_mesh_coordinates_are_transformed_from_native_component_space(self):
+        source=body('Proxy',(0,0,0),(10,10,10))
+        native=body('Native',(0,0,0),(10,20,30));source.nativeObject=native
+        matrix=[[0,-1,0,100],[1,0,0,200],[0,0,1,300]]
+        occurrence=NS(fullPathName='Outer:2+Logo:1',isVisible=True,meshBodies=[source],transform2=NS(getCell=lambda row,column:matrix[row][column]))
+        row=mesh_metadata(NS(rootComponent=NS(name='Stand',meshBodies=[],allOccurrences=[occurrence])))[0]
+        for actual,expected in zip(row['bounds'],[.8,2,3,1,2.1,3.3]):self.assertAlmostEqual(actual,expected)
+
     def test_rotated_instance_uses_mesh_extents_instead_of_loose_transformed_box(self):
         source=body('Round column',(-30,-30,0),(30,30,300))
         source.displayMesh.nodeCoordinatesAsDouble=[-25,-25,0,25,25,300]
@@ -21,8 +29,8 @@ class MeshInstances(unittest.TestCase):
 
     def test_repeated_instances_retain_distinct_paths_world_bounds_and_visibility(self):
         root=NS(name='Design',meshBodies=[body('Root mesh',(0,0,0),(100,50,10))],allOccurrences=[
-            NS(fullPathName='Stand:1+Logo:1',isVisible=True,meshBodies=[body('Logo',(200,0,0),(210,50,1))]),
-            NS(fullPathName='Stand:2+Logo:1',isVisible=True,meshBodies=[body('Logo',(400,0,0),(410,50,1)),body('Hidden',(0,0,0),(1,1,1),False)]),
+            NS(fullPathName='Stand:1+Logo:1',isVisible=True,transform2=None,meshBodies=[body('Logo',(200,0,0),(210,50,1))]),
+            NS(fullPathName='Stand:2+Logo:1',isVisible=True,transform2=None,meshBodies=[body('Logo',(400,0,0),(410,50,1)),body('Hidden',(0,0,0),(1,1,1),False)]),
             NS(fullPathName='Hidden component',isVisible=False,meshBodies=[body('Logo',(600,0,0),(610,50,1))])])
         rows=mesh_metadata(NS(rootComponent=root))
         self.assertEqual([row['path'] for row in rows],['Design','Stand:1+Logo:1','Stand:2+Logo:1'])

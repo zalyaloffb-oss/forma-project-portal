@@ -197,6 +197,13 @@ class Disk:
             address = self.api('GET', '/resources/upload', path=remote_path(relative), overwrite=str(overwrite).lower())
             try:
                 code, _ = self._curl(trusted_transfer(address['href']), method='PUT', upload=local if content is None else None, content=content)
+                if code not in (200,201,202):
+                    # The first PUT can succeed even if a retried/late response
+                    # is an error. Trust only the stored bytes, never the status.
+                    try:confirmed=self.stat(relative)
+                    except DiskError:confirmed={}
+                    if confirmed.get('size')==size and confirmed.get('sha256')==data_hash:
+                        return {'path':relative,'sha256':data_hash,'size':size,'status':'uploaded-verified-after-error-response'}
                 if code in (404,408,410,429,500,502,503,504) and attempt<2:
                     time.sleep(2**attempt)
                     continue

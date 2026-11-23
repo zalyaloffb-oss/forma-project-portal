@@ -98,6 +98,19 @@ class ConnectorChecks(unittest.TestCase):
             self.assertEqual(result['sha256'],hashlib.sha256(file.read_bytes()).hexdigest())
             self.assertEqual(len([call for call in disk.calls if call[0]=='GET']),2)
 
+    def test_error_response_is_success_only_when_remote_bytes_are_exact(self):
+        with tempfile.TemporaryDirectory() as folder:
+            file=Path(folder)/'model.glb';file.write_bytes(b'complete model')
+            for bad_hash in (False,True):
+                disk=FakeDisk(bad_hash=bad_hash);transfer=disk._curl
+                def late_error(url,**options):transfer(url,**options);return 400,b''
+                with patch.object(disk,'_curl',side_effect=late_error):
+                    if bad_hash:
+                        with self.assertRaises(DiskError):disk.upload(file,'assets/model.glb')
+                    else:
+                        result=disk.upload(file,'assets/model.glb')
+                        self.assertEqual(result['status'],'uploaded-verified-after-error-response')
+
     def test_inventory_uses_only_committed_public_content(self):
         with tempfile.TemporaryDirectory() as folder:
             root = Path(folder)

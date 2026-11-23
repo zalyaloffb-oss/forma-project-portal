@@ -39,7 +39,9 @@ def match_project(items,meta):
             return found
         if meta.get('expectedExistingProjectId'):raise ValueError('Expected project is missing; refusing to create a duplicate')
     found=[p for p in items if p['title'].strip().casefold()==meta['title'].strip().casefold()]
-    if len(found)>1:raise ValueError('Ambiguous project title; specify projectId')
+    if len(found)>1:
+        if source and all(p.get('model')=='max' or (p.get('fusionDataFileId') and p['fusionDataFileId']!=source) for p in found):return None
+        raise ValueError('Ambiguous project title; specify projectId')
     if found and source and (found[0].get('fusionDataFileId') not in (None,'',source) or found[0].get('model')=='max'):return None
     return found[0] if found else None
 
@@ -80,7 +82,8 @@ def write_asset(project,kind,source,disk=None):
         records={}
         for remote,content in uploads.items():
             row=descriptor(remote,content)
-            disk.upload(source,remote,expected_sha256=row['sha256'],content=content)
+            if remote==path:disk.upload(source,remote,expected_sha256=row['sha256'])
+            else:disk.upload(source,remote,expected_sha256=row['sha256'],content=content)
             records[remote]=row
         storage['files'].update(records)
         temporary=storage_file.with_suffix('.json.next')

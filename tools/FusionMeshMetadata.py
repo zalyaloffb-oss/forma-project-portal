@@ -29,21 +29,31 @@ def appearance_material(appearance):
 
 def mesh_metadata(design):
     root=design.rootComponent
-    groups=[(root.name,root.meshBodies)]
-    groups.extend((occurrence.fullPathName,occurrence.meshBodies)
+    groups=[(root.name,root.meshBodies,None)]
+    groups.extend((occurrence.fullPathName,occurrence.meshBodies,occurrence.transform2)
                   for occurrence in root.allOccurrences if occurrence.isVisible)
     result=[]
-    for path,bodies in groups:
+    for path,bodies,transform in groups:
         for body in bodies:
             if not body.isVisible:continue
             # A rotated proxy's boundingBox encloses its local box, which can be
             # wider than the actual mesh (e.g. a rotated round column). Match USD
             # against the displayed vertices in root assembly context instead.
-            vertices=body.displayMesh.nodeCoordinatesAsDouble
+            native=body.nativeObject or body
+            vertices=native.displayMesh.nodeCoordinatesAsDouble
             if not vertices:continue
+            if transform is not None:
+                rows=[[transform.getCell(row,column) for column in range(4)] for row in range(3)]
+                minimum=[float('inf')]*3;maximum=[-float('inf')]*3
+                for index in range(0,len(vertices),3):
+                    x,y,z=vertices[index:index+3]
+                    for axis,(a,b,c,d) in enumerate(rows):
+                        value=a*x+b*y+c*z+d
+                        minimum[axis]=min(minimum[axis],value);maximum[axis]=max(maximum[axis],value)
+                bounds=[value*.01 for value in minimum+maximum]
+            else:bounds=[min(vertices[axis::3])*.01 for axis in range(3)]+[max(vertices[axis::3])*.01 for axis in range(3)]
             info={'name':body.name,'path':path,'geometryType':'mesh',
-                  'bounds':[min(vertices[axis::3])*.01 for axis in range(3)]+
-                           [max(vertices[axis::3])*.01 for axis in range(3)]}
+                  'bounds':bounds}
             appearance=appearance_metadata(body)
             if appearance:info['appearanceFallback']=appearance
             result.append(info)
