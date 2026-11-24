@@ -2580,6 +2580,24 @@
       "mime": "application/gzip",
       "decodedSHA256": "a2845a89fab963d4f3cb36efa5cb6ddeee5b131bd2840590e2b2ec48108d74ee",
       "decodedBytes": 4817312
+    },
+    "assets/aprel-stend-ranney-pomoschi/f3d-ba5152e3bc12.f3d": {
+      "bytes": 5168147,
+      "sha256": "ba5152e3bc1236070e068ffe921bff2cf236ba4e02ccffb95d9da6f5160155c9",
+      "mime": "application/octet-stream"
+    },
+    "assets/aprel-stend-ranney-pomoschi/model-8a3b011ea218.glb": {
+      "bytes": 4996096,
+      "sha256": "8a3b011ea21823a346a819344279c5feb41730668447a9d21ee7c1fdf18411c1",
+      "mime": "model/gltf-binary",
+      "selfContainedGLB": true
+    },
+    "assets/aprel-stend-ranney-pomoschi/model-8a3b011ea218.glb.gz": {
+      "bytes": 3954815,
+      "sha256": "e078b1ff228d35ad1c00d5682c2752cc447c3a42f3ce4ef9dccdd36fe6f3f8e6",
+      "mime": "application/gzip",
+      "decodedSHA256": "8a3b011ea21823a346a819344279c5feb41730668447a9d21ee7c1fdf18411c1",
+      "decodedBytes": 4996096
     }
   },
   "retainedFixtures": [
