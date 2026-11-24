@@ -5,7 +5,7 @@
 @media(max-width:1000px){.header-actions{grid-column:2;grid-row:1;justify-self:end}}
 :root[data-theme=dark]{color-scheme:dark;--bg:#000000;--paper:#1c2731;--ink:#e3ebf3;--muted:#a7b8c7;--line:#354552;--accent:#63bdf1}
 [data-theme=dark] body,[data-theme=dark] .catalog-header{background:var(--bg);color:var(--ink)}
-[data-theme=dark] .header-brand img{filter:grayscale(1) brightness(1.05) invert(1) brightness(8);mix-blend-mode:screen}
+[data-theme=dark] .header-brand img{mix-blend-mode:normal}
 [data-theme=dark] .card,[data-theme=dark] .modal,[data-theme=dark] .drawer,[data-theme=dark] .project-part,[data-theme=dark] .source-link,[data-theme=dark] .selection-toolbar,[data-theme=dark] .catalog-nav .furniture-subnav,[data-theme=dark] .card-select{background:var(--paper);color:var(--ink);border-color:var(--line)}
 [data-theme=dark] input,[data-theme=dark] select,[data-theme=dark] .search{background:#15212b;color:var(--ink);border-color:var(--line)}
 [data-theme=dark] input::placeholder{color:#97a8b8}
