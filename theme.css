@@ -29,3 +29,7 @@
 [data-theme=dark] .header-brand .brand-light{display:none}
 [data-theme=dark] .header-brand .brand-dark{display:block}
 @media(max-width:1000px){[data-theme=dark] .header-brand{width:180px}}
+
+.header-brand{width:240px}
+.header-brand img{mix-blend-mode:normal}
+@media(max-width:1000px){.header-brand{width:180px}}
