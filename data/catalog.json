@@ -1,6 +1,31 @@
 {
   "projects": [
     {
+      "id": "fusion-c5c76c931c90fcf9cc2f865732040aea77eae7615d0116a730d8975f9234b6e1",
+      "title": "Апрель — стенд ранней помощи",
+      "customer": "Не указан",
+      "event": "",
+      "manager": "",
+      "date": "2026-11-24",
+      "status": "Не указан",
+      "source": "",
+      "viewerPath": "/aprel-stend-ranney-pomoschi",
+      "attachments": [],
+      "published": true,
+      "model": "fusion",
+      "fusionDataFileId": "urn:adsk.wipprod:dm.lineage:hbPtc2Z2SWyeIrx7BlBEHA",
+      "fusionVersion": "1",
+      "sourceApp": "Fusion",
+      "sourceCreatedAt": "2026-11-24T07:55:49+00:00",
+      "sourceCreatedVersion": 1,
+      "dateSource": "Fusion DataFile version 1",
+      "f3dUrl": "assets/aprel-stend-ranney-pomoschi/f3d-5c52a411fa73.f3d",
+      "modelUrl": "assets/aprel-stend-ranney-pomoschi/model-a2845a89fab9.glb",
+      "modelGzipUrl": "assets/aprel-stend-ranney-pomoschi/model-a2845a89fab9.glb.gz",
+      "coverUrl": "assets/aprel-stend-ranney-pomoschi/cover-ba10956812a8.png",
+      "updatedAt": "2026-11-24T08:24:39.120231+00:00"
+    },
+    {
       "id": "fusion-1789888cd3f8db762af3599c2e05f9e1c83d6ecdf142d4c3d0ce382f9c03ec3a",
       "title": "входная арка",
       "customer": "Не указан",
