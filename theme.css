@@ -23,3 +23,9 @@
 [data-theme=dark] .empty-file,[data-theme=dark] .empty,[data-theme=dark] footer{color:var(--muted)}
 
 [data-theme=dark] .pdf-viewer,[data-theme=dark] .pdf-fullscreen-dialog{background:#20262c}
+
+.header-brand .brand-dark{display:none}
+[data-theme=dark] .header-brand{width:240px}
+[data-theme=dark] .header-brand .brand-light{display:none}
+[data-theme=dark] .header-brand .brand-dark{display:block}
+@media(max-width:1000px){[data-theme=dark] .header-brand{width:180px}}
